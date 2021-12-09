@@ -228,4 +228,4 @@ def _apply(outer: Middleware, inner: Middleware) -> Middleware:
 
 async def _not_found_next(ctx: Ctx) -> None:
     ctx.res.code = 404
-    ctx.res.body = '{"type": "Not Found"}'
+    ctx.res.body = '{"error": {"type": "Not Found"}}'

@@ -5,11 +5,9 @@ from lightning import Ctx, Next, use, get, make
 async def error_handler(ctx: Ctx, next: Next) -> None:
     try:
         await next(ctx)
-    except Exception as e:
-        print("ERROR IS")
-        print(e)
+    except:
         ctx.res.code = 500
-        ctx.res.body = '{"type": "Internal Server Error"}'
+        ctx.res.body = '{"error": {"type": "Internal Server Error"}}'
 
 
 @use
