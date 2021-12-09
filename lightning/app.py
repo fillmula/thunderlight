@@ -14,6 +14,8 @@ from .req import Req
 class App:
 
     def __init__(self) -> None:
+        """Create a new server application.
+        """
         self._middlewares: list[Middleware] = []
         self._gets: list[Matcher] = []
         self._posts: list[Matcher] = []
