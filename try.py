@@ -1,4 +1,4 @@
-from lightning import Ctx, Next, use, get, make
+from lightning import Ctx, Next, use, get, gimme
 
 
 @use
@@ -27,4 +27,4 @@ async def users(ctx: Ctx) -> None:
     ctx.res.body = ctx.req.args['id']
 
 
-app = make()
+app = gimme()
