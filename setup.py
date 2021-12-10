@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 README = (Path(__file__).parent / "README.md").read_text()
 
 setup(
-    name='lightning',
+    name='thunderlight',
     version='0.1.0',
     description=('A Python HTTP Server.'),
     long_description=README,
@@ -15,9 +15,9 @@ setup(
     author_email='victor.teo@fillmula.com',
     license='MIT',
     packages=find_packages(exclude=('tests')),
-    package_data={'lightning': ['py.typed']},
+    package_data={'thunderlight': ['py.typed']},
     zip_safe=False,
-    url='https://github.com/fillmula/lightning',
+    url='https://github.com/fillmula/thunderlight',
     include_package_data=True,
     python_requires='>=3.10',
     classifiers=[

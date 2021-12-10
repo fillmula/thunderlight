@@ -1,16 +1,16 @@
-⚡️Lightning is the fastest Python HTTP Server
+⚡️Thunderlight is the fastest Python HTTP Server
 =========
 
-Lightning is the fastest Python HTTP Server. It's dedicated for micro service
+Thunderlight is the fastest Python HTTP Server. It's dedicated for micro service
 and JSON API. In the future, a C version of this API is also supported. You can
 write Python or C in your server project to speed things up.
 
 ## Installation
 
-Install Lightning with `pip`.
+Install Thunderlight with `pip`.
 
 ```sh
-pip install lightning
+pip install thunderlight
 ```
 
 ## Documentation
