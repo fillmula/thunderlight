@@ -1,4 +1,4 @@
-from lightning import Ctx, Next, use, get, gimme, apply
+from thunderlight import Ctx, Next, use, get, gimme, apply
 
 
 @use

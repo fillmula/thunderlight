@@ -101,7 +101,7 @@ async def articles(ctx: Ctx) -> None:
 
 ## Changelog
 
-### 0.1.0 (Dec 9th, 2021)
+### 0.1.0 (Dec 10th, 2021)
 * Global methods added: `get`, `post`, `patch`, `delete`, `use` and `apply`.
 * Classes added: `App`, `Ctx`, `Req`, `Res`, `State`.
 * Function definition added: `Handler`, `Next` and `Middleware`.
