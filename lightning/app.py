@@ -1,7 +1,6 @@
 from typing import Any, Callable
 from re import sub
 from starlette.requests import Request
-from starlette.types import ASGIApp, Receive, Scope, Send
 from .matcher import Matcher
 from .middleware import Middleware
 from .handler import Handler
@@ -9,6 +8,7 @@ from .next import Next
 from .matcher import Matcher
 from .ctx import Ctx
 from .req import Req
+from .asgi import ASGIApp, Receive, Scope, Send
 
 
 class App:
@@ -87,6 +87,8 @@ class App:
                 return retval
 
     def __call__(self, scope: Scope) -> Any:
+        print("SCOPE PRINT")
+        print(scope)
         if not hasattr(self, '_middleware'):
             self._middleware = self._build_middleware()
         async def asgi_handle(receive: Receive, send: Send):
