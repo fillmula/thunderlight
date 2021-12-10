@@ -8,6 +8,7 @@ from .matcher import Matcher
 from .ctx import Ctx
 from .req import Req
 from .asgi import Receive, Scope, Send
+from .json import JSON
 
 
 class App:
@@ -20,6 +21,7 @@ class App:
         self._posts: list[Matcher] = []
         self._patches: list[Matcher] = []
         self._deletes: list[Matcher] = []
+        self._json = JSON()
 
     def use(self, middleware: Middleware) -> None:
         self._middlewares.append(middleware)

@@ -22,5 +22,8 @@ setup(
     python_requires='>=3.10',
     classifiers=[
         "Programming Language :: Python :: 3.10"
-    ]
+    ],
+    install_requires=[
+        'python-multipart==0.0.5'
+    ],
 )
