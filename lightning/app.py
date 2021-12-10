@@ -1,6 +1,5 @@
 from typing import Any, Callable
 from re import sub
-from starlette.requests import Request
 from .matcher import Matcher
 from .middleware import Middleware
 from .handler import Handler
@@ -8,7 +7,7 @@ from .next import Next
 from .matcher import Matcher
 from .ctx import Ctx
 from .req import Req
-from .asgi import ASGIApp, Receive, Scope, Send
+from .asgi import Receive, Scope, Send
 
 
 class App:
@@ -21,10 +20,10 @@ class App:
         self._posts: list[Matcher] = []
         self._patches: list[Matcher] = []
         self._deletes: list[Matcher] = []
-        self._asgi_app: ASGIApp | None = None
 
     def use(self, middleware: Middleware) -> None:
         self._middlewares.append(middleware)
+        self._middleware = self._build_middleware()
 
     def get(self, path: str) -> Callable[[Handler], None]:
         def wrapper(handler: Handler) -> None:
@@ -45,18 +44,6 @@ class App:
         def wrapper(handler: Handler) -> None:
             self._deletes.append(Matcher(path, handler))
         return wrapper
-
-    def _make(self) -> None:
-        middleware = self._build_middleware()
-        async def app(scope: Scope, receive: Receive, send: Send):
-            request = Request(scope, receive, send)
-            path = sub('/$', '', request.url.path)
-            args, handler = self._args_and_handler(request.method, path)
-            ctx = Ctx(Req(request, args, path))
-            await middleware(ctx, handler)
-            response = ctx.res._make_response()
-            await response(scope, receive, send)
-        self._asgi_app = app
 
     def _args_and_handler(self, method: str, path: str) -> tuple[dict[str, str], Handler]:
         match method:
@@ -87,15 +74,11 @@ class App:
                 return retval
 
     def __call__(self, scope: Scope) -> Any:
-        print("SCOPE PRINT")
-        print(scope)
-        if not hasattr(self, '_middleware'):
-            self._middleware = self._build_middleware()
         async def asgi_handle(receive: Receive, send: Send):
-            request = Request(scope, receive, send)
-            path = sub('/$', '', request.url.path)
-            args, handler = self._args_and_handler(request.method, path)
-            ctx = Ctx(Req(request, args, path))
+            path = scope['path']
+            path = sub('/$', '', path) if len(path) > 1 else path
+            args, handler = self._args_and_handler(scope['method'], path)
+            ctx = Ctx(Req(scope, receive, args, path))
             await self._middleware(ctx, handler)
             response = ctx.res._make_response()
             await response(scope, receive, send)
