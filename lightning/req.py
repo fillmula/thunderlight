@@ -1,4 +1,4 @@
-from typing import Any, AsyncGenerator, Coroutine
+from typing import Any, AsyncGenerator
 from .asgi import Scope, Receive
 from .json import JSON
 

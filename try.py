@@ -32,14 +32,14 @@ async def set_log(ctx: Ctx, next: Next) -> None:
 
 @get('/users')
 async def users(ctx: Ctx) -> None:
-    ctx.res.body = 'user works'
+    ctx.res.json({"data": {"here": "works nice"}})
 
 
 @get('/users/:id')
 @apply(set_operator)
 @apply(set_log)
 async def users(ctx: Ctx) -> None:
-    ctx.res.body = ctx.req.args['id']
+    ctx.res.json({"data": {"id": ctx.req.args['id']}})
 
 
 app = gimme()

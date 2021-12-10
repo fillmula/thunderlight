@@ -5,9 +5,9 @@ from .state import State
 
 class Ctx:
 
-    def __init__(self, req: Req) -> None:
+    def __init__(self, req: Req, res: Res) -> None:
         self._req = req
-        self._res = Res()
+        self._res = res
         self._state = State()
 
     @property

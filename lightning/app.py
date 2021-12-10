@@ -7,6 +7,7 @@ from .next import Next
 from .matcher import Matcher
 from .ctx import Ctx
 from .req import Req
+from .res import Res
 from .asgi import Receive, Scope, Send
 from .json import JSON
 
@@ -80,10 +81,9 @@ class App:
             path = scope['path']
             path = sub('/$', '', path) if len(path) > 1 else path
             args, handler = self._args_and_handler(scope['method'], path)
-            ctx = Ctx(Req(scope, receive, args, path))
+            ctx = Ctx(Req(scope, receive, args, path, self._json), Res(self._json))
             await self._middleware(ctx, handler)
-            response = ctx.res._make_response()
-            await response(scope, receive, send)
+            await ctx.res(scope, receive, send)
         return asgi_handle
 
 

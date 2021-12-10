@@ -33,13 +33,13 @@ class JSON:
         return orjson.loads(data)
 
     def ujson_encode(self, data: Any) -> bytes:
-        return ujson.dumps(data)
+        return ujson.dumps(data).encode('utf-8')
 
     def ujson_decode(self, data: bytes) -> Any:
         return ujson.loads(data)
 
     def json_encode(self, data: Any) -> bytes:
-        return json.dumps(data)
+        return json.dumps(data).encode('utf-8')
 
     def json_decode(self, data: bytes) -> Any:
         return json.loads(data)

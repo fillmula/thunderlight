@@ -1,12 +1,15 @@
-from starlette.responses import Response
+from typing import Any
+from .json import JSON
+from .asgi import Scope, Receive, Send
 
 
 class Res:
 
-    def __init__(self) -> None:
+    def __init__(self, json: JSON) -> None:
         self._code: int = 200
-        self._body: str = ''
+        self._body: bytes = b''
         self._headers: dict[str, str] = {}
+        self._json = json
 
     @property
     def code(self) -> int:
@@ -25,14 +28,39 @@ class Res:
         self._headers = headers
 
     @property
-    def body(self) -> str:
+    def body(self) -> bytes:
         return self._body
 
     @body.setter
-    def body(self, body: str) -> None:
+    def body(self, body: bytes) -> None:
+        if type(body) is str:
+            body = body.encode('utf-8')
         self._body = body
 
-    def _make_response(self) -> Response:
-        return Response(content=self.body,
-                        status_code=self.code,
-                        headers=self.headers)
+    def json(self, data: Any) -> None:
+        self._body = self._json.encode(data)
+
+    def text(self, text: str) -> None:
+        # this is not implemented
+        pass
+
+    def html(self, html: str) -> None:
+        # this is not implemented
+        pass
+
+    def redirect(self, url: str) -> None:
+        # this is not implemented
+        pass
+
+    def empty(self, *args, **kwargs) -> None:
+        self.code = 204
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        await send(
+            {
+                "type": "http.response.start",
+                "status": self.code,
+                "headers": list(self.headers.items()),
+            }
+        )
+        await send({"type": "http.response.body", "body": self.body})
