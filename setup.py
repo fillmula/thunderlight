@@ -24,6 +24,7 @@ setup(
         "Programming Language :: Python :: 3.10"
     ],
     install_requires=[
-        'python-multipart==0.0.5'
+        'python-multipart==0.0.5',
+        'uvicorn==0.16.0'
     ],
 )

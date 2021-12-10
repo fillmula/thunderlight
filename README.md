@@ -22,7 +22,7 @@ Register a get request handler to the default app.
 ```python
 @get('/posts/:id')
 async def posts(ctx: Ctx) -> None:
-    await ctx.res.json(await Post.id(ctx.req.args.id))
+    ctx.res.json((await Post.id(ctx.req.args.id)).tojson())
 ```
 
 ### `post`
@@ -32,7 +32,7 @@ Register a post request handler to the default app.
 ```python
 @post('/posts')
 async def posts(ctx: Ctx) -> None:
-    await ctx.res.json(Post(**(await ctx.req.dict())).save())
+    ctx.res.json(Post(**(await ctx.req.json())).save().tojson())
 ```
 
 ### `patch`
@@ -42,7 +42,7 @@ Register a patch request handler to the default app.
 ```python
 @patch('/posts/:id')
 async def posts(ctx: Ctx) -> None:
-    await ctx.res.json((await Post.id(ctx.req.args.id)).set(await ctx.req.dict()).save())
+    ctx.res.json((await Post.id(ctx.req.args.id)).set(await ctx.req.json()).save().tojson())
 ```
 
 ### `delete`
@@ -79,13 +79,13 @@ async def validate_user(ctx: Ctx, next: Next) -> None:
         await next(ctx)
     else:
         ctx.res.code = 401
-        await ctx.res.json({"error": {"type": "Unauthorized"}})
+        ctx.res.json({"error": {"type": "Unauthorized"}})
 
 
 @get('/users')
 @apply(validate_user)
 async def users(ctx: Ctx) -> None:
-    await ctx.res.json(await User.find())
+    ctx.res.json(await User.find())
 ```
 
 ### `App`
@@ -96,7 +96,7 @@ Create a new server application.
 app = App()
 @app.get('/articles')
 async def articles(ctx: Ctx) -> None:
-    await ctx.res.json(await Article.find())
+    ctx.res.json(await Article.find())
 ```
 
 ## Changelog
