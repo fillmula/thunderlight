@@ -53,5 +53,20 @@ async def upload(ctx: Ctx) -> None:
         })
     ctx.res.json({"message": {"status": "OK", "files": files }})
 
+@get('/text')
+async def text(ctx: Ctx) -> None:
+    ctx.res.text("This is text")
+
+
+@get('/html')
+async def html(ctx: Ctx) -> None:
+    ctx.res.html("<div>Hello world</div>")
+
+
+@get('/redirect')
+async def redirect(ctx: Ctx) -> None:
+    ctx.res.redirect('/users')
+
+
 
 app = gimme()
