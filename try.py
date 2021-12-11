@@ -1,4 +1,4 @@
-from thunderlight import Ctx, Next, use, get, gimme, apply
+from thunderlight import Ctx, Next, post, use, get, gimme, apply
 
 
 @use
@@ -40,6 +40,18 @@ async def users(ctx: Ctx) -> None:
 @apply(set_log)
 async def users(ctx: Ctx) -> None:
     ctx.res.json({"data": {"id": ctx.req.args['id']}})
+
+
+@post('/images')
+async def upload(ctx: Ctx) -> None:
+    data = await ctx.req.form()
+    files = []
+    for k, v in data.items():
+        files.append({
+            "key": k,
+            "file-type": v.content_type
+        })
+    ctx.res.json({"message": {"status": "OK", "files": files }})
 
 
 app = gimme()
