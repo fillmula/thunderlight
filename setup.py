@@ -25,6 +25,7 @@ setup(
     ],
     install_requires=[
         'python-multipart==0.0.5',
-        'uvicorn==0.16.0'
+        'uvicorn==0.16.0',
+        'anyio>=3.4.0,<4.0.0'
     ],
 )
