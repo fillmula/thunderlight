@@ -24,7 +24,8 @@ class Res:
 
     @property
     def headers(self) -> dict[str, str]:
-        self._headers['content-type'] = self._media_type
+        if self._media_type is not None:
+            self._headers['content-type'] = self._media_type
         return self._headers
 
     @headers.setter
@@ -54,8 +55,8 @@ class Res:
         self._body = html.encode('utf-8')
 
     def redirect(self, url: str) -> None:
-        # wait to implement.
-        pass
+        self._code = 307
+        self._headers["location"] = quote(str(url), safe=":/%#?=@[]!$&'()*+,;")
 
 
     def empty(self, *args, **kwargs) -> None:
