@@ -1,4 +1,6 @@
 from typing import Any, AsyncGenerator
+from multipart.multipart import parse_options_header
+from .formparsers import FormData, FormParser, MultiPartParser
 from .asgi import Scope, Receive
 from .json import JSON
 
@@ -15,6 +17,7 @@ class Req:
         self._args = args
         self._path = path
         self._json = json
+        self._stream_consumed = False
 
     @property
     def client(self) -> tuple[str, int]:
@@ -64,9 +67,19 @@ class Req:
             self._json = self._json.decode(body)
         return self._json
 
-    async def form(self) -> dict[str, Any] | None:
-        # this is not implemented yet
-        return None
+    async def form(self) -> FormData | None:
+        if not hasattr(self, "_form"):
+            content_type_header = self.headers.get("content-type")
+            content_type, _ = parse_options_header(content_type_header)
+            if content_type == b"multipart/form-data":
+                multipart_parser = MultiPartParser(self.headers, self._stream())
+                self._form = await multipart_parser.parse()
+            elif content_type == b"application/x-www-form-urlencoded":
+                form_parser = FormParser(self.headers, self._stream())
+                self._form = await form_parser.parse()
+            else:
+                self._form = FormData()
+        return self._form
 
     async def dict(self) -> dict[str, Any]:
         if self.headers.get('content-type').startswith('multipart/form-data'):
