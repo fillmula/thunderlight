@@ -51,6 +51,7 @@ static PyObject *Protocol_data_received(Protocol *self, PyObject *data) {
     PyBytes_AsStringAndSize(data, &content, &len);
     Buffer_append(&(self->buffer), content, len);
     Py_XDECREF(data);
+    Request_buffer_sync(&(self->request));
     Request_parse(&(self->request));
     Py_RETURN_NONE;
 }

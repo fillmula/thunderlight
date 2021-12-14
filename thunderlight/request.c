@@ -1,14 +1,81 @@
 #include <stdbool.h>
+#include <string.h>
 #include "request.h"
 
 
-void Request_init(Request *self, Buffer *buffer) {
-    self->buffer = buffer;
-    self->offset = 0;
-    self->method = self->buffer->content;
+void Request_init(Request *self) {
+    // buffer
+    self->buffer_start = self->inline_buffer;
+    self->buffer_end = self->inline_buffer;
+    self->buffer_capacity = INLINE_BUFFER_SIZE;
+    self->bytes_received = 0;
+    // parser
+    self->parser_offset = 0;
+    self->parser_pos = self->buffer_start;
+    self->parser_location = RequestParserLocationMethod;
+    self->exp_body_len = 0;
+    // data
+    self->method = self->buffer_start;
     self->method_len = 0;
-    self->state = METHOD;
+    self->path = NULL;
+    self->path_len = 0;
+    self->path_offset = 0;
+    self->qs = NULL;
+    self->qs_len = 0;
+    self->qs_offset = 0;
+    self->version = NULL;
+    self->version_len = 0;
+    self->version_offset = 0;
+    // self->header how to deal with this?
+    self->header_num = 0;
+    self->body = NULL;
+    self->body_len = 0;
+    self->body_offset = 0;
 }
+
+void Request_deinit(Request *self) {
+    if (self->buffer_start != self->inline_buffer) {
+        free(self->buffer_start);
+    }
+}
+
+void Request_sync_parser_data_pointers(Request *self) {
+    self->parser_pos = self->buffer_start + self->parser_offset;
+    self->method = self->buffer_start;
+    if (self->path == NULL) { return; }
+    self->path = self->buffer_start + self->path_offset;
+    if (self->qs != NULL) {
+        self->qs = self->buffer_start + self->qs_offset;
+    }
+    if (self->version == NULL) { return; }
+    self->version = self->buffer_start + self->version_offset;
+    // headers how to deal with?
+    if (self->body == NULL) { return; }
+    self->body = self->buffer_start + self->body_offset;
+}
+
+void Request_receive(Request *self, char *content, size_t len) {
+    if (len > self->buffer_capacity - self->bytes_received) {
+        // copy or reallocate a new buffer in memory heap if needed
+        self->buffer_capacity = MAX(self->buffer_capacity * 2, self->bytes_received + len);
+        if (self->buffer_start == self->inline_buffer) {
+            self->buffer_start = malloc(self->buffer_capacity);
+            self->buffer_end = self->buffer_start + self->bytes_received;
+            memcpy(self->buffer_start, self->inline_buffer, self->bytes_received);
+        } else {
+            self->buffer_start = realloc(self->buffer_start, self->buffer_capacity);
+            self->buffer_end = self->buffer_start + self->bytes_received;
+        }
+        // reset parser state
+
+    }
+    // append new content to the buffer
+    memcpy(self->buffer_end, content, len);
+    self->bytes_received += len;
+    self->buffer_end += len;
+}
+
+
 
 void _parse_from_method(Request *self);
 void _parse_from_path(Request *self);
@@ -19,24 +86,24 @@ void _parse_from_body(Request *self);
 
 void Request_parse(Request *self) {
     switch (self->state) {
-    case DONE:
+    case ParsingStateDone:
         break;
-    case BODY:
+    case ParsingStateBody:
         _parse_from_body(self);
         break;
-    case HEADER:
+    case ParsingStateHeaders:
         _parse_from_headers(self);
         break;
-    case VERSION:
+    case ParsingStateVersion:
         _parse_from_version(self);
         break;
-    case QS:
+    case ParsingStateQS:
         _parse_from_qs(self);
         break;
-    case PATH:
+    case ParsingStatePath:
         _parse_from_path(self);
         break;
-    case METHOD:
+    case ParsingStateMethod:
         _parse_from_method(self);
         break;
     default:
@@ -45,14 +112,14 @@ void Request_parse(Request *self) {
 }
 
 void _parse_from_method(Request *self) {
-    char *pos = self->buffer->content + self->offset;
-    char *buffer_end = self->buffer->content + self->buffer->received;
+    GOTO_POS;
+    char *buffer_end = self->buffer->end;
     bool cont = false;
     while (pos < buffer_end) {
         if (*pos == ' ') {
             *pos = '\0';
             pos++;
-            self->state = PATH;
+            self->state = ParsingStatePath;
             self->offset = pos - self->buffer->content;
             self->path = pos;
             self->path_len = 0;

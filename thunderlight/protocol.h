@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Python.h>
 #include "buffer.h"
 #include "request.h"
@@ -8,6 +10,5 @@ typedef struct {
     PyObject *app;
     PyObject *transport;
     PyObject *req;
-    Buffer buffer;
     Request request;
 } Protocol;
