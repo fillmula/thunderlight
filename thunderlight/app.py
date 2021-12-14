@@ -58,6 +58,8 @@ class App:
                 stack = self._patches
             case 'DELETE':
                 stack = self._deletes
+            case 'OPTIONS':
+                return ({}, _options_handler)
         for matcher in stack:
             mdata = matcher.match(path)
             if mdata is not None:
@@ -98,3 +100,7 @@ def _apply(outer: Middleware, inner: Middleware) -> Middleware:
 async def _not_found(ctx: Ctx) -> None:
     ctx.res.code = 404
     ctx.res.body = '{"error": {"type": "Not Found"}}'
+
+
+async def _options_handler(ctx: Ctx) -> None:
+    ctx.res.empty()
