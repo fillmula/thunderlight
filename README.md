@@ -101,6 +101,12 @@ async def articles(ctx: Ctx) -> None:
 
 ## Changelog
 
+### 0.1.1 (Dec 14, 2021)
+* Support multipart form data
+* Support html
+* Support plain text
+* Support redirect
+
 ### 0.1.0 (Dec 10th, 2021)
 * Global methods added: `get`, `post`, `patch`, `delete`, `use` and `apply`.
 * Classes added: `App`, `Ctx`, `Req`, `Res`, `State`.
