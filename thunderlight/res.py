@@ -11,7 +11,6 @@ class Res:
         self._code: int = 200
         self._body: bytes = b''
         self._headers: dict[str, str] = {}
-        self._media_type = None
         self._json = json
 
     @property
@@ -24,8 +23,6 @@ class Res:
 
     @property
     def headers(self) -> dict[str, str]:
-        if self._media_type is not None:
-            self._headers['content-type'] = self._media_type
         return self._headers
 
     @headers.setter
@@ -43,15 +40,15 @@ class Res:
         self._body = body
 
     def json(self, data: Any) -> None:
-        self._media_type = "application/json"
+        self._headers['content-type'] = "application/json"
         self._body = self._json.encode(data)
 
     def text(self, text: str) -> None:
-        self._media_type = 'text/plain'
+        self._headers['content-type'] = 'text/plain'
         self._body = text.encode('utf-8')
 
     def html(self, html: str) -> None:
-        self._media_type = 'text/html'
+        self._headers['content-type'] = 'text/html'
         self._body = html.encode('utf-8')
 
     def redirect(self, url: str) -> None:
