@@ -101,6 +101,9 @@ async def articles(ctx: Ctx) -> None:
 
 ## Changelog
 
+### 0.1.2 (Dec 15, 2021)
+* Bug fixes
+
 ### 0.1.1 (Dec 14, 2021)
 * Support multipart form data
 * Support html
