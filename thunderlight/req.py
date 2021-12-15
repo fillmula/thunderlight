@@ -16,7 +16,7 @@ class Req:
         self._receive = receive
         self._args = args
         self._path = path
-        self._json_coder = json.json_decode
+        self._json_coder = json
         self._stream_consumed = False
 
     @property
@@ -64,7 +64,7 @@ class Req:
     async def json(self) -> Any | None:
         if not hasattr(self, "_json"):
             body = await self.body()
-            self._json = self._json_coder(body)
+            self._json = self._json_coder.decode(body)
         return self._json
 
     async def form(self) -> FormData | None:
