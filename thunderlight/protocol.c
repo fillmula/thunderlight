@@ -9,8 +9,7 @@ static PyObject *Protocol_new(PyTypeObject *type, PyObject *args, PyObject *kwds
     self->app = NULL;
     self->transport = NULL;
     self->req = NULL;
-    Buffer_init(&(self->buffer));
-    Request_init(self->request, &(self->buffer));
+    Request_init(&(self->request));
     return (PyObject *)self;
 }
 
@@ -18,9 +17,7 @@ static void Protocol_dealloc(Protocol *self) {
     Py_XDECREF(self->app);
     Py_XDECREF(self->transport);
     Py_XDECREF(self->req);
-    if(self->buffer.content != self->buffer.inline_content) {
-        free(self->buffer.content);
-    }
+    Request_deinit(&(self->request));
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
@@ -49,10 +46,11 @@ static PyObject *Protocol_data_received(Protocol *self, PyObject *data) {
     char *content;
     Py_ssize_t len;
     PyBytes_AsStringAndSize(data, &content, &len);
-    Buffer_append(&(self->buffer), content, len);
+    RequestParsingState state = Request_receive(&(self->request), content, len);
     Py_XDECREF(data);
-    Request_buffer_sync(&(self->request));
-    Request_parse(&(self->request));
+    if (state == RequestParsingStateDone) {
+        // handle and send out response
+    }
     Py_RETURN_NONE;
 }
 

@@ -295,7 +295,6 @@ void Request_print(Request *self) {
     free(headers);
 }
 
-
 void Request_debug_print(Request *self) {
     char *headers = _Request_debug_headers(self);
     printf("Request(method: \"%s\", path: \"%s\", query: \"%s\", version: \"%s\", headers: %s, body: (%ld bytes))\n", self->method, self->path, self->query, self->version, _Request_debug_headers(self), self->buffer_end - self->body);
