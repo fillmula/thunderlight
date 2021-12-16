@@ -86,4 +86,6 @@ Header *Request_headers(Request *self);
 
 size_t Request_content_len(Request *self);
 
+void Request_print(Request *self);
+
 void Request_debug_print(Request *self);

@@ -7,6 +7,8 @@
 
 #define TOLOWER(x) (x) + 32
 
+const char *CONTENT_LENGTH = "content-length";
+
 RequestParsingState _Request_parse(Request *self);
 RequestParsingState _parse_from_method(Request *self);
 RequestParsingState _parse_from_path(Request *self);
@@ -199,7 +201,6 @@ ret:
 RequestParsingState _parse_from_headers(Request *self) {
     while (self->parser_pos < self->buffer_end) {
         size_t index = self->header_num - 1;
-
         if ((self->parser_header_location == RequestParserHeaderLocationName) &&
             (*(self->parser_pos) == ':')) {
             *(self->parser_pos) = '\0';
@@ -215,16 +216,22 @@ RequestParsingState _parse_from_headers(Request *self) {
             self->header_num++;
             self->headers[index + 1].name = self->parser_pos;
             self->headers[index + 1].name_len = 0;
-        } else if ((self->parser_header_location == RequestParserHeaderLocationLineBeginning) &&
-                   (*(self->parser_pos) == '\r')) {
-            self->header_num--;
-            goto body;
-        } else if ((self->parser_header_location == RequestParserHeaderLocationLineBeginning) &&
-                   ((*(self->parser_pos) == ' ') || (*(self->parser_pos) == '\t'))) {
-            self->parser_header_location = RequestParserHeaderLocationContinuousLineBeginning;
-            self->parser_pos++;
         } else if (self->parser_header_location == RequestParserHeaderLocationLineBeginning) {
-            self->parser_header_location = RequestParserHeaderLocationName;
+            if (strcmp(self->headers[index - 1].name, CONTENT_LENGTH) == 0) {
+                self->exp_body_len = atoi(self->headers[index - 1].value);
+            }
+            if (*(self->parser_pos) == '\r') {
+                self->parser_pos += 2;
+                self->body = self->parser_pos;
+                self->header_num--;
+                self->parser_location = RequestParserLocationBody;
+                goto body;
+            } else if ((*(self->parser_pos) == ' ') || (*(self->parser_pos) == '\t')) {
+                self->parser_header_location = RequestParserHeaderLocationContinuousLineBeginning;
+                self->parser_pos++;
+            } else {
+                self->parser_header_location = RequestParserHeaderLocationName;
+            }
         } else if (self->parser_header_location == RequestParserHeaderLocationContinuousLineBeginning) {
             if ((*(self->parser_pos) == ' ') || (*(self->parser_pos) == '\t')) {
                 self->parser_pos++;
@@ -255,7 +262,11 @@ ret:
 }
 
 RequestParsingState _parse_from_body(Request *self) {
-    return RequestParsingStateDone;
+    if ((self->buffer_end - self->body) >= self->exp_body_len) {
+        return RequestParsingStateDone;
+    } else {
+        return RequestParsingStatePending;
+    }
 }
 
 char *_Request_debug_headers(Request *self) {
@@ -278,8 +289,16 @@ char *_Request_debug_headers(Request *self) {
     return headers;
 }
 
+void Request_print(Request *self) {
+    char *headers = _Request_debug_headers(self);
+    printf("Request(method: \"%s\", path: \"%s\", query: \"%s\", version: \"%s\", headers: %s, body: (%ld bytes))\n", self->method, self->path, self->query, self->version, _Request_debug_headers(self), self->buffer_end - self->body);
+    free(headers);
+}
+
+
 void Request_debug_print(Request *self) {
     char *headers = _Request_debug_headers(self);
-    printf("Request(method: \"%s\", path: \"%s\", query: \"%s\", version: \"%s\", headers: %s)\n", self->method, self->path, self->query, self->version, _Request_debug_headers(self));
+    printf("Request(method: \"%s\", path: \"%s\", query: \"%s\", version: \"%s\", headers: %s, body: (%ld bytes))\n", self->method, self->path, self->query, self->version, _Request_debug_headers(self), self->buffer_end - self->body);
+    printf("exp %ld", self->exp_body_len);
     free(headers);
 }
