@@ -1,17 +1,21 @@
 #pragma once
 
-#include "buffer.h"
-#include "header.h"
-
+#include <stddef.h>
 
 #define HEADERS_MAX 30
 #define INLINE_BUFFER_SIZE 4096
 
+typedef struct {
+    char *name;
+    size_t name_len;
+    char *value;
+    size_t value_len;
+} Header;
 
 typedef enum {
     RequestParserLocationMethod,
     RequestParserLocationPath,
-    RequestParserLocationQS,
+    RequestParserLocationQuery,
     RequestParserLocationVersion,
     RequestParserLocationHeaders,
     RequestParserLocationBody,
@@ -19,12 +23,18 @@ typedef enum {
     RequestParserLocationError
 } RequestParserLocation;
 
+typedef enum {
+    RequestParserHeaderLocationLineBeginning,
+    RequestParserHeaderLocationContinuousLineBeginning,
+    RequestParserHeaderLocationName,
+    RequestParserHeaderLocationValue
+} RequestParserHeaderLocation;
 
 typedef enum {
-    RequestParsingState,
-
+    RequestParsingStatePending,
+    RequestParsingStateDone,
+    RequestParsingStateError
 } RequestParsingState;
-
 
 typedef struct {
     // buffer
@@ -44,14 +54,15 @@ typedef struct {
     char *path;
     size_t path_len;
     size_t path_offset;
-    char *qs;
-    size_t qs_len;
-    size_t qs_offset;
+    char *query;
+    size_t query_len;
+    size_t query_offset;
     char *version;
     size_t version_len;
     size_t version_offset;
     Header headers[HEADERS_MAX];
-    size_t header_num;
+    RequestParserHeaderLocation parser_header_location;
+    uint8_t header_num;
     char *body;
     size_t body_len;
     size_t body_offset;
@@ -61,16 +72,18 @@ void Request_init(Request *self);
 
 void Request_deinit(Request *self);
 
-void Request_receive(Request *self, char *content, size_t len);
+RequestParsingState Request_receive(Request *self, char *content, size_t len);
 
 char *Request_method(Request *self);
 
 char *Request_path(Request *self);
 
-char *Request_qs(Request *self);
+char *Request_query(Request *self);
 
 char *Request_version(Request *self);
 
 Header *Request_headers(Request *self);
 
 size_t Request_content_len(Request *self);
+
+void Request_debug_print(Request *self);
