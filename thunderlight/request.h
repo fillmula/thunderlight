@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stddef.h>
 
 #define HEADERS_MAX 30
@@ -70,7 +74,7 @@ typedef struct {
 
 void Request_init(Request *self);
 
-void Request_deinit(Request *self);
+void Request_dealloc(Request *self);
 
 RequestParsingState Request_receive(Request *self, char *content, size_t len);
 
@@ -89,3 +93,7 @@ size_t Request_content_len(Request *self);
 void Request_print(Request *self);
 
 void Request_debug_print(Request *self);
+
+#ifdef __cplusplus
+}
+#endif

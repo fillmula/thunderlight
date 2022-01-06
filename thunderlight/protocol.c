@@ -17,7 +17,7 @@ static void Protocol_dealloc(Protocol *self) {
     Py_XDECREF(self->app);
     Py_XDECREF(self->transport);
     Py_XDECREF(self->req);
-    Request_deinit(&(self->request));
+    Request_dealloc(&(self->request));
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
@@ -49,7 +49,7 @@ static PyObject *Protocol_data_received(Protocol *self, PyObject *data) {
     RequestParsingState state = Request_receive(&(self->request), content, len);
     Py_XDECREF(data);
     if (state == RequestParsingStateDone) {
-        // handle and send out response
+
     }
     Py_RETURN_NONE;
 }

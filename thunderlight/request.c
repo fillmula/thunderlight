@@ -46,7 +46,7 @@ void Request_init(Request *self) {
     self->body_offset = 0;
 }
 
-void Request_deinit(Request *self) {
+void Request_dealloc(Request *self) {
     if (self->buffer_start != self->inline_buffer) {
         free(self->buffer_start);
     }
