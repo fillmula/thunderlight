@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+
+from sys import argv
+#from thunderlight.server import Server
+
+
+def help():
+    print('\nLaunch the thunderlight server.\n\nUsage: thunderlight [app] [port]\n\nArguments:\n    app (optional) the module and object to load.\n    port (the port to listen.)\n\nExamples:\n    (1) thunderlight app 5000\n    (2) thunderlight app:app\n    (3) thunderlight')
+
+
+def launch(args: list[str]):
+    pass
+
+
+if __name__ == '__main__':
+    args = argv[1:]
+    if '--help' in args or '-h' in args:
+        help()
+    else:
+        launch(args)

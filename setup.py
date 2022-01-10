@@ -14,7 +14,7 @@ setup(
     author='Victor Teo',
     author_email='victor.teo@fillmula.com',
     license='MIT',
-    packages=find_packages(exclude=('tests')),
+    packages=['thunderlight'],
     package_data={'thunderlight': ['py.typed']},
     zip_safe=False,
     url='https://github.com/fillmula/thunderlight',
@@ -24,4 +24,5 @@ setup(
         "Programming Language :: Python :: 3.10"
     ],
     install_requires=[],
+    scripts=['scripts/thunderlight']
 )
