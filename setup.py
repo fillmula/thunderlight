@@ -7,8 +7,8 @@ README = (Path(__file__).parent / "README.md").read_text()
 
 setup(
     name='thunderlight',
-    version='0.1.0',
-    description=('A Python HTTP Server.'),
+    version='0.2.0',
+    description=('A Python HTTP Server in C.'),
     long_description=README,
     long_description_content_type='text/markdown',
     author='Victor Teo',
@@ -23,8 +23,5 @@ setup(
     classifiers=[
         "Programming Language :: Python :: 3.10"
     ],
-    install_requires=[
-        'python-multipart==0.0.5',
-        'uvicorn==0.16.0'
-    ],
+    install_requires=[],
 )
