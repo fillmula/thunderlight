@@ -28,7 +28,12 @@ setup(
     ],
     scripts=['scripts/thunderlight'],
     ext_modules=[
+        Extension('thunderlight.req', ['thunderlight/req.c', 'thunderlight/req_headers.c', 'thunderlight/request.c']),
+        Extension('thunderlight.req_headers', ['thunderlight/req_headers.c', 'thunderlight/request.c']),
+        Extension('thunderlight.res', ['thunderlight/res.c', 'thunderlight/response.c', 'thunderlight/buffer.c', 'thunderlight/res_headers.c', 'thunderlight/response_headers.c', 'thunderlight/hash.c']),
+        Extension('thunderlight.res_headers', ['thunderlight/res_headers.c', 'thunderlight/response_headers.c', 'thunderlight/hash.c']),
+        Extension('thunderlight.state', ['thunderlight/state.c', 'thunderlight/duostate.c', 'thunderlight/hash.c']),
         Extension('thunderlight.server', ['thunderlight/server.c']),
-        Extension('thunderlight.main', ['thunderlight/main.c'])
+        Extension('thunderlight.main', ['thunderlight/main.c']),
     ]
 )
