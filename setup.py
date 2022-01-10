@@ -1,6 +1,6 @@
 """setup.py"""
 from pathlib import Path
-from setuptools import setup, find_packages
+from setuptools import setup, Extension
 
 # The text of the README file
 README = (Path(__file__).parent / "README.md").read_text()
@@ -23,6 +23,12 @@ setup(
     classifiers=[
         "Programming Language :: Python :: 3.10"
     ],
-    install_requires=[],
-    scripts=['scripts/thunderlight']
+    install_requires=[
+        'uvloop>=0.16.0',
+    ],
+    scripts=['scripts/thunderlight'],
+    ext_modules=[
+        Extension('thunderlight.server', ['thunderlight/server.c']),
+        Extension('thunderlight.main', ['thunderlight/main.c'])
+    ]
 )
