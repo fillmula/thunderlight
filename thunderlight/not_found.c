@@ -81,10 +81,10 @@ static PyModuleDef NotFoundModule = {
 
 PyMODINIT_FUNC PyInit_not_found(void) {
     PyObject *m = NULL;
-    if (PyType_Ready(&NotFoundIteratorType) < 0) {
+    if (PyType_Ready(&NotFoundType) < 0) {
         goto error;
     }
-    if (PyType_Ready(&NotFoundType) < 0) {
+    if (PyType_Ready(&NotFoundIteratorType) < 0) {
         goto error;
     }
     m = PyModule_Create(&NotFoundModule);
@@ -95,6 +95,7 @@ PyMODINIT_FUNC PyInit_not_found(void) {
     not_found = PyType_GenericNew(&NotFoundType, NULL, NULL);
     Py_INCREF(not_found);
     PyModule_AddObject(m, "not_found", not_found);
+    goto finally;
 error:
     m = NULL;
 finally:
