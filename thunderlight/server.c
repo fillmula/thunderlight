@@ -2,12 +2,13 @@
 
 
 static int Server_init(Server *self, PyObject *args, PyObject *kwds) {
-    PyArg_ParseTuple(args, "l", &self->port);
-    //Py_INCREF(((Server *)self)->app);
+    PyArg_ParseTuple(args, "Ol", &self->app, &self->port);
+    Py_INCREF(((Server *)self)->app);
+    return 0;
 }
 
 static void Server_dealloc(Server *self) {
-    //Py_DECREF(self->app);
+    Py_DECREF(self->app);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 

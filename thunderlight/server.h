@@ -1,11 +1,11 @@
 #pragma once
 
 #include <Python.h>
-//#include "app.h"
+#include "app.h"
 
 
 typedef struct {
     PyObject_HEAD
-    //App *app;
+    App *app;
     long port;
 } Server;
