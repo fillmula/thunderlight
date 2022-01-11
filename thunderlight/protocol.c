@@ -50,7 +50,7 @@ static PyObject *Protocol_data_received(Protocol *self, PyObject *data) {
     RequestParsingState state = Request_receive(&(self->request), content, len);
     Py_XDECREF(data);
     if (state == RequestParsingStateDone) {
-        App_process(self->app, self);
+        App_process(self->app, (PyObject *)self);
     }
     Py_RETURN_NONE;
 }
@@ -103,3 +103,13 @@ static PyModuleDef protocol = {
     -1,
     NULL, NULL, NULL, NULL, NULL
 };
+
+PyMODINIT_FUNC PyInit_protocol(void) {
+    if (PyType_Ready(&ProtocolType) < 0) {
+        return NULL;
+    }
+    PyObject *module = PyModule_Create(&protocol);
+    PyModule_AddType(module, &ProtocolType);
+    Py_INCREF(&ProtocolType);
+    return module;
+}

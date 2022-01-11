@@ -14,8 +14,8 @@ setup(
     author='Victor Teo',
     author_email='victor.teo@fillmula.com',
     license='MIT',
-    packages=['thunderlight'],
-    package_data={'thunderlight': []},
+    # packages=['thunderlight'],
+    # package_data={'thunderlight': []},
     zip_safe=False,
     url='https://github.com/fillmula/thunderlight',
     include_package_data=True,
@@ -27,27 +27,43 @@ setup(
         'uvloop>=0.16.0',
     ],
     scripts=['scripts/thunderlight'],
+    ext_package='thunderlight',
     ext_modules=[
-        #Extension('thunderlight', ['thunderlight/main.c']),
-        Extension('thunderlight.req', ['thunderlight/req.c', 'thunderlight/req_headers.c', 'thunderlight/request.c']),
-        Extension('thunderlight.req_headers', ['thunderlight/req_headers.c', 'thunderlight/request.c']),
-        Extension('thunderlight.res', ['thunderlight/res.c', 'thunderlight/response.c', 'thunderlight/buffer.c', 'thunderlight/res_headers.c', 'thunderlight/response_headers.c', 'thunderlight/hash.c']),
-        Extension('thunderlight.res_headers', ['thunderlight/res_headers.c', 'thunderlight/response_headers.c', 'thunderlight/hash.c']),
-        Extension('thunderlight.state', ['thunderlight/state.c', 'thunderlight/duostate.c', 'thunderlight/hash.c']),
-        Extension('thunderlight.ctx', [
+        Extension('main', ['thunderlight/main.c']),
+        Extension('req', ['thunderlight/req.c', 'thunderlight/req_headers.c', 'thunderlight/request.c']),
+        Extension('req_headers', ['thunderlight/req_headers.c', 'thunderlight/request.c']),
+        Extension('res', ['thunderlight/res.c', 'thunderlight/response.c', 'thunderlight/buffer.c', 'thunderlight/res_headers.c', 'thunderlight/response_headers.c', 'thunderlight/hash.c']),
+        Extension('res_headers', ['thunderlight/res_headers.c', 'thunderlight/response_headers.c', 'thunderlight/hash.c']),
+        Extension('state', ['thunderlight/state.c', 'thunderlight/duostate.c', 'thunderlight/hash.c']),
+        Extension('ctx', [
             'thunderlight/ctx.c', 'thunderlight/context.c',
             'thunderlight/req.c', 'thunderlight/req_headers.c', 'thunderlight/request.c',
             'thunderlight/res.c', 'thunderlight/response.c', 'thunderlight/buffer.c', 'thunderlight/res_headers.c', 'thunderlight/response_headers.c', 'thunderlight/hash.c',
             'thunderlight/state.c', 'thunderlight/duostate.c'
         ]),
-        Extension('thunderlight.not_found', [
+        Extension('not_found', [
             'thunderlight/not_found.c',
             'thunderlight/ctx.c', 'thunderlight/context.c',
             'thunderlight/req.c', 'thunderlight/req_headers.c', 'thunderlight/request.c',
             'thunderlight/res.c', 'thunderlight/response.c', 'thunderlight/buffer.c', 'thunderlight/res_headers.c', 'thunderlight/response_headers.c', 'thunderlight/hash.c',
             'thunderlight/state.c', 'thunderlight/duostate.c'
         ]),
-        Extension('thunderlight.middleware_chain', ['thunderlight/middleware_chain.c']),
-        Extension('thunderlight.server', ['thunderlight/server.c']),
+        Extension('middleware_chain', ['thunderlight/middleware_chain.c']),
+        Extension('app', [
+            'thunderlight/app.c', 'thunderlight/matcher.c', 'thunderlight/middleware_chain.c',
+            'thunderlight/ctx.c', 'thunderlight/context.c',
+            'thunderlight/req.c', 'thunderlight/req_headers.c', 'thunderlight/request.c',
+            'thunderlight/res.c', 'thunderlight/response.c', 'thunderlight/buffer.c', 'thunderlight/res_headers.c', 'thunderlight/response_headers.c', 'thunderlight/hash.c',
+            'thunderlight/state.c', 'thunderlight/duostate.c'
+        ]),
+        Extension('protocol', [
+            'thunderlight/protocol.c',
+            'thunderlight/app.c', 'thunderlight/matcher.c', 'thunderlight/middleware_chain.c',
+            'thunderlight/ctx.c', 'thunderlight/context.c',
+            'thunderlight/req.c', 'thunderlight/req_headers.c', 'thunderlight/request.c',
+            'thunderlight/res.c', 'thunderlight/response.c', 'thunderlight/buffer.c', 'thunderlight/res_headers.c', 'thunderlight/response_headers.c', 'thunderlight/hash.c',
+            'thunderlight/state.c', 'thunderlight/duostate.c'
+        ]),
+        Extension('server', ['thunderlight/server.c']),
     ]
 )

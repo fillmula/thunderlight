@@ -28,4 +28,4 @@ typedef struct {
     PyObject *next;
 } ChainedMiddlewareIterator;
 
-static PyObject *ChainedMiddleware_build(PyObject *list);
+PyObject *ChainedMiddleware_build(PyObject *list);

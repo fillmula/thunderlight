@@ -105,8 +105,7 @@ static PyModuleDef App_module = {
     .m_size = -1
 };
 
-PyMODINIT_FUNC
-App_module_init(void) {
+PyMODINIT_FUNC PyInit_app(void) {
     PyObject* m = NULL;
     if (PyType_Ready(&AppType) < 0) {
         goto error;

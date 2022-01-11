@@ -164,7 +164,7 @@ static PyTypeObject ChainedMiddlewareIteratorType = {
     .tp_dealloc = (destructor)ChainedMiddlewareIterator_dealloc
 };
 
-static PyObject *ChainedMiddleware_build(PyObject *list) {
+PyObject *ChainedMiddleware_build(PyObject *list) {
     Py_ssize_t size = PyList_Size(list);
     switch (size) {
         case 0:
