@@ -93,7 +93,7 @@ static PyTypeObject AppType = {
     .tp_init = (initproc)App_init,
     .tp_dealloc = (destructor)App_dealloc,
     .tp_doc = "App",
-    .tp_name = "app.App",
+    .tp_name = "App",
     .tp_basicsize = sizeof(App),
     .tp_flags = Py_TPFLAGS_DEFAULT,
 };

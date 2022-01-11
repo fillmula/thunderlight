@@ -13,7 +13,7 @@ static void Server_dealloc(Server *self) {
 }
 
 static PyTypeObject ServerType = {
-    .tp_name = "server.Server",
+    .tp_name = "Server",
     .tp_itemsize = sizeof(Server),
     .tp_alloc = PyType_GenericAlloc,
     .tp_new = PyType_GenericNew,

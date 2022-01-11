@@ -51,7 +51,7 @@ static PyMappingMethods ResHeaders_mapping_methods = {
 
 static PyTypeObject ResHeadersType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "res.ResHeaders",
+    .tp_name = "ResHeaders",
     .tp_basicsize = sizeof(ResHeaders),
     .tp_dealloc = (destructor)ResHeaders_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

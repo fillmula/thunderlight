@@ -72,7 +72,7 @@ static PyGetSetDef Res_getset[] = {
 
 static PyTypeObject ResType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "res.Res",
+    .tp_name = "Res",
     .tp_basicsize = sizeof(Res),
     .tp_dealloc = (destructor)Res_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

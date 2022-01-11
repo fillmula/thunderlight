@@ -85,7 +85,7 @@ static PyMethodDef Protocol_methods[] = {
 
 static PyTypeObject ProtocolType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    .tp_name = "protocol.Protocol",
+    .tp_name = "Protocol",
     .tp_basicsize = sizeof(Protocol),
     .tp_dealloc = (destructor)Protocol_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

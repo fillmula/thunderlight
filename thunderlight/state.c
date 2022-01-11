@@ -41,7 +41,7 @@ static PyMappingMethods State_mapping_methods = {
 
 static PyTypeObject StateType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "state.State",
+    .tp_name = "State",
     .tp_basicsize = sizeof(State),
     .tp_dealloc = (destructor)State_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

@@ -41,7 +41,7 @@ static PyMappingMethods ReqHeaders_mapping_methods = {
 
 static PyTypeObject ReqHeadersType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "req.ReqHeaders",
+    .tp_name = "ReqHeaders",
     .tp_basicsize = sizeof(ReqHeaders),
     .tp_dealloc = (destructor)ReqHeaders_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

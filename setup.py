@@ -15,7 +15,7 @@ setup(
     author_email='victor.teo@fillmula.com',
     license='MIT',
     packages=['thunderlight'],
-    package_data={'thunderlight': ['py.typed']},
+    package_data={'thunderlight': []},
     zip_safe=False,
     url='https://github.com/fillmula/thunderlight',
     include_package_data=True,
@@ -28,6 +28,7 @@ setup(
     ],
     scripts=['scripts/thunderlight'],
     ext_modules=[
+        #Extension('thunderlight', ['thunderlight/main.c']),
         Extension('thunderlight.req', ['thunderlight/req.c', 'thunderlight/req_headers.c', 'thunderlight/request.c']),
         Extension('thunderlight.req_headers', ['thunderlight/req_headers.c', 'thunderlight/request.c']),
         Extension('thunderlight.res', ['thunderlight/res.c', 'thunderlight/response.c', 'thunderlight/buffer.c', 'thunderlight/res_headers.c', 'thunderlight/response_headers.c', 'thunderlight/hash.c']),
@@ -48,6 +49,5 @@ setup(
         ]),
         Extension('thunderlight.middleware_chain', ['thunderlight/middleware_chain.c']),
         Extension('thunderlight.server', ['thunderlight/server.c']),
-        Extension('thunderlight.main', ['thunderlight/main.c']),
     ]
 )

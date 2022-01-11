@@ -18,7 +18,7 @@ static PyModuleDef Main_module = {
 };
 
 PyMODINIT_FUNC
-PyInit_main(void) {
+PyInit_thunderlight(void) {
     PyObject* m = NULL;
     m = PyModule_Create(&Main_module);
     if (!m) {

@@ -103,7 +103,7 @@ static PyGetSetDef Req_getset[] = {
 
 static PyTypeObject ReqType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "req.Req",
+    .tp_name = "Req",
     .tp_basicsize = sizeof(Req),
     .tp_dealloc = (destructor)Req_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,
