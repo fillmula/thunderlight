@@ -3,6 +3,37 @@
 #include "protocol.h"
 
 
+static PyTypeObject RouteWrapperType;
+
+RouteWrapper *RouteWrapper_new(MatcherList *mlist, PyObject *route) {
+    RouteWrapper *self = (RouteWrapper *)RouteWrapperType.tp_alloc(&RouteWrapperType, 0);
+    self->mlist = mlist;
+    self->route = route;
+    Py_INCREF(self->route);
+    return self;
+}
+
+void RouteWrapper_dealloc(RouteWrapper *self) {
+    Py_DECREF(self->route);
+    Py_TYPE(self)->tp_free((PyObject *)self);
+}
+
+PyObject *RouteWrapper_call(RouteWrapper *self, PyObject *args, PyObject *kwds) {
+    PyObject *handle;
+    PyArg_Parse(args, "O", &handle);
+    const char *route = (const char *)PyBytes_AsString(self->route);
+    MatcherList_append(self->mlist, route, handle);
+    Py_RETURN_NONE;
+}
+
+static PyTypeObject RouteWrapperType = {
+    .tp_name = "RouteWrapper",
+    .tp_doc = "RouteWrapper",
+    .tp_itemsize = sizeof(RouteWrapper),
+    .tp_call = (ternaryfunc)RouteWrapper_call,
+    .tp_dealloc = (destructor)RouteWrapper_dealloc
+};
+
 int App_init(App *self, PyObject *args, PyObject *kwds) {
     self->gets = MatcherList_alloc();
     MatcherList_init(self->gets);
@@ -57,7 +88,7 @@ void App_prepare(App *self) {
 
 void App_process(App *self, PyObject *p) {
     Protocol *protocol = (Protocol *)p;
-    MatcherList *mlist;
+    MatcherList *mlist = NULL;
     switch (protocol->request.method_len) {
         case 3:
             mlist = self->gets;
@@ -87,6 +118,37 @@ void App_process(App *self, PyObject *p) {
     PyObject_Call(add_done_callback, args, NULL);
 }
 
+static PyObject *App_python_get(App *self, PyObject *route) {
+    return (PyObject *)RouteWrapper_new(self->gets, route);
+}
+
+static PyObject *App_python_post(App *self, PyObject *route) {
+    return (PyObject *)RouteWrapper_new(self->posts, route);
+}
+
+static PyObject *App_python_patch(App *self, PyObject *route) {
+    return (PyObject *)RouteWrapper_new(self->patches, route);
+}
+
+static PyObject *App_python_delete(App *self, PyObject *route) {
+    return (PyObject *)RouteWrapper_new(self->deletes, route);
+}
+
+static PyObject *App_python_use(App *self, PyObject *middleware) {
+    App_use(self, middleware);
+    Py_RETURN_NONE;
+}
+
+
+static PyMethodDef App_methods[] = {
+    {"get", (PyCFunction)App_python_get, METH_O, NULL},
+    {"post", (PyCFunction)App_python_post, METH_O, NULL},
+    {"patch", (PyCFunction)App_python_patch, METH_O, NULL},
+    {"delete", (PyCFunction)App_python_delete, METH_O, NULL},
+    {"use", (PyCFunction)App_python_use, METH_O, NULL},
+    {NULL, NULL, 0, NULL}
+};
+
 static PyTypeObject AppType = {
     .tp_alloc = PyType_GenericAlloc,
     .tp_new = PyType_GenericNew,
@@ -96,6 +158,7 @@ static PyTypeObject AppType = {
     .tp_name = "App",
     .tp_basicsize = sizeof(App),
     .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_methods = App_methods
 };
 
 static PyModuleDef App_module = {
@@ -106,19 +169,14 @@ static PyModuleDef App_module = {
 };
 
 PyMODINIT_FUNC PyInit_app(void) {
-    PyObject* m = NULL;
+    if (PyType_Ready(&RouteWrapperType) < 0) {
+        return NULL;
+    }
     if (PyType_Ready(&AppType) < 0) {
-        goto error;
+        return NULL;
     }
-    m = PyModule_Create(&App_module);
-    Py_INCREF(&AppType);
-    PyModule_AddObject(m, "App", (PyObject *)&AppType);
-    if (!m) {
-        goto error;
-    }
-    goto finally;
-error:
-    m = NULL;
-finally:
-    return m;
+    PyObject *module = PyModule_Create(&App_module);
+    PyModule_AddType(module, &AppType);
+    PyModule_AddType(module, &RouteWrapperType);
+    return module;
 }

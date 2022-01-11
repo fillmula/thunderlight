@@ -12,6 +12,12 @@ extern "C" {
 
 typedef struct {
     PyObject_HEAD
+    PyObject *route;
+    MatcherList *mlist;
+} RouteWrapper;
+
+typedef struct {
+    PyObject_HEAD
     MatcherList *gets;
     MatcherList *posts;
     MatcherList *patches;
@@ -19,8 +25,6 @@ typedef struct {
     PyObject *middlewares;
     PyObject *entrance_middleware;
 } App;
-
-static PyObject *App_new(PyTypeObject *type, PyObject *args, PyObject *kwds);
 
 int App_init(App* self, PyObject *args, PyObject *kwds);
 
