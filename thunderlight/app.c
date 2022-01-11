@@ -21,8 +21,8 @@ void RouteWrapper_dealloc(RouteWrapper *self) {
 PyObject *RouteWrapper_call(RouteWrapper *self, PyObject *args, PyObject *kwds) {
     PyObject *handle;
     PyArg_Parse(args, "O", &handle);
-    char *route = PyUnicode_AsUTF8(self->route);
-    MatcherList_append(self->mlist, (const char *)route, handle);
+    const char *route = PyUnicode_AsUTF8(self->route);
+    MatcherList_append(self->mlist, route, handle);
     Py_RETURN_NONE;
 }
 
