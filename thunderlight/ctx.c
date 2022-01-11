@@ -10,7 +10,7 @@ Ctx *Ctx_new(Context *context) {
     self->req = NULL;
     self->res = NULL;
     self->state = NULL;
-    return (PyObject *)self;
+    return self;
 }
 
 void Ctx_dealloc(Ctx *self) {
