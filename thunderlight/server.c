@@ -20,8 +20,6 @@ static PyObject *Server_call(Server *self, PyObject *args, PyObject *kwargs) {
 static PyObject *Server_listen(Server *self) {
     PyObject *uvloop = PyImport_ImportModule("uvloop");
     PyObject *new_event_loop = PyObject_GetAttrString(uvloop, "new_event_loop");
-    //PyObject_Repr(uvloop_module);
-    //PyObject_Repr(new_event_loop);
     PyObject *loop = PyObject_CallNoArgs(new_event_loop);
     PyObject *asyncio = PyImport_ImportModule("asyncio");
     PyObject *set_event_loop = PyObject_GetAttrString(asyncio, "set_event_loop");
@@ -38,7 +36,6 @@ static PyObject *Server_listen(Server *self) {
     PyObject *server = PyObject_CallOneArg(run_until_complete, server_coro);
     PyObject *run_forever = PyObject_GetAttrString(loop, "run_forever");
     PyObject *none = PyObject_CallNoArgs(run_forever);
-    Py_DECREF(none);
     Py_RETURN_NONE;
 }
 

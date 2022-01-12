@@ -36,8 +36,6 @@ def launch(args: list[str]):
     else:
         app = gimme()
     port = int(args[1])
-    print(app)
-    print(port)
     server = Server(app, port)
     server.listen()
 
