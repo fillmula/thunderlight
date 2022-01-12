@@ -25,6 +25,8 @@ typedef struct {
 
 void Protocol_complete(Protocol *self);
 
+Protocol *Protocol_native_new(App *app);
+
 #ifdef __cplusplus
 }
 #endif

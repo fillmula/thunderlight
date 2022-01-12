@@ -7,5 +7,5 @@
 typedef struct {
     PyObject_HEAD
     App *app;
-    long port;
+    PyObject *port;
 } Server;

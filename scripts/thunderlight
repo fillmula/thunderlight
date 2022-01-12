@@ -30,10 +30,12 @@ def launch(args: list[str]):
     result = import_module(splitext(app_file.name)[0], str(dest)).__dict__
     if obj:
         app = result[obj]
+        print("THIS")
     else:
         app = gimme()
+        print("THAT")
     port = int(args[1])
-    server = Server(port)
+    server = Server(app, port)
     #server.listen()
 
 
