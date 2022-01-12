@@ -3,18 +3,20 @@
 
 static PyTypeObject ProtocolType;
 
-Protocol *Protocol_native_new(App *app) {
-    Protocol *self = (Protocol *)ProtocolType.tp_alloc(&ProtocolType, 0);
-    self->transport = NULL;
-    Request_init(&(self->request));
-    Response_init(&(self->response));
-    Duostate_init(&(self->duostate));
-    Context_init(&(self->context), &(self->request), &(self->response), &(self->duostate));
-    self->ctx = Ctx_new(&(self->context));
-    self->app = app;
-    Py_INCREF(app);
-    return self;
-}
+// Protocol *Protocol_native_new(App *app) {
+//     Protocol *self = (Protocol *)ProtocolType.tp_alloc(&ProtocolType, 0);
+//     self->ob_base.ob_type = &ProtocolType;
+//     self->ob_base.ob_refcnt = 1;
+//     self->transport = NULL;
+//     Request_init(&(self->request));
+//     Response_init(&(self->response));
+//     Duostate_init(&(self->duostate));
+//     Context_init(&(self->context), &(self->request), &(self->response), &(self->duostate));
+//     self->ctx = Ctx_new(&(self->context));
+//     self->app = app;
+//     Py_INCREF(app);
+//     return self;
+// }
 
 static int Protocol_init(Protocol *self, PyObject *args, PyObject *kwds) {
     if(!PyArg_ParseTuple(args, "O", &self->app)) {
@@ -125,7 +127,5 @@ PyMODINIT_FUNC PyInit_protocol(void) {
     PyObject *module = PyModule_Create(&protocol);
     PyModule_AddType(module, &ProtocolType);
     Py_INCREF(&ProtocolType);
-    printf("protocol module is loaded\n");
-    fflush(stdout);
     return module;
 }
