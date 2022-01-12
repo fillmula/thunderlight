@@ -12,6 +12,7 @@ Protocol *Protocol_native_new(App *app) {
     Context_init(&(self->context), &(self->request), &(self->response), &(self->duostate));
     self->ctx = Ctx_new(&(self->context));
     self->app = app;
+    Py_INCREF(app);
     return self;
 }
 
@@ -44,19 +45,21 @@ static void Protocol_dealloc(Protocol *self) {
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
-static PyObject *Protocol_connection_made(Protocol *self, PyObject *transport) {
+PyObject *Protocol_connection_made(Protocol *self, PyObject *transport) {
     self->transport = transport;
     Py_XINCREF(self->transport);
     Py_RETURN_NONE;
 }
 
-static PyObject *Protocol_connection_lost(Protocol *self, PyObject *exc) {
+PyObject *Protocol_connection_lost(Protocol *self, PyObject *exc) {
     Py_XDECREF(self->transport);
     self->transport = NULL;
     Py_RETURN_NONE;
 }
 
-static PyObject *Protocol_data_received(Protocol *self, PyObject *data) {
+PyObject *Protocol_data_received(Protocol *self, PyObject *data) {
+    printf("data received\n");
+    fflush(stdout);
     char *content;
     Py_ssize_t len;
     PyBytes_AsStringAndSize(data, &content, &len);
@@ -93,11 +96,10 @@ static PyMethodDef Protocol_methods[] = {
     {"connection_made", (PyCFunction)Protocol_connection_made, METH_O, ""},
     {"connection_lost", (PyCFunction)Protocol_connection_lost, METH_VARARGS, ""},
     {"data_received", (PyCFunction)Protocol_data_received, METH_O, ""},
-    {NULL}
+    {NULL, NULL, 0, NULL}
 };
 
 static PyTypeObject ProtocolType = {
-    PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "Protocol",
     .tp_basicsize = sizeof(Protocol),
     .tp_dealloc = (destructor)Protocol_dealloc,
@@ -105,7 +107,8 @@ static PyTypeObject ProtocolType = {
     .tp_methods = Protocol_methods,
     .tp_new = Protocol_new,
     .tp_init = (initproc)Protocol_init,
-    .tp_call = Protocol_call
+    .tp_alloc = PyType_GenericAlloc,
+    .tp_call = Protocol_call,
 };
 
 

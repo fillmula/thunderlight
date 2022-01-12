@@ -58,6 +58,7 @@ static PyTypeObject CtxType = {
     .tp_dealloc = (destructor)Ctx_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = Ctx_getset,
+    .tp_alloc = PyType_GenericAlloc
 };
 
 static PyModuleDef Ctx_module = {

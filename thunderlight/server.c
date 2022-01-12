@@ -4,17 +4,26 @@
 
 static int Server_init(Server *self, PyObject *args, PyObject *kwds) {
     PyArg_ParseTuple(args, "OO", &self->app, &self->port);
-    Py_INCREF(((Server *)self)->app);
+    Py_INCREF(self->app);
+    Py_INCREF(self->port);
     return 0;
 }
 
 static void Server_dealloc(Server *self) {
     Py_DECREF(self->app);
+    Py_DECREF(self->port);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
 static PyObject *Server_call(Server *self, PyObject *args, PyObject *kwargs) {
-    return (PyObject *)Protocol_native_new(self->app);
+    PyObject *protocol = (PyObject *)Protocol_native_new(self->app);
+    PyObject_Print(protocol, stdout, Py_PRINT_RAW);
+    fflush(stdout);
+    PyObject *connection_made = PyObject_GetAttrString(protocol, "connection_made");
+    PyObject_Print(connection_made, stdout, Py_PRINT_RAW);
+    fflush(stdout);
+    PyObject_CallOneArg(connection_made, Py_None);
+    return protocol;
 }
 
 static PyObject *Server_listen(Server *self) {
