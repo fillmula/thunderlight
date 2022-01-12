@@ -45,7 +45,7 @@ static OuterNextIterator *OuterNext_call(OuterNext *self, PyObject *args, PyObje
 static PyTypeObject OuterNextType = {
     .tp_name = "OuterNext",
     .tp_doc = "OuterNext",
-    .tp_itemsize = sizeof(OuterNext),
+    .tp_basicsize = sizeof(OuterNext),
     .tp_dealloc = (destructor)OuterNext_dealloc,
     .tp_call = (ternaryfunc)OuterNext_call
 };
@@ -77,7 +77,7 @@ static PyAsyncMethods OuterNextIterator_async_methods = {
 static PyTypeObject OuterNextIteratorType = {
     .tp_name = "OuterNextIterator",
     .tp_doc = "OuterNextIterator",
-    .tp_itemsize = sizeof(OuterNextIterator),
+    .tp_basicsize = sizeof(OuterNextIterator),
     .tp_dealloc = (destructor)OuterNextIterator_dealloc,
     .tp_as_async = &OuterNextIterator_async_methods
 };
@@ -125,7 +125,7 @@ static ChainedMiddlewareIterator *ChainedMiddleware_call(ChainedMiddleware *self
 static PyTypeObject ChainedMiddlewareType = {
     .tp_name = "ChainedMiddleware",
     .tp_doc = "ChainedMiddleware",
-    .tp_itemsize = sizeof(ChainedMiddleware),
+    .tp_basicsize = sizeof(ChainedMiddleware),
     .tp_call = (ternaryfunc)ChainedMiddleware_call,
     .tp_dealloc = (destructor)ChainedMiddleware_dealloc
 };
@@ -159,7 +159,7 @@ static PyAsyncMethods ChainedMiddlewareIterator_async_methods = {
 static PyTypeObject ChainedMiddlewareIteratorType = {
     .tp_name = "ChainedMiddlewareIterator",
     .tp_doc = "ChainedMiddlewareIterator",
-    .tp_itemsize = sizeof(ChainedMiddlewareIterator),
+    .tp_basicsize = sizeof(ChainedMiddlewareIterator),
     .tp_as_async = &ChainedMiddlewareIterator_async_methods,
     .tp_dealloc = (destructor)ChainedMiddlewareIterator_dealloc
 };

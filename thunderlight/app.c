@@ -29,7 +29,7 @@ PyObject *RouteWrapper_call(RouteWrapper *self, PyObject *args, PyObject *kwds) 
 static PyTypeObject RouteWrapperType = {
     .tp_name = "RouteWrapper",
     .tp_doc = "RouteWrapper",
-    .tp_itemsize = sizeof(RouteWrapper),
+    .tp_basicsize = sizeof(RouteWrapper),
     .tp_call = (ternaryfunc)RouteWrapper_call,
     .tp_dealloc = (destructor)RouteWrapper_dealloc
 };

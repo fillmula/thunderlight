@@ -16,14 +16,7 @@ static void Server_dealloc(Server *self) {
 }
 
 static PyObject *Server_call(Server *self, PyObject *args, PyObject *kwargs) {
-    PyObject *protocol = (PyObject *)Protocol_native_new(self->app);
-    PyObject_Print(protocol, stdout, Py_PRINT_RAW);
-    fflush(stdout);
-    PyObject *connection_made = PyObject_GetAttrString(protocol, "connection_made");
-    PyObject_Print(connection_made, stdout, Py_PRINT_RAW);
-    fflush(stdout);
-    PyObject_CallOneArg(connection_made, Py_None);
-    return protocol;
+    return (PyObject *)Protocol_native_new(self->app);
 }
 
 static PyObject *Server_listen(Server *self) {
@@ -55,7 +48,7 @@ static PyMethodDef Server_methods[] = {
 
 static PyTypeObject ServerType = {
     .tp_name = "server.Server",
-    .tp_itemsize = sizeof(Server),
+    .tp_basicsize = sizeof(Server),
     .tp_alloc = PyType_GenericAlloc,
     .tp_new = PyType_GenericNew,
     .tp_init = (initproc)Server_init,
@@ -74,19 +67,14 @@ static PyModuleDef Server_module = {
 
 PyMODINIT_FUNC
 PyInit_server(void) {
-    PyObject* m = NULL;
     if (PyType_Ready(&ServerType) < 0) {
-        goto error;
+        return NULL;
     }
-    m = PyModule_Create(&Server_module);
-    Py_INCREF(&ServerType);
-    PyModule_AddObject(m, "Server", (PyObject *)&ServerType);
-    if (!m) {
-        goto error;
-    }
-    goto finally;
-error:
-    m = NULL;
-finally:
-    return m;
+    PyObject* module = PyModule_Create(&Server_module);
+    PyModule_AddType(module, &ServerType);
+    PyObject *protocol_module = PyImport_ImportModule("thunderlight.protocol");
+    PyObject *Protocol = PyObject_GetAttrString(protocol_module, "Protocol");
+    PyModule_AddObject(module, "Protocol", Protocol);
+    Py_INCREF(Protocol);
+    return module;
 }

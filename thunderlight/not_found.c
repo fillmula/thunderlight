@@ -69,7 +69,7 @@ static PyTypeObject NotFoundType = {
     .tp_init = (initproc)NotFound_init,
     .tp_dealloc = (destructor)NotFound_dealloc,
     .tp_call = (ternaryfunc)NotFound_call,
-    .tp_itemsize = sizeof(NotFound)
+    .tp_basicsize = sizeof(NotFound)
 };
 
 static PyModuleDef NotFoundModule = {
