@@ -13,6 +13,9 @@ def help():
     print('\nLaunch the thunderlight server.\n\nUsage: thunderlight [app] [port]\n\nArguments:\n    app (optional) the module and object to load.\n    port (the port to listen.)\n\nExamples:\n    (1) thunderlight app 5000\n    (2) thunderlight app:app\n    (3) thunderlight')
 
 
+def version():
+    print("0.2.0")
+
 def launch(args: list[str]):
     if len(args) == 0:
         args.append('app')
@@ -25,23 +28,25 @@ def launch(args: list[str]):
         file = args[0]
         obj = None
     dest = Path(getcwd())
-    app_file = dest / args[0]
+    app_file = dest / file
     path.append(str(dest))
     result = import_module(splitext(app_file.name)[0], str(dest)).__dict__
-    if obj:
-        app = result[obj]
-        print("THIS")
+    if result:
+        app = result[obj or 'app']
     else:
         app = gimme()
-        print("THAT")
     port = int(args[1])
+    print(app)
+    print(port)
     server = Server(app, port)
-    #server.listen()
+    server.listen()
 
 
 if __name__ == '__main__':
     args = argv[1:]
     if '--help' in args or '-h' in args:
         help()
+    elif '--version' in args or '-v' in args:
+        version()
     else:
         launch(args)
