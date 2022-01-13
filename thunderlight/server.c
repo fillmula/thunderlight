@@ -31,6 +31,7 @@ static PyObject *Server_listen(Server *self) {
     PyObject *new_event_loop = PyObject_GetAttrString(uvloop, "new_event_loop");
     PyObject *loop = PyObject_CallNoArgs(new_event_loop);
     PyObject *asyncio = PyImport_ImportModule("asyncio");
+    Py_INCREF(asyncio);
     PyObject *set_event_loop = PyObject_GetAttrString(asyncio, "set_event_loop");
     PyObject_CallOneArg(set_event_loop, loop);
     PyObject *create_server = PyObject_GetAttrString(loop, "create_server");

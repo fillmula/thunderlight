@@ -59,8 +59,6 @@ PyObject *Protocol_connection_lost(Protocol *self, PyObject *exc) {
 }
 
 PyObject *Protocol_data_received(Protocol *self, PyObject *data) {
-    printf("data received\n");
-    fflush(stdout);
     char *content;
     Py_ssize_t len;
     PyBytes_AsStringAndSize(data, &content, &len);

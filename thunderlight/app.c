@@ -20,8 +20,9 @@ void RouteWrapper_dealloc(RouteWrapper *self) {
 
 PyObject *RouteWrapper_call(RouteWrapper *self, PyObject *args, PyObject *kwds) {
     PyObject *handle;
-    PyArg_Parse(args, "O", &handle);
+    PyArg_ParseTuple(args, "O", &handle);
     const char *route = PyUnicode_AsUTF8(self->route);
+    Py_INCREF(self->route);
     MatcherList_append(self->mlist, route, handle);
     Py_RETURN_NONE;
 }
@@ -104,11 +105,17 @@ void App_process(App *self, PyObject *p) {
             break;
     }
     PyObject *handler = MatcherList_match(mlist, protocol->request.path);
-    PyObject *call_args = PyTuple_New(2);
-    PyTuple_SetItem(call_args, 0, (PyObject *)protocol->ctx);
-    PyTuple_SetItem(call_args, 1, handler);
-    PyObject *awaitable = PyObject_Call(self->entrance_middleware, call_args, NULL);
-    Py_DECREF(call_args);
+    PyObject *awaitable;
+    if (self->entrance_middleware == NULL) {
+        PyObject *call_args = PyTuple_New(1);
+        PyTuple_SetItem(call_args, 0, (PyObject *)protocol->ctx);
+        awaitable = PyObject_Call(handler, call_args, NULL);
+    } else {
+        PyObject *call_args = PyTuple_New(2);
+        PyTuple_SetItem(call_args, 0, (PyObject *)protocol->ctx);
+        PyTuple_SetItem(call_args, 1, handler);
+        awaitable = PyObject_Call(self->entrance_middleware, call_args, NULL);
+    }
     PyObject *asyncio = PyImport_ImportModule("asyncio");
     PyObject *ensure_future = PyObject_GetAttrString(asyncio, "ensure_future");
     PyObject *future = PyObject_CallOneArg(ensure_future, awaitable);
