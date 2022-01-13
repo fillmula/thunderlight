@@ -21,10 +21,6 @@ static void Res_dealloc(Res *self) {
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
-void Res_set_length_header(Res *self) {
-
-}
-
 static PyObject *Res_get_code(Res *self, void *closure) {
     if (!self->code) {
         self->code = PyLong_FromUnsignedLong((unsigned long)self->response->code);
@@ -60,6 +56,8 @@ static PyObject *Res_get_body(Res *self, void *closure) {
 }
 
 static int Res_set_body(Res *self, PyObject *value, void *closure) {
+    self->body = value;
+    PyBytes_AsStringAndSize(value, &self->response->body, &self->response->body_len);
     return 0;
 }
 
@@ -88,6 +86,9 @@ static PyModuleDef Res_module = {
 
 PyMODINIT_FUNC
 PyInit_res(void) {
+    printf("WILL INIT RES MODULE\n");
+    fflush(stdout);
+    StatusMessage_setup();
     PyObject* m = NULL;
     if (PyType_Ready(&ResType) < 0) {
         goto error;

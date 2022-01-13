@@ -13,7 +13,10 @@ extern "C" {
 
 typedef struct {
     uint32_t key_hash;
+    char *key;
     char *value;
+    size_t key_len;
+    size_t value_len;
 } HeaderItem;
 
 typedef struct {
@@ -29,7 +32,7 @@ void HeaderMap_init(HeaderMap *self);
 
 void HeaderMap_dealloc(HeaderMap *self);
 
-void HeaderMap_set(HeaderMap *self, char *key, void *value, size_t value_len);
+void HeaderMap_set(HeaderMap *self, char *key, size_t key_len, void *value, size_t value_len);
 
 char *HeaderMap_get(HeaderMap *self, char *key);
 

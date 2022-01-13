@@ -71,6 +71,7 @@ PyObject *Protocol_data_received(Protocol *self, PyObject *data) {
 }
 
 void Protocol_complete(Protocol *self) {
+    Response_set_version_info(&self->response, self->request.version, self->request.version_len);
     size_t header_len;
     char *headers = Response_get_header_bytes(&self->response, &header_len);
     size_t body_len;

@@ -18,8 +18,6 @@ typedef struct {
 
 PyObject *Res_new(Response *response);
 
-void Res_set_length_header(Res *self);
-
 #ifdef __cplusplus
 }
 #endif

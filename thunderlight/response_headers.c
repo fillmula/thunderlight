@@ -25,7 +25,7 @@ void HeaderMap_dealloc(HeaderMap *self) {
     free(self);
 }
 
-void HeaderMap_set(HeaderMap *self, char *key, void *value, size_t value_len) {
+void HeaderMap_set(HeaderMap *self, char *key, size_t key_len, void *value, size_t value_len) {
     uint32_t hash = fast_hash(key, (int)strlen(key));
     HeaderItem *pos = NULL;
     for (size_t i = 0; i < self->len; i++) {
@@ -35,10 +35,16 @@ void HeaderMap_set(HeaderMap *self, char *key, void *value, size_t value_len) {
     }
     if (pos != NULL) {
         pos->key_hash = hash;
+        free(pos->key);
         free(pos->value);
         char *copied_value = malloc(value_len);
         memcpy(copied_value, value, value_len);
         pos->value = copied_value;
+        char *copied_key = malloc(key_len);
+        memcpy(copied_key, key, key_len);
+        pos->value = copied_key;
+        pos->key_len = key_len;
+        pos->value_len = value_len;
     } else {
         if (self->len == self->capacity) {
             size_t copy_size = self->capacity * sizeof(HeaderItem);
@@ -55,7 +61,12 @@ void HeaderMap_set(HeaderMap *self, char *key, void *value, size_t value_len) {
         self->buffer[index].key_hash = hash;
         char *copied_value = malloc(value_len);
         memcpy(copied_value, value, value_len);
+        char *copied_key = malloc(key_len);
+        memcpy(copied_key, key, key_len);
         self->buffer[index].value = copied_value;
+        self->buffer[index].key = copied_key;
+        self->buffer[index].key_len = key_len;
+        self->buffer[index].value_len = value_len;
     }
 }
 

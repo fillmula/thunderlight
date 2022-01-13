@@ -27,7 +27,7 @@ int ResHeaders_ass_subscript(PyObject *self, PyObject *key, PyObject *value) {
     strcpy(copied_key, string_key);
     char *copied_value = malloc(value_size);
     strcpy(copied_value, string_value);
-    HeaderMap_set(((ResHeaders *)self)->header_map, copied_key, copied_value, true);
+    HeaderMap_set(((ResHeaders *)self)->header_map, copied_key, key_size, copied_value, value_size);
     return 0;
 }
 

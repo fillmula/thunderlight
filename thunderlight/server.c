@@ -83,6 +83,10 @@ PyInit_server(void) {
     PyObject *protocol_module = PyImport_ImportModule("thunderlight.protocol");
     PyObject *Protocol = PyObject_GetAttrString(protocol_module, "Protocol");
     PyModule_AddObject(module, "Protocol", Protocol);
+    PyObject *res_module = PyImport_ImportModule("thunderlight.res");
+    PyObject *Res = PyObject_GetAttrString(res_module, "Res");
+    PyModule_AddObject(module, "Res", Res);
     Py_INCREF(Protocol);
+    Py_INCREF(Res);
     return module;
 }
