@@ -86,8 +86,6 @@ static PyModuleDef Res_module = {
 
 PyMODINIT_FUNC
 PyInit_res(void) {
-    printf("WILL INIT RES MODULE\n");
-    fflush(stdout);
     StatusMessage_setup();
     PyObject* m = NULL;
     if (PyType_Ready(&ResType) < 0) {

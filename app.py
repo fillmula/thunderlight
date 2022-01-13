@@ -8,11 +8,11 @@ app = App()
 async def home(ctx: Ctx):
     ctx.res.code = 200
     ctx.res.headers['Content-Type'] = "text/plain"
-    ctx.res.body = "Hello, Home!"
+    ctx.res.body = "Hello, Home!".encode("utf-8")
 
 
 @app.get("/hello")
 async def hello(ctx: Ctx):
-    ctx.res.code = 200
+    ctx.res.code = 404
     ctx.res.headers['Content-Type'] = "text/plain"
-    ctx.res.body = "Hello, World!"
+    ctx.res.body = "Hello, World!".encode("utf-8")
