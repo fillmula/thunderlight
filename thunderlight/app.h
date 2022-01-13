@@ -26,9 +26,9 @@ typedef struct {
     PyObject *entrance_middleware;
 } App;
 
-static PyTypeObject AppType;
+extern PyTypeObject AppType;
 
-static PyTypeObject RouteWrapperType;
+extern PyTypeObject RouteWrapperType;
 
 int App_init(App* self, PyObject *args, PyObject *kwds);
 

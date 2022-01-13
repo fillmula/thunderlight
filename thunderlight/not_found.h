@@ -17,11 +17,11 @@ typedef struct {
     PyObject_HEAD
 } NotFound;
 
-static PyTypeObject NotFoundType;
+extern PyTypeObject NotFoundType;
 
-static PyTypeObject NotFoundIteratorType;
+extern PyTypeObject NotFoundIteratorType;
 
-static PyObject *not_found;
+extern PyObject *not_found;
 
 #ifdef __cplusplus
 }

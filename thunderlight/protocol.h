@@ -23,7 +23,7 @@ typedef struct {
     Context context;
 } Protocol;
 
-static PyTypeObject ProtocolType;
+extern PyTypeObject ProtocolType;
 
 void Protocol_complete(Protocol *self);
 

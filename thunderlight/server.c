@@ -2,20 +2,20 @@
 #include "protocol.h"
 
 
-static int Server_init(Server *self, PyObject *args, PyObject *kwds) {
+int Server_init(Server *self, PyObject *args, PyObject *kwds) {
     PyArg_ParseTuple(args, "OO", &self->app, &self->port);
     Py_INCREF(self->app);
     Py_INCREF(self->port);
     return 0;
 }
 
-static void Server_dealloc(Server *self) {
+void Server_dealloc(Server *self) {
     Py_DECREF(self->app);
     Py_DECREF(self->port);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
-static PyObject *Server_call(Server *self, PyObject *args, PyObject *kwargs) {
+PyObject *Server_call(Server *self, PyObject *args, PyObject *kwargs) {
     PyObject *protocol_module = PyImport_ImportModule("thunderlight.protocol");
     PyObject *Protocol = PyObject_GetAttrString(protocol_module, "Protocol");
     PyObject *protocol_args = PyTuple_New(1);
@@ -26,7 +26,7 @@ static PyObject *Server_call(Server *self, PyObject *args, PyObject *kwargs) {
     // return (PyObject *)Protocol_native_new(self->app);
 }
 
-static PyObject *Server_listen(Server *self) {
+PyObject *Server_listen(Server *self) {
     PyObject *uvloop = PyImport_ImportModule("uvloop");
     PyObject *new_event_loop = PyObject_GetAttrString(uvloop, "new_event_loop");
     PyObject *loop = PyObject_CallNoArgs(new_event_loop);
@@ -49,12 +49,12 @@ static PyObject *Server_listen(Server *self) {
     Py_RETURN_NONE;
 }
 
-static PyMethodDef Server_methods[] = {
+PyMethodDef Server_methods[] = {
     {"listen", (PyCFunction)Server_listen, METH_NOARGS, "Start the server."},
     {NULL}
 };
 
-static PyTypeObject ServerType = {
+PyTypeObject ServerType = {
     .tp_name = "Server",
     .tp_basicsize = sizeof(Server),
     .tp_alloc = PyType_GenericAlloc,

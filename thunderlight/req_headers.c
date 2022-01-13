@@ -1,7 +1,7 @@
 #include "req_headers.h"
 
 
-static PyTypeObject ReqHeadersType;
+PyTypeObject ReqHeadersType;
 
 ReqHeaders *ReqHeaders_new(Request *request) {
     ReqHeaders *self = NULL;
@@ -33,13 +33,13 @@ PyObject *ReqHeaders_subscript(PyObject *self, PyObject *key) {
     Py_RETURN_NONE;
 }
 
-static PyMappingMethods ReqHeaders_mapping_methods = {
+PyMappingMethods ReqHeaders_mapping_methods = {
     .mp_length = ReqHeaders_length,
     .mp_subscript = ReqHeaders_subscript,
     .mp_ass_subscript = NULL
 };
 
-static PyTypeObject ReqHeadersType = {
+PyTypeObject ReqHeadersType = {
     PyObject_HEAD_INIT(NULL)
     .tp_name = "ReqHeaders",
     .tp_basicsize = sizeof(ReqHeaders),

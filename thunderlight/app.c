@@ -3,7 +3,7 @@
 #include "protocol.h"
 
 
-static PyTypeObject RouteWrapperType;
+PyTypeObject RouteWrapperType;
 
 RouteWrapper *RouteWrapper_new(MatcherList *mlist, PyObject *route) {
     RouteWrapper *self = (RouteWrapper *)RouteWrapperType.tp_alloc(&RouteWrapperType, 0);
@@ -27,7 +27,7 @@ PyObject *RouteWrapper_call(RouteWrapper *self, PyObject *args, PyObject *kwds) 
     Py_RETURN_NONE;
 }
 
-static PyTypeObject RouteWrapperType = {
+PyTypeObject RouteWrapperType = {
     .tp_name = "_RouteWrapper",
     .tp_doc = "RouteWrapper",
     .tp_basicsize = sizeof(RouteWrapper),
@@ -125,29 +125,29 @@ void App_process(App *self, PyObject *p) {
     PyObject_Call(add_done_callback, args, NULL);
 }
 
-static PyObject *App_python_get(App *self, PyObject *route) {
+PyObject *App_python_get(App *self, PyObject *route) {
     return (PyObject *)RouteWrapper_new(self->gets, route);
 }
 
-static PyObject *App_python_post(App *self, PyObject *route) {
+PyObject *App_python_post(App *self, PyObject *route) {
     return (PyObject *)RouteWrapper_new(self->posts, route);
 }
 
-static PyObject *App_python_patch(App *self, PyObject *route) {
+PyObject *App_python_patch(App *self, PyObject *route) {
     return (PyObject *)RouteWrapper_new(self->patches, route);
 }
 
-static PyObject *App_python_delete(App *self, PyObject *route) {
+PyObject *App_python_delete(App *self, PyObject *route) {
     return (PyObject *)RouteWrapper_new(self->deletes, route);
 }
 
-static PyObject *App_python_use(App *self, PyObject *middleware) {
+PyObject *App_python_use(App *self, PyObject *middleware) {
     App_use(self, middleware);
     Py_RETURN_NONE;
 }
 
 
-static PyMethodDef App_methods[] = {
+PyMethodDef App_methods[] = {
     {"get", (PyCFunction)App_python_get, METH_O, NULL},
     {"post", (PyCFunction)App_python_post, METH_O, NULL},
     {"patch", (PyCFunction)App_python_patch, METH_O, NULL},
@@ -156,7 +156,7 @@ static PyMethodDef App_methods[] = {
     {NULL, NULL, 0, NULL}
 };
 
-static PyTypeObject AppType = {
+PyTypeObject AppType = {
     .tp_alloc = PyType_GenericAlloc,
     .tp_new = PyType_GenericNew,
     .tp_init = (initproc)App_init,

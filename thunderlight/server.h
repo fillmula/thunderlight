@@ -10,4 +10,4 @@ typedef struct {
     PyObject *port;
 } Server;
 
-static PyTypeObject ServerType;
+extern PyTypeObject ServerType;

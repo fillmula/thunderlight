@@ -28,9 +28,9 @@ typedef struct {
     PyObject *next;
 } ChainedMiddlewareIterator;
 
-static PyTypeObject ChainedMiddlewareIteratorType;
-static PyTypeObject ChainedMiddlewareType;
-static PyTypeObject OuterNextIteratorType;
-static PyTypeObject OuterNextType;
+extern PyTypeObject ChainedMiddlewareIteratorType;
+extern PyTypeObject ChainedMiddlewareType;
+extern PyTypeObject OuterNextIteratorType;
+extern PyTypeObject OuterNextType;
 
 PyObject *ChainedMiddleware_build(PyObject *list);

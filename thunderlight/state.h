@@ -11,7 +11,7 @@ typedef struct {
     Duostate *duostate;
 } State;
 
-static PyTypeObject StateType;
+extern PyTypeObject StateType;
 
 PyObject *State_new(Duostate *duostate);
 

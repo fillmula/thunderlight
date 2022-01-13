@@ -1,31 +1,31 @@
 #include "not_found.h"
 
 
-static PyTypeObject NotFoundIteratorType;
+PyTypeObject NotFoundIteratorType;
 
-static NotFoundIterator *NotFoundIterator_new(Ctx *ctx) {
+NotFoundIterator *NotFoundIterator_new(Ctx *ctx) {
     NotFoundIterator *self = (NotFoundIterator *)NotFoundIteratorType.tp_alloc(&NotFoundIteratorType, 0);
     Py_INCREF(ctx);
     self->ctx = ctx;
     return self;
 }
 
-static void NotFoundIterator_dealloc(NotFoundIterator *self) {
+void NotFoundIterator_dealloc(NotFoundIterator *self) {
     Py_DECREF(self->ctx);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
-static PyObject *NotFoundIterator_aiter(PyObject *self) {
+PyObject *NotFoundIterator_aiter(PyObject *self) {
     Py_INCREF(self);
     return self;
 }
 
-static PyObject *NotFoundIterator_await(PyObject *self) {
+PyObject *NotFoundIterator_await(PyObject *self) {
     Py_INCREF(self);
     return self;
 }
 
-static PyObject *NotFoundIterator_anext(NotFoundIterator *self) {
+PyObject *NotFoundIterator_anext(NotFoundIterator *self) {
     self->ctx->context->response->code = 404;
     self->ctx->context->response->body = "{\"error\": {\"type\": \"NotFound\", \"message\": \"This location is not found.\"}}";
     self->ctx->context->response->body_len = 73;
@@ -33,13 +33,13 @@ static PyObject *NotFoundIterator_anext(NotFoundIterator *self) {
     return NULL;
 }
 
-static PyAsyncMethods NotFoundIterator_async_methods = {
+PyAsyncMethods NotFoundIterator_async_methods = {
     .am_aiter = NotFoundIterator_aiter,
     .am_await = NotFoundIterator_await,
     .am_anext = (unaryfunc)NotFoundIterator_anext
 };
 
-static PyTypeObject NotFoundIteratorType = {
+PyTypeObject NotFoundIteratorType = {
     .tp_name = "_NotFoundIterator",
     .tp_doc = "NotFoundIterator",
     .tp_alloc = PyType_GenericAlloc,
@@ -47,21 +47,21 @@ static PyTypeObject NotFoundIteratorType = {
     .tp_as_async = &NotFoundIterator_async_methods
 };
 
-static int NotFound_init(NotFound *self, PyObject *args, PyObject *kwds) {
+int NotFound_init(NotFound *self, PyObject *args, PyObject *kwds) {
     return 0;
 }
 
-static void NotFound_dealloc(NotFound *self) {
+void NotFound_dealloc(NotFound *self) {
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
-static NotFoundIterator *NotFound_call(NotFound *self, PyObject *args, PyObject *kwds) {
+NotFoundIterator *NotFound_call(NotFound *self, PyObject *args, PyObject *kwds) {
     PyObject *ctx = NULL;
     PyArg_ParseTuple(args, "O", &ctx);
     return NotFoundIterator_new((Ctx *)ctx);
 }
 
-static PyTypeObject NotFoundType = {
+PyTypeObject NotFoundType = {
     .tp_name = "_NotFound",
     .tp_doc = "NotFound",
     .tp_new = PyType_GenericNew,
@@ -71,3 +71,5 @@ static PyTypeObject NotFoundType = {
     .tp_call = (ternaryfunc)NotFound_call,
     .tp_basicsize = sizeof(NotFound)
 };
+
+PyObject *not_found = NULL;

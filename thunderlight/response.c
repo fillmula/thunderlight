@@ -23,7 +23,6 @@ void StatusMessage_setup(void) {
     messages[404].message = "Not Found";
     messages[404].code = "404";
     messages[404].length = 9;
-    setup = true;
 }
 
 void Response_init(Response *self) {

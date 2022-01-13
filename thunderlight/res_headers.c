@@ -1,7 +1,7 @@
 #include "res_headers.h"
 
 
-static PyTypeObject ResHeadersType;
+PyTypeObject ResHeadersType;
 
 ResHeaders *ResHeaders_new(HeaderMap *header_map) {
     ResHeaders *self = NULL;
@@ -43,13 +43,13 @@ PyObject *ResHeaders_subscript(PyObject *self, PyObject *key) {
     }
 }
 
-static PyMappingMethods ResHeaders_mapping_methods = {
+PyMappingMethods ResHeaders_mapping_methods = {
     .mp_length = ResHeaders_length,
     .mp_subscript = ResHeaders_subscript,
     .mp_ass_subscript = ResHeaders_ass_subscript
 };
 
-static PyTypeObject ResHeadersType = {
+PyTypeObject ResHeadersType = {
     PyObject_HEAD_INIT(NULL)
     .tp_name = "ResHeaders",
     .tp_basicsize = sizeof(ResHeaders),

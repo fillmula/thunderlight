@@ -13,7 +13,7 @@ typedef struct {
     Request *request;
 } ReqHeaders;
 
-static PyTypeObject ReqHeadersType;
+extern PyTypeObject ReqHeadersType;
 
 ReqHeaders *ReqHeaders_new(Request *request);
 

@@ -1,7 +1,7 @@
 #include "state.h"
 
 
-static PyTypeObject StateType;
+PyTypeObject StateType;
 
 PyObject *State_new(Duostate *duostate) {
     State *self = NULL;
@@ -33,13 +33,13 @@ PyObject *State_subscript(PyObject *self, PyObject *key) {
     return Duostate_get_pyobject(((State *)self)->duostate, (char *)string_key);
 }
 
-static PyMappingMethods State_mapping_methods = {
+PyMappingMethods State_mapping_methods = {
     .mp_length = State_length,
     .mp_subscript = State_subscript,
     .mp_ass_subscript = State_ass_subscript
 };
 
-static PyTypeObject StateType = {
+PyTypeObject StateType = {
     PyObject_HEAD_INIT(NULL)
     .tp_name = "State",
     .tp_basicsize = sizeof(State),

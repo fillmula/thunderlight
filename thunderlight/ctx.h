@@ -19,7 +19,7 @@ typedef struct {
     State *state;
 } Ctx;
 
-static PyTypeObject CtxType;
+extern PyTypeObject CtxType;
 
 Ctx *Ctx_new(Context *context);
 

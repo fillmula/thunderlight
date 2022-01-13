@@ -24,11 +24,11 @@ typedef struct {
     PyObject *body;
 } Req;
 
-static PyTypeObject ReqType;
+extern PyTypeObject ReqType;
 
 PyObject *Req_new(Request *request);
 
-static void Req_dealloc(Req *self);
+void Req_dealloc(Req *self);
 
 #ifdef __cplusplus
 }

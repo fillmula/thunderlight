@@ -16,7 +16,7 @@ typedef struct {
     PyObject *body;
 } Res;
 
-static PyTypeObject ResType;
+extern PyTypeObject ResType;
 
 PyObject *Res_new(Response *response);
 

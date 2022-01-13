@@ -5,9 +5,11 @@ from pathlib import Path
 from os import getcwd
 from os.path import splitext
 from importlib import import_module
-from thunderlight.server import Server
-from thunderlight.main import gimme
+from thunderlight import Server
 
+
+def gimme():
+    pass
 
 def help():
     print('\nLaunch the thunderlight server.\n\nUsage: thunderlight [app] [port]\n\nArguments:\n    app (optional) the module and object to load.\n    port (the port to listen.)\n\nExamples:\n    (1) thunderlight app 5000\n    (2) thunderlight app:app\n    (3) thunderlight')

@@ -12,7 +12,7 @@
 #include "server.h"
 
 
-static PyModuleDef thunderlight = {
+PyModuleDef thunderlight = {
     PyModuleDef_HEAD_INIT,
     .m_name = "thunderlight",
     .m_doc = "Thunderlight is the fastest Python HTTP server.",
@@ -31,14 +31,12 @@ PyMODINIT_FUNC PyInit_thunderlight(void) {
     PyModule_AddType(module, &ResHeadersType);
     PyType_Ready(&ResType);
     PyModule_AddType(module, &ResType);
-    StatusMessage_setup();
     PyType_Ready(&StateType);
     PyModule_AddType(module, &StateType);
+    PyType_Ready(&NotFoundType);
     PyModule_AddType(module, &NotFoundType);
+    PyType_Ready(&NotFoundIteratorType);
     PyModule_AddType(module, &NotFoundIteratorType);
-    not_found = PyType_GenericNew(&NotFoundType, NULL, NULL);
-    Py_INCREF(not_found);
-    PyModule_AddObject(module, "not_found", not_found);
     PyType_Ready(&ServerType);
     PyModule_AddType(module, &ServerType);
     PyType_Ready(&AppType);
@@ -55,5 +53,8 @@ PyMODINIT_FUNC PyInit_thunderlight(void) {
     PyModule_AddType(module, &OuterNextType);
     PyType_Ready(&OuterNextIteratorType);
     PyModule_AddType(module, &OuterNextIteratorType);
+    not_found = PyType_GenericNew(&NotFoundType, NULL, NULL);
+    Py_INCREF(not_found);
+    PyModule_AddObject(module, "not_found", not_found);
     return module;
 }

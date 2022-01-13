@@ -1,7 +1,7 @@
 #include <Python.h>
 #include "protocol.h"
 
-static PyTypeObject ProtocolType;
+PyTypeObject ProtocolType;
 
 // Protocol *Protocol_native_new(App *app) {
 //     Protocol *self = (Protocol *)ProtocolType.tp_alloc(&ProtocolType, 0);
@@ -18,7 +18,7 @@ static PyTypeObject ProtocolType;
 //     return self;
 // }
 
-static int Protocol_init(Protocol *self, PyObject *args, PyObject *kwds) {
+int Protocol_init(Protocol *self, PyObject *args, PyObject *kwds) {
     if(!PyArg_ParseTuple(args, "O", &self->app)) {
         return -1;
     }
@@ -32,13 +32,13 @@ static int Protocol_init(Protocol *self, PyObject *args, PyObject *kwds) {
     return 0;
 }
 
-static PyObject *Protocol_new(PyTypeObject *type, PyObject *args, PyObject *kwds) {
+PyObject *Protocol_new(PyTypeObject *type, PyObject *args, PyObject *kwds) {
     Protocol *self = (Protocol *)type->tp_alloc(type, 0);
     Protocol_init(self, args, kwds);
     return (PyObject *)self;
 }
 
-static void Protocol_dealloc(Protocol *self) {
+void Protocol_dealloc(Protocol *self) {
     Py_XDECREF(self->app);
     Py_XDECREF(self->transport);
     Py_XDECREF(self->ctx);
@@ -92,14 +92,14 @@ PyObject *Protocol_call(PyObject *protocol, PyObject *args, PyObject *kwds) {
     Py_RETURN_NONE;
 }
 
-static PyMethodDef Protocol_methods[] = {
+PyMethodDef Protocol_methods[] = {
     {"connection_made", (PyCFunction)Protocol_connection_made, METH_O, ""},
     {"connection_lost", (PyCFunction)Protocol_connection_lost, METH_VARARGS, ""},
     {"data_received", (PyCFunction)Protocol_data_received, METH_O, ""},
     {NULL, NULL, 0, NULL}
 };
 
-static PyTypeObject ProtocolType = {
+PyTypeObject ProtocolType = {
     .tp_name = "Protocol",
     .tp_basicsize = sizeof(Protocol),
     .tp_dealloc = (destructor)Protocol_dealloc,

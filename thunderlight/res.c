@@ -2,11 +2,9 @@
 #include "res_headers.h"
 
 
-static PyTypeObject ReqType;
-
 PyObject *Res_new(Response *response) {
     Res *self = NULL;
-    self = (Res *)ReqType.tp_alloc(&ReqType, 0);
+    self = (Res *)ResType.tp_alloc(&ResType, 0);
     self->response = response;
     self->code = NULL;
     self->headers = NULL;
@@ -14,14 +12,14 @@ PyObject *Res_new(Response *response) {
     return (PyObject *)self;
 }
 
-static void Res_dealloc(Res *self) {
+void Res_dealloc(Res *self) {
     Py_XDECREF(self->code);
     Py_XDECREF(self->headers);
     Py_XDECREF(self->body);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
-static PyObject *Res_get_code(Res *self, void *closure) {
+PyObject *Res_get_code(Res *self, void *closure) {
     if (!self->code) {
         self->code = PyLong_FromUnsignedLong((unsigned long)self->response->code);
     }
@@ -29,14 +27,14 @@ static PyObject *Res_get_code(Res *self, void *closure) {
     return self->code;
 }
 
-static int Res_set_code(Res *self, PyObject *value, void *closure) {
+int Res_set_code(Res *self, PyObject *value, void *closure) {
     Py_INCREF(value);
     self->code = value;
     self->response->code = PyLong_AsUnsignedLong(value);
     return 0;
 }
 
-static PyObject *Res_get_headers(Res *self, void *closure) {
+PyObject *Res_get_headers(Res *self, void *closure) {
     if (!self->headers) {
         self->headers = (PyObject *)ResHeaders_new(&self->response->headers);
     }
@@ -44,7 +42,7 @@ static PyObject *Res_get_headers(Res *self, void *closure) {
     return self->headers;
 }
 
-static PyObject *Res_get_body(Res *self, void *closure) {
+PyObject *Res_get_body(Res *self, void *closure) {
     if (self->response->body_len == 0) {
         Py_RETURN_NONE;
     }
@@ -55,20 +53,20 @@ static PyObject *Res_get_body(Res *self, void *closure) {
     return self->body;
 }
 
-static int Res_set_body(Res *self, PyObject *value, void *closure) {
+int Res_set_body(Res *self, PyObject *value, void *closure) {
     self->body = value;
     PyBytes_AsStringAndSize(value, &self->response->body, &self->response->body_len);
     return 0;
 }
 
-static PyGetSetDef Res_getset[] = {
+PyGetSetDef Res_getset[] = {
     {"code", (getter)Res_get_code, (setter)Res_set_code, NULL, NULL},
     {"headers", (getter)Res_get_headers, NULL, NULL, NULL},
     {"body", (getter)Res_get_body, (setter)Res_set_body, NULL, NULL},
     {NULL}
 };
 
-static PyTypeObject ResType = {
+PyTypeObject ResType = {
     PyObject_HEAD_INIT(NULL)
     .tp_name = "Res",
     .tp_basicsize = sizeof(Res),

@@ -1,7 +1,7 @@
 #include "ctx.h"
 
 
-static PyTypeObject CtxType;
+PyTypeObject CtxType;
 
 Ctx *Ctx_new(Context *context) {
     Ctx *self = NULL;
@@ -20,7 +20,7 @@ void Ctx_dealloc(Ctx *self) {
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
-static PyObject *Ctx_get_req(Ctx *self, void *closure) {
+PyObject *Ctx_get_req(Ctx *self, void *closure) {
     if (!self->req) {
         self->req = (Req *)Req_new(self->context->request);
     }
@@ -28,7 +28,7 @@ static PyObject *Ctx_get_req(Ctx *self, void *closure) {
     return (PyObject *)self->req;
 }
 
-static PyObject *Ctx_get_res(Ctx *self, void *closure) {
+PyObject *Ctx_get_res(Ctx *self, void *closure) {
     if (!self->res) {
         self->res = (Res *)Res_new(self->context->response);
     }
@@ -36,7 +36,7 @@ static PyObject *Ctx_get_res(Ctx *self, void *closure) {
     return (PyObject *)self->res;
 }
 
-static PyObject *Ctx_get_state(Ctx *self, void *closure) {
+PyObject *Ctx_get_state(Ctx *self, void *closure) {
     if (!self->state) {
         self->state = (State *)State_new(self->context->duostate);
     }
@@ -44,14 +44,14 @@ static PyObject *Ctx_get_state(Ctx *self, void *closure) {
     return (PyObject *)self->state;
 }
 
-static PyGetSetDef Ctx_getset[] = {
+PyGetSetDef Ctx_getset[] = {
     {"req", (getter)Ctx_get_req, NULL, NULL, NULL},
     {"res", (getter)Ctx_get_res, NULL, NULL, NULL},
     {"state", (getter)Ctx_get_state, NULL, NULL, NULL},
     {NULL}
 };
 
-static PyTypeObject CtxType = {
+PyTypeObject CtxType = {
     PyObject_HEAD_INIT(NULL)
     .tp_name = "Ctx",
     .tp_basicsize = sizeof(Ctx),
