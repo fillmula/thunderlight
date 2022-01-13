@@ -11,8 +11,6 @@ typedef struct {
     uint8_t length;
 } StatusMessage;
 
-bool setup = false;
-
 StatusMessage messages[511] = {};
 
 void StatusMessage_setup(void) {
@@ -42,9 +40,6 @@ void Response_set_version_info(Response *self, char *version, uint8_t version_le
 }
 
 char *Response_get_header_bytes(Response *self, size_t *len) {
-    if (!setup) {
-        StatusMessage_setup();
-    }
     Buffer_append(&(self->buffer), self->version, self->version_len);
     Buffer_append(&(self->buffer), " ", 1);
     Buffer_append(&(self->buffer), messages[self->code].code, 3);

@@ -109,29 +109,3 @@ static PyTypeObject ReqType = {
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = Req_getset,
 };
-
-static PyModuleDef Req_module = {
-    PyModuleDef_HEAD_INIT,
-    .m_name = "req",
-    .m_doc = "req",
-    .m_size = -1
-};
-
-PyMODINIT_FUNC
-PyInit_req(void) {
-    PyObject* m = NULL;
-    if (PyType_Ready(&ReqType) < 0) {
-        goto error;
-    }
-    m = PyModule_Create(&Req_module);
-    Py_INCREF(&ReqType);
-    PyModule_AddObject(m, "Req", (PyObject *)&ReqType);
-    if (!m) {
-        goto error;
-    }
-    goto finally;
-error:
-    m = NULL;
-finally:
-    return m;
-}

@@ -9,3 +9,5 @@ typedef struct {
     App *app;
     PyObject *port;
 } Server;
+
+static PyTypeObject ServerType;

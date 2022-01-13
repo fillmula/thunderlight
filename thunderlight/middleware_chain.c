@@ -43,7 +43,7 @@ static OuterNextIterator *OuterNext_call(OuterNext *self, PyObject *args, PyObje
 }
 
 static PyTypeObject OuterNextType = {
-    .tp_name = "OuterNext",
+    .tp_name = "_OuterNext",
     .tp_doc = "OuterNext",
     .tp_basicsize = sizeof(OuterNext),
     .tp_dealloc = (destructor)OuterNext_dealloc,
@@ -75,7 +75,7 @@ static PyAsyncMethods OuterNextIterator_async_methods = {
 };
 
 static PyTypeObject OuterNextIteratorType = {
-    .tp_name = "OuterNextIterator",
+    .tp_name = "_OuterNextIterator",
     .tp_doc = "OuterNextIterator",
     .tp_basicsize = sizeof(OuterNextIterator),
     .tp_dealloc = (destructor)OuterNextIterator_dealloc,
@@ -123,7 +123,7 @@ static ChainedMiddlewareIterator *ChainedMiddleware_call(ChainedMiddleware *self
 }
 
 static PyTypeObject ChainedMiddlewareType = {
-    .tp_name = "ChainedMiddleware",
+    .tp_name = "_ChainedMiddleware",
     .tp_doc = "ChainedMiddleware",
     .tp_basicsize = sizeof(ChainedMiddleware),
     .tp_call = (ternaryfunc)ChainedMiddleware_call,
@@ -157,7 +157,7 @@ static PyAsyncMethods ChainedMiddlewareIterator_async_methods = {
 };
 
 static PyTypeObject ChainedMiddlewareIteratorType = {
-    .tp_name = "ChainedMiddlewareIterator",
+    .tp_name = "_ChainedMiddlewareIterator",
     .tp_doc = "ChainedMiddlewareIterator",
     .tp_basicsize = sizeof(ChainedMiddlewareIterator),
     .tp_as_async = &ChainedMiddlewareIterator_async_methods,
@@ -179,36 +179,4 @@ PyObject *ChainedMiddleware_build(PyObject *list) {
             return middleware;
         }
     }
-}
-
-static PyModuleDef MiddlewareChainModule = {
-    PyModuleDef_HEAD_INIT,
-    .m_name = "middleware_chain",
-    .m_doc = "middleware_chain",
-    .m_size = -1
-};
-
-PyMODINIT_FUNC PyInit_middleware_chain(void) {
-    if (PyType_Ready(&OuterNextType) < 0) {
-        return NULL;
-    }
-    if (PyType_Ready(&OuterNextIteratorType) < 0) {
-        return NULL;
-    }
-    if (PyType_Ready(&ChainedMiddlewareType) < 0) {
-        return NULL;
-    }
-    if (PyType_Ready(&ChainedMiddlewareIteratorType) < 0) {
-        return NULL;
-    }
-    PyObject *module = PyModule_Create(&MiddlewareChainModule);
-    Py_INCREF(&OuterNextType);
-    PyModule_AddObject(module, "OuterNext", (PyObject *)&OuterNextType);
-    Py_INCREF(&OuterNextIteratorType);
-    PyModule_AddObject(module, "OuterNextIterator", (PyObject *)&OuterNextIteratorType);
-    Py_INCREF(&ChainedMiddlewareType);
-    PyModule_AddObject(module, "ChainedMiddleware", (PyObject *)&ChainedMiddlewareType);
-    Py_INCREF(&ChainedMiddlewareIteratorType);
-    PyModule_AddObject(module, "ChainedMiddlewareIterator", (PyObject *)&ChainedMiddlewareIteratorType);
-    return module;
 }

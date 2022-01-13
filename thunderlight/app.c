@@ -28,7 +28,7 @@ PyObject *RouteWrapper_call(RouteWrapper *self, PyObject *args, PyObject *kwds) 
 }
 
 static PyTypeObject RouteWrapperType = {
-    .tp_name = "RouteWrapper",
+    .tp_name = "_RouteWrapper",
     .tp_doc = "RouteWrapper",
     .tp_basicsize = sizeof(RouteWrapper),
     .tp_call = (ternaryfunc)RouteWrapper_call,
@@ -167,23 +167,3 @@ static PyTypeObject AppType = {
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_methods = App_methods
 };
-
-static PyModuleDef App_module = {
-    PyModuleDef_HEAD_INIT,
-    .m_name = "app",
-    .m_doc = "app",
-    .m_size = -1
-};
-
-PyMODINIT_FUNC PyInit_app(void) {
-    if (PyType_Ready(&RouteWrapperType) < 0) {
-        return NULL;
-    }
-    if (PyType_Ready(&AppType) < 0) {
-        return NULL;
-    }
-    PyObject *module = PyModule_Create(&App_module);
-    PyModule_AddType(module, &AppType);
-    PyModule_AddType(module, &RouteWrapperType);
-    return module;
-}

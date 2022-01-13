@@ -60,29 +60,3 @@ static PyTypeObject CtxType = {
     .tp_getset = Ctx_getset,
     .tp_alloc = PyType_GenericAlloc
 };
-
-static PyModuleDef Ctx_module = {
-    PyModuleDef_HEAD_INIT,
-    .m_name = "ctx",
-    .m_doc = "ctx",
-    .m_size = -1
-};
-
-PyMODINIT_FUNC
-PyInit_ctx(void) {
-    PyObject* m = NULL;
-    if (PyType_Ready(&CtxType) < 0) {
-        goto error;
-    }
-    m = PyModule_Create(&Ctx_module);
-    Py_INCREF(&CtxType);
-    PyModule_AddObject(m, "Ctx", (PyObject *)&CtxType);
-    if (!m) {
-        goto error;
-    }
-    goto finally;
-error:
-    m = NULL;
-finally:
-    return m;
-}

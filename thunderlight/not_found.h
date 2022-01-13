@@ -17,6 +17,10 @@ typedef struct {
     PyObject_HEAD
 } NotFound;
 
+static PyTypeObject NotFoundType;
+
+static PyTypeObject NotFoundIteratorType;
+
 static PyObject *not_found;
 
 #ifdef __cplusplus

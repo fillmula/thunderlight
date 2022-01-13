@@ -40,7 +40,7 @@ static PyAsyncMethods NotFoundIterator_async_methods = {
 };
 
 static PyTypeObject NotFoundIteratorType = {
-    .tp_name = "NotFoundIterator",
+    .tp_name = "_NotFoundIterator",
     .tp_doc = "NotFoundIterator",
     .tp_alloc = PyType_GenericAlloc,
     .tp_dealloc = (destructor)NotFoundIterator_dealloc,
@@ -62,7 +62,7 @@ static NotFoundIterator *NotFound_call(NotFound *self, PyObject *args, PyObject 
 }
 
 static PyTypeObject NotFoundType = {
-    .tp_name = "NotFound",
+    .tp_name = "_NotFound",
     .tp_doc = "NotFound",
     .tp_new = PyType_GenericNew,
     .tp_alloc = PyType_GenericAlloc,
@@ -71,33 +71,3 @@ static PyTypeObject NotFoundType = {
     .tp_call = (ternaryfunc)NotFound_call,
     .tp_basicsize = sizeof(NotFound)
 };
-
-static PyModuleDef NotFoundModule = {
-    PyModuleDef_HEAD_INIT,
-    .m_name = "handlers.not_found",
-    .m_doc = "handlers.not_found",
-    .m_size = -1
-};
-
-PyMODINIT_FUNC PyInit_not_found(void) {
-    PyObject *m = NULL;
-    if (PyType_Ready(&NotFoundType) < 0) {
-        goto error;
-    }
-    if (PyType_Ready(&NotFoundIteratorType) < 0) {
-        goto error;
-    }
-    m = PyModule_Create(&NotFoundModule);
-    Py_INCREF(&NotFoundType);
-    PyModule_AddObject(m, "NotFound", (PyObject *)&NotFoundType);
-    Py_INCREF(&NotFoundIteratorType);
-    PyModule_AddObject(m, "NotFoundIterator", (PyObject *)&NotFoundIteratorType);
-    not_found = PyType_GenericNew(&NotFoundType, NULL, NULL);
-    Py_INCREF(not_found);
-    PyModule_AddObject(m, "not_found", not_found);
-    goto finally;
-error:
-    m = NULL;
-finally:
-    return m;
-}

@@ -19,6 +19,8 @@ typedef struct {
     State *state;
 } Ctx;
 
+static PyTypeObject CtxType;
+
 Ctx *Ctx_new(Context *context);
 
 void Ctx_dealloc(Ctx *self);

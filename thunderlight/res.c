@@ -76,30 +76,3 @@ static PyTypeObject ResType = {
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = Res_getset,
 };
-
-static PyModuleDef Res_module = {
-    PyModuleDef_HEAD_INIT,
-    .m_name = "res",
-    .m_doc = "res",
-    .m_size = -1
-};
-
-PyMODINIT_FUNC
-PyInit_res(void) {
-    StatusMessage_setup();
-    PyObject* m = NULL;
-    if (PyType_Ready(&ResType) < 0) {
-        goto error;
-    }
-    m = PyModule_Create(&Res_module);
-    Py_INCREF(&ResType);
-    PyModule_AddObject(m, "Res", (PyObject *)&ResType);
-    if (!m) {
-        goto error;
-    }
-    goto finally;
-error:
-    m = NULL;
-finally:
-    return m;
-}

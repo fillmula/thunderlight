@@ -23,6 +23,8 @@ typedef struct {
     Context context;
 } Protocol;
 
+static PyTypeObject ProtocolType;
+
 void Protocol_complete(Protocol *self);
 
 // Protocol *Protocol_native_new(App *app);

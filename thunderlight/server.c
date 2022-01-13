@@ -55,7 +55,7 @@ static PyMethodDef Server_methods[] = {
 };
 
 static PyTypeObject ServerType = {
-    .tp_name = "server.Server",
+    .tp_name = "Server",
     .tp_basicsize = sizeof(Server),
     .tp_alloc = PyType_GenericAlloc,
     .tp_new = PyType_GenericNew,
@@ -64,29 +64,3 @@ static PyTypeObject ServerType = {
     .tp_call = (ternaryfunc)Server_call,
     .tp_methods = Server_methods
 };
-
-static PyModuleDef Server_module = {
-    PyModuleDef_HEAD_INIT,
-    "server",
-    "server",
-    -1,
-    NULL, NULL, NULL, NULL, NULL
-};
-
-PyMODINIT_FUNC
-PyInit_server(void) {
-    if (PyType_Ready(&ServerType) < 0) {
-        return NULL;
-    }
-    PyObject* module = PyModule_Create(&Server_module);
-    PyModule_AddType(module, &ServerType);
-    PyObject *protocol_module = PyImport_ImportModule("thunderlight.protocol");
-    PyObject *Protocol = PyObject_GetAttrString(protocol_module, "Protocol");
-    PyModule_AddObject(module, "Protocol", Protocol);
-    PyObject *res_module = PyImport_ImportModule("thunderlight.res");
-    PyObject *Res = PyObject_GetAttrString(res_module, "Res");
-    PyModule_AddObject(module, "Res", Res);
-    Py_INCREF(Protocol);
-    Py_INCREF(Res);
-    return module;
-}

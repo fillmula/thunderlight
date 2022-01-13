@@ -47,29 +47,3 @@ static PyTypeObject ReqHeadersType = {
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_as_mapping = &ReqHeaders_mapping_methods
 };
-
-static PyModuleDef ReqHeaders_module = {
-    PyModuleDef_HEAD_INIT,
-    .m_name = "req_headers",
-    .m_doc = "req_headers",
-    .m_size = -1
-};
-
-PyMODINIT_FUNC
-PyInit_req_headers(void) {
-    PyObject* m = NULL;
-    if (PyType_Ready(&ReqHeadersType) < 0) {
-        goto error;
-    }
-    m = PyModule_Create(&ReqHeaders_module);
-    Py_INCREF(&ReqHeadersType);
-    PyModule_AddObject(m, "ReqHeaders", (PyObject *)&ReqHeadersType);
-    if (!m) {
-        goto error;
-    }
-    goto finally;
-error:
-    m = NULL;
-finally:
-    return m;
-}

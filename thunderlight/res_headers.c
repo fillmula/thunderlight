@@ -57,29 +57,3 @@ static PyTypeObject ResHeadersType = {
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_as_mapping = &ResHeaders_mapping_methods
 };
-
-static PyModuleDef ResHeaders_module = {
-    PyModuleDef_HEAD_INIT,
-    .m_name = "res_headers",
-    .m_doc = "res_headers",
-    .m_size = -1
-};
-
-PyMODINIT_FUNC
-PyInit_res_headers(void) {
-    PyObject* m = NULL;
-    if (PyType_Ready(&ResHeadersType) < 0) {
-        goto error;
-    }
-    m = PyModule_Create(&ResHeaders_module);
-    Py_INCREF(&ResHeadersType);
-    PyModule_AddObject(m, "ResHeaders", (PyObject *)&ResHeadersType);
-    if (!m) {
-        goto error;
-    }
-    goto finally;
-error:
-    m = NULL;
-finally:
-    return m;
-}

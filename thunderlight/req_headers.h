@@ -13,6 +13,8 @@ typedef struct {
     Request *request;
 } ReqHeaders;
 
+static PyTypeObject ReqHeadersType;
+
 ReqHeaders *ReqHeaders_new(Request *request);
 
 void ReqHeaders_dealloc(ReqHeaders *self);

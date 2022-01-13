@@ -13,6 +13,8 @@ typedef struct {
     HeaderMap *header_map;
 } ResHeaders;
 
+static PyTypeObject ResHeadersType;
+
 ResHeaders *ResHeaders_new(HeaderMap *header_map);
 
 void ResHeaders_dealloc(ResHeaders *self);

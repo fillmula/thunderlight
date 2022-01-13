@@ -110,21 +110,3 @@ static PyTypeObject ProtocolType = {
     .tp_alloc = PyType_GenericAlloc,
     .tp_call = Protocol_call,
 };
-
-static PyModuleDef protocol = {
-    PyModuleDef_HEAD_INIT,
-    "protocol",
-    "protocol",
-    -1,
-    NULL, NULL, NULL, NULL, NULL
-};
-
-PyMODINIT_FUNC PyInit_protocol(void) {
-    if (PyType_Ready(&ProtocolType) < 0) {
-        return NULL;
-    }
-    PyObject *module = PyModule_Create(&protocol);
-    PyModule_AddType(module, &ProtocolType);
-    Py_INCREF(&ProtocolType);
-    return module;
-}

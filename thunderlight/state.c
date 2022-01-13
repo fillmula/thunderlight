@@ -47,29 +47,3 @@ static PyTypeObject StateType = {
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_as_mapping = &State_mapping_methods
 };
-
-static PyModuleDef State_module = {
-    PyModuleDef_HEAD_INIT,
-    .m_name = "state",
-    .m_doc = "state",
-    .m_size = -1
-};
-
-PyMODINIT_FUNC
-PyInit_state(void) {
-    PyObject* m = NULL;
-    if (PyType_Ready(&StateType) < 0) {
-        goto error;
-    }
-    m = PyModule_Create(&State_module);
-    Py_INCREF(&StateType);
-    PyModule_AddObject(m, "State", (PyObject *)&StateType);
-    if (!m) {
-        goto error;
-    }
-    goto finally;
-error:
-    m = NULL;
-finally:
-    return m;
-}

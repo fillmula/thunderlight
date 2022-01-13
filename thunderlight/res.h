@@ -16,6 +16,8 @@ typedef struct {
     PyObject *body;
 } Res;
 
+static PyTypeObject ResType;
+
 PyObject *Res_new(Response *response);
 
 #ifdef __cplusplus

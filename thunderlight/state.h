@@ -11,6 +11,8 @@ typedef struct {
     Duostate *duostate;
 } State;
 
+static PyTypeObject StateType;
+
 PyObject *State_new(Duostate *duostate);
 
 #ifdef __cplusplus
