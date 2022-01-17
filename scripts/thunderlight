@@ -12,7 +12,7 @@ def gimme():
     pass
 
 def help():
-    print('\nLaunch the thunderlight server.\n\nUsage: thunderlight [app] [port] [flags]\n\nArguments:\n    app (optional) the module and object to load.\n    port (the port to listen.)\n\nFlags:\n    --reload Reload the app automatically.\n\nExamples:\n    (1) thunderlight app 5000\n    (2) thunderlight app:app\n    (3) thunderlight\n    (4) thunderlight app 5000 --reload\n')
+    print('\nLaunch the thunderlight server.\n\nUsage: thunderlight [app] [port] [flags]\n\nArguments:\n    app         (optional) the module and object to load.\n    port        (optional) the port to listen.\n\nFlags:\n    --reload    Reload the app automatically.\n\nExamples:\n    (1) thunderlight app 5000\n    (2) thunderlight app:app\n    (3) thunderlight\n    (4) thunderlight app 5000 --reload\n')
 
 
 def version():
