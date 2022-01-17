@@ -74,6 +74,10 @@ PyObject *Server_listen(Server *self) {
     long port = PyLong_AsLong(self->port);
     printf("\033[1;34m[THUNDERLIGHT]\033[22;0m \033[1;33m[INFO]\033[22;0m server is started, listening on port %d.\n", port);
     PyObject *none = PyObject_CallNoArgs(run_forever);
+    // perform cleanup
+    // server.close()
+    // loop.run_until_complete(server.wait_closed())
+    // loop.close()
     printf("\n\033[1;34m[THUNDERLIGHT]\033[22;0m \033[1;33m[INFO]\033[22;0m server is stopped, see you.\n");
     Py_RETURN_NONE;
 }
