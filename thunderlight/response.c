@@ -72,7 +72,6 @@ char *Response_get_header_bytes(Response *self, size_t *len) {
 }
 
 char *Response_get_body_bytes(Response *self, size_t *len) {
-    self->body = "{\"key\": \"value\"}";
     *len = self->body_len;
     return self->body;
 }

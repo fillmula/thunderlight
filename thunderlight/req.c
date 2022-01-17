@@ -101,6 +101,49 @@ PyGetSetDef Req_getset[] = {
     {NULL}
 };
 
+char *_Req_repr_query(Req *self) {
+    if (self->request->query == NULL) {
+        return "None";
+    } else {
+        char *format;
+        asprintf(&format, "\"%s\"", self->request->query);
+        return format;
+    }
+}
+
+char *_Req_repr_headers(Req *self) {
+    char *headers = malloc(255);
+    headers[0] = '\0';
+    strcat(headers, "{\n");
+    for (uint8_t i = 0; i < self->request->header_num; i++) {
+        if (i != 0) {
+            strcat(headers, ",\n");
+        }
+        strcat(headers, "        \"");
+        strcat(headers, self->request->headers[i].name);
+        strcat(headers, "\"");
+        strcat(headers, ": ");
+        strcat(headers, "\"");
+        strcat(headers, self->request->headers[i].value);
+        strcat(headers, "\"");
+    }
+    strcat(headers, "\n    }");
+    return headers;
+}
+
+char *_Req_repr_body(Req *self) {
+    size_t len = self->request->buffer_end - self->request->body;
+    char *format;
+    asprintf(&format, "(%ld bytes)", len);
+    return format;
+}
+
+PyObject *Req_repr(Req *self) {
+    char *format;
+    asprintf(&format, "Req {\n    \"method\": \"%s\",\n    \"path\": \"%s\",\n    \"query\": %s,\n    \"version\": \"%s\",\n    \"headers\": %s,\n    \"body\": %s\n}", self->request->method, self->request->path, _Req_repr_query(self), self->request->version, _Req_repr_headers(self), _Req_repr_body(self));
+    return PyUnicode_FromFormat(format);
+}
+
 PyTypeObject ReqType = {
     PyObject_HEAD_INIT(NULL)
     .tp_name = "thunderlight.Req",
@@ -108,4 +151,6 @@ PyTypeObject ReqType = {
     .tp_dealloc = (destructor)Req_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = Req_getset,
+    .tp_repr = (reprfunc)Req_repr,
+    .tp_str = (reprfunc)Req_repr
 };

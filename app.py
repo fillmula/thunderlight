@@ -12,18 +12,18 @@ async def middleware1(ctx: Ctx, next: Any):
     print("after out")
 
 
-@app.use
-async def middleware2(ctx: Ctx, next: Any):
-    print("before mid")
-    await next(ctx)
-    print("after mid")
+# @app.use
+# async def middleware2(ctx: Ctx, next: Any):
+#     print("before mid")
+#     await next(ctx)
+#     print("after mid")
 
 
-@app.use
-async def middleware3(ctx: Ctx, next: Any):
-    print("before in")
-    await next(ctx)
-    print("after in")
+# @app.use
+# async def middleware3(ctx: Ctx, next: Any):
+#     print("before in")
+#     await next(ctx)
+#     print("after in")
 
 
 @app.get("/")
@@ -35,8 +35,7 @@ async def home(ctx: Ctx):
 
 @app.get("/hello")
 async def hello(ctx: Ctx):
-    print("enter")
+    print(ctx.req)
     ctx.res.code = 200
     ctx.res.headers['Content-Type'] = "text/plain"
     ctx.res.body = "Hello, World!".encode("utf-8")
-    print("leave")
