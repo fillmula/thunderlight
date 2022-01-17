@@ -13,14 +13,10 @@ async def home(ctx: Ctx):
 
 @app.get("/hello")
 async def hello(ctx: Ctx):
-    try:
-        print("RUN HELLO HERE")
-        print(ctx.res)
-    except Exception as e:
-        print(e)
-    ctx.res.code = 404
+    ctx.res.code = 200
     print("code is", ctx.res.code)
     ctx.res.headers['Content-Type'] = "text/plain"
     print("headers are", ctx.res.headers)
+    print("SEE", ctx.res.headers['Content-Type'])
     ctx.res.body = "Hello, World!".encode("utf-8")
     print("body is", ctx.res.body)

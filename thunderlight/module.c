@@ -20,6 +20,7 @@ PyModuleDef thunderlight = {
 };
 
 PyMODINIT_FUNC PyInit_thunderlight(void) {
+    StatusMessage_setup();
     PyObject *module = PyModule_Create(&thunderlight);
     PyType_Ready(&CtxType);
     PyModule_AddType(module, &CtxType);
