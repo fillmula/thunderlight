@@ -45,7 +45,16 @@ PyObject *Server_listen(Server *self) {
     Py_DECREF(kwargs);
     PyObject *run_until_complete = PyObject_GetAttrString(loop, "run_until_complete");
     PyObject *server = PyObject_CallOneArg(run_until_complete, server_coro);
+
+    if (server == NULL) {
+        PyErr_Clear();
+        long port = PyLong_AsLong(self->port);
+        printf("\033[1;34m[THUNDERLIGHT]\033[22;0m \033[1;31m[ERROR]\033[22;0m port %d is used.\n", port);
+        Py_RETURN_NONE;
+    }
     PyObject *run_forever = PyObject_GetAttrString(loop, "run_forever");
+    long port = PyLong_AsLong(self->port);
+    printf("\033[1;34m[THUNDERLIGHT]\033[22;0m \033[1;33m[INFO]\033[22;0m server is started, listening on port %d.\n", port);
     PyObject *none = PyObject_CallNoArgs(run_forever);
     Py_RETURN_NONE;
 }
