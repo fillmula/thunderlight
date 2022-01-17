@@ -66,6 +66,12 @@ PyGetSetDef Res_getset[] = {
     {NULL}
 };
 
+PyObject *Res_repr(Res *res) {
+    char *format;
+
+    return PyUnicode_FromFormat(format);
+}
+
 PyTypeObject ResType = {
     PyObject_HEAD_INIT(NULL)
     .tp_name = "thunderlight.Res",
@@ -73,4 +79,6 @@ PyTypeObject ResType = {
     .tp_dealloc = (destructor)Res_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = Res_getset,
+    .tp_repr = (reprfunc)Res_repr,
+    .tp_str = (reprfunc)Res_repr
 };

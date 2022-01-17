@@ -27,7 +27,7 @@ extern PyTypeObject ProtocolType;
 
 void Protocol_complete(Protocol *self);
 
-// Protocol *Protocol_native_new(App *app);
+Protocol *Protocol_native_new(App *app);
 
 #ifdef __cplusplus
 }

@@ -17,14 +17,7 @@ void Server_dealloc(Server *self) {
 }
 
 PyObject *Server_call(Server *self, PyObject *args, PyObject *kwargs) {
-    PyObject *protocol_module = PyImport_ImportModule("thunderlight");
-    PyObject *Protocol = PyObject_GetAttrString(protocol_module, "Protocol");
-    PyObject *protocol_args = PyTuple_New(1);
-    PyTuple_SetItem(protocol_args, 0, self->app);
-    PyObject *protocol = PyObject_CallObject(Protocol, protocol_args);
-    Py_DECREF(protocol_args);
-    return protocol;
-    // return (PyObject *)Protocol_native_new(self->app);
+    return (PyObject *)Protocol_native_new(self->app);
 }
 
 PyObject *Server_listen(Server *self) {
