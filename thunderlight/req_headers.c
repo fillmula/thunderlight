@@ -50,7 +50,7 @@ PyObject *ReqHeaders_repr(ReqHeaders *self) {
         strcat(headers, "\"");
     }
     strcat(headers, "\n}");
-    return headers;
+    return PyUnicode_FromString(headers);
 }
 
 PyMappingMethods ReqHeaders_mapping_methods = {
