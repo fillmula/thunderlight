@@ -103,7 +103,7 @@ PyGetSetDef Req_getset[] = {
 
 PyTypeObject ReqType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "Req",
+    .tp_name = "thunderlight.Req",
     .tp_basicsize = sizeof(Req),
     .tp_dealloc = (destructor)Req_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

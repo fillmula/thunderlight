@@ -28,7 +28,7 @@ PyObject *RouteWrapper_call(RouteWrapper *self, PyObject *args, PyObject *kwds) 
 }
 
 PyTypeObject RouteWrapperType = {
-    .tp_name = "_RouteWrapper",
+    .tp_name = "thunderlight._RouteWrapper",
     .tp_doc = "RouteWrapper",
     .tp_basicsize = sizeof(RouteWrapper),
     .tp_call = (ternaryfunc)RouteWrapper_call,
@@ -43,7 +43,7 @@ int App_init(App *self, PyObject *args, PyObject *kwds) {
     self->patches = MatcherList_alloc();
     MatcherList_init(self->patches);
     self->deletes = MatcherList_alloc();
-    self->middlewares = PyList_New(16);
+    self->middlewares = PyList_New(0);
     self->entrance_middleware = NULL;
     return 0;
 }
@@ -162,7 +162,7 @@ PyTypeObject AppType = {
     .tp_init = (initproc)App_init,
     .tp_dealloc = (destructor)App_dealloc,
     .tp_doc = "App",
-    .tp_name = "App",
+    .tp_name = "thunderlight.App",
     .tp_basicsize = sizeof(App),
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_methods = App_methods

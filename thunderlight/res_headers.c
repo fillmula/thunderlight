@@ -51,7 +51,7 @@ PyMappingMethods ResHeaders_mapping_methods = {
 
 PyTypeObject ResHeadersType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "ResHeaders",
+    .tp_name = "thunderlight.ResHeaders",
     .tp_basicsize = sizeof(ResHeaders),
     .tp_dealloc = (destructor)ResHeaders_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

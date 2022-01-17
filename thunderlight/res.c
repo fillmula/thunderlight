@@ -68,7 +68,7 @@ PyGetSetDef Res_getset[] = {
 
 PyTypeObject ResType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "Res",
+    .tp_name = "thunderlight.Res",
     .tp_basicsize = sizeof(Res),
     .tp_dealloc = (destructor)Res_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

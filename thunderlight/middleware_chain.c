@@ -43,39 +43,38 @@ OuterNextIterator *OuterNext_call(OuterNext *self, PyObject *args, PyObject *kwd
 }
 
 PyTypeObject OuterNextType = {
-    .tp_name = "_OuterNext",
+    .tp_name = "thunderlight._OuterNext",
     .tp_doc = "OuterNext",
     .tp_basicsize = sizeof(OuterNext),
     .tp_dealloc = (destructor)OuterNext_dealloc,
     .tp_call = (ternaryfunc)OuterNext_call
 };
 
-PyObject *OuterNextIterator_anext(OuterNextIterator *self) {
-    PyObject *args = PyTuple_New(1);
+
+PyObject *OuterNextIterator_await(OuterNextIterator *self) {
+    PyObject *args = PyTuple_New(2);
     PyTuple_SetItem(args, 0, self->ctx);
+    PyTuple_SetItem(args, 1, self->outer_next->next);
     PyObject *result = PyObject_Call(self->outer_next->inner, args, NULL);
     Py_DECREF(args);
+    Py_INCREF(result);
+    // //
+    // PyObject *asyncio = PyImport_ImportModule("asyncio");
+    // PyObject *ensure_future = PyObject_GetAttrString(asyncio, "ensure_future");
+    // PyObject *future = PyObject_CallOneArg(ensure_future, result);
+    // //
     return result;
 }
 
-PyObject *OuterNextIterator_await(PyObject *self) {
-    Py_INCREF(self);
-    return self;
-}
-
-PyObject *OuterNextIterator_aiter(PyObject *self) {
-    Py_INCREF(self);
-    return self;
-}
 
 PyAsyncMethods OuterNextIterator_async_methods = {
-    .am_anext = (unaryfunc)OuterNextIterator_anext,
+    .am_anext = NULL,
     .am_await = OuterNextIterator_await,
-    .am_aiter = OuterNextIterator_aiter
+    .am_aiter = NULL
 };
 
 PyTypeObject OuterNextIteratorType = {
-    .tp_name = "_OuterNextIterator",
+    .tp_name = "thunderlight._OuterNextIterator",
     .tp_doc = "OuterNextIterator",
     .tp_basicsize = sizeof(OuterNextIterator),
     .tp_dealloc = (destructor)OuterNextIterator_dealloc,
@@ -123,41 +122,38 @@ ChainedMiddlewareIterator *ChainedMiddleware_call(ChainedMiddleware *self, PyObj
 }
 
 PyTypeObject ChainedMiddlewareType = {
-    .tp_name = "_ChainedMiddleware",
+    .tp_name = "thunderlight._ChainedMiddleware",
     .tp_doc = "ChainedMiddleware",
     .tp_basicsize = sizeof(ChainedMiddleware),
     .tp_call = (ternaryfunc)ChainedMiddleware_call,
     .tp_dealloc = (destructor)ChainedMiddleware_dealloc
 };
 
-PyObject *ChainedMiddlewareIterator_aiter(PyObject *self) {
-    Py_INCREF(self);
-    return self;
-}
 
-PyObject *ChainedMiddlewareIterator_await(PyObject *self) {
-    Py_INCREF(self);
-    return self;
-}
-
-PyObject *ChainedMiddlewareIterator_anext(ChainedMiddlewareIterator *self) {
+PyObject *ChainedMiddlewareIterator_await(ChainedMiddlewareIterator *self) {
     PyObject *outer_next = (PyObject *)OuterNext_new(self->chained_middleware->inner, self->next);
     PyObject *args = PyTuple_New(2);
     PyTuple_SetItem(args, 0, self->ctx);
     PyTuple_SetItem(args, 1, outer_next);
     PyObject *result = PyObject_Call(self->chained_middleware->outer, args, NULL);
     Py_DECREF(args);
+    // //
+    // PyObject *asyncio = PyImport_ImportModule("asyncio");
+    // PyObject *ensure_future = PyObject_GetAttrString(asyncio, "ensure_future");
+    // PyObject *future = PyObject_CallOneArg(ensure_future, result);
+    // //
     return result;
 }
 
+
 PyAsyncMethods ChainedMiddlewareIterator_async_methods = {
-    .am_aiter = ChainedMiddlewareIterator_aiter,
-    .am_anext = (unaryfunc)ChainedMiddlewareIterator_anext,
+    .am_aiter = NULL,
+    .am_anext = NULL,
     .am_await = ChainedMiddlewareIterator_await
 };
 
 PyTypeObject ChainedMiddlewareIteratorType = {
-    .tp_name = "_ChainedMiddlewareIterator",
+    .tp_name = "thunderlight._ChainedMiddlewareIterator",
     .tp_doc = "ChainedMiddlewareIterator",
     .tp_basicsize = sizeof(ChainedMiddlewareIterator),
     .tp_as_async = &ChainedMiddlewareIterator_async_methods,
@@ -165,15 +161,15 @@ PyTypeObject ChainedMiddlewareIteratorType = {
 };
 
 PyObject *ChainedMiddleware_build(PyObject *list) {
-    Py_ssize_t size = PyList_Size(list);
-    switch (size) {
+    Py_ssize_t len = PyObject_Length(list);
+    switch (len) {
         case 0:
             return NULL;
         case 1:
             return PyList_GetItem(list, 0);
         default: {
-            PyObject *middleware = PyList_GetItem(list, size - 1);
-            for (size_t i = size - 2; i >= 0; i--) {
+            PyObject *middleware = PyList_GetItem(list, len - 1);
+            for (Py_ssize_t i = len - 2; i >= 0; i--) {
                 middleware = (PyObject *)ChainedMiddleware_new(PyList_GetItem(list, i), middleware);
             }
             return middleware;

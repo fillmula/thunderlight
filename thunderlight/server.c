@@ -6,6 +6,7 @@ int Server_init(Server *self, PyObject *args, PyObject *kwds) {
     PyArg_ParseTuple(args, "OO", &self->app, &self->port);
     Py_INCREF(self->app);
     Py_INCREF(self->port);
+    App_prepare(self->app);
     return 0;
 }
 
@@ -55,7 +56,7 @@ PyMethodDef Server_methods[] = {
 };
 
 PyTypeObject ServerType = {
-    .tp_name = "Server",
+    .tp_name = "thunderlight.Server",
     .tp_basicsize = sizeof(Server),
     .tp_alloc = PyType_GenericAlloc,
     .tp_new = PyType_GenericNew,

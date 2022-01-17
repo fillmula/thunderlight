@@ -41,7 +41,7 @@ PyMappingMethods ReqHeaders_mapping_methods = {
 
 PyTypeObject ReqHeadersType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "ReqHeaders",
+    .tp_name = "thunderlight.ReqHeaders",
     .tp_basicsize = sizeof(ReqHeaders),
     .tp_dealloc = (destructor)ReqHeaders_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

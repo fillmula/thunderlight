@@ -100,7 +100,7 @@ PyMethodDef Protocol_methods[] = {
 };
 
 PyTypeObject ProtocolType = {
-    .tp_name = "Protocol",
+    .tp_name = "thunderlight.Protocol",
     .tp_basicsize = sizeof(Protocol),
     .tp_dealloc = (destructor)Protocol_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

@@ -40,7 +40,7 @@ PyAsyncMethods NotFoundIterator_async_methods = {
 };
 
 PyTypeObject NotFoundIteratorType = {
-    .tp_name = "_NotFoundIterator",
+    .tp_name = "thunderlight._NotFoundIterator",
     .tp_doc = "NotFoundIterator",
     .tp_alloc = PyType_GenericAlloc,
     .tp_dealloc = (destructor)NotFoundIterator_dealloc,
@@ -62,7 +62,7 @@ NotFoundIterator *NotFound_call(NotFound *self, PyObject *args, PyObject *kwds) 
 }
 
 PyTypeObject NotFoundType = {
-    .tp_name = "_NotFound",
+    .tp_name = "thunderlight._NotFound",
     .tp_doc = "NotFound",
     .tp_new = PyType_GenericNew,
     .tp_alloc = PyType_GenericAlloc,

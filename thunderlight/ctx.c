@@ -53,7 +53,7 @@ PyGetSetDef Ctx_getset[] = {
 
 PyTypeObject CtxType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "Ctx",
+    .tp_name = "thunderlight.Ctx",
     .tp_basicsize = sizeof(Ctx),
     .tp_dealloc = (destructor)Ctx_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,
