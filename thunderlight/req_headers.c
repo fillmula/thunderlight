@@ -33,6 +33,26 @@ PyObject *ReqHeaders_subscript(PyObject *self, PyObject *key) {
     Py_RETURN_NONE;
 }
 
+PyObject *ReqHeaders_repr(ReqHeaders *self) {
+    char *headers = malloc(255);
+    headers[0] = '\0';
+    strcat(headers, "ReqHeaders {\n");
+    for (uint8_t i = 0; i < self->request->header_num; i++) {
+        if (i != 0) {
+            strcat(headers, ",\n");
+        }
+        strcat(headers, "    \"");
+        strcat(headers, self->request->headers[i].name);
+        strcat(headers, "\"");
+        strcat(headers, ": ");
+        strcat(headers, "\"");
+        strcat(headers, self->request->headers[i].value);
+        strcat(headers, "\"");
+    }
+    strcat(headers, "\n}");
+    return headers;
+}
+
 PyMappingMethods ReqHeaders_mapping_methods = {
     .mp_length = ReqHeaders_length,
     .mp_subscript = ReqHeaders_subscript,
@@ -45,5 +65,7 @@ PyTypeObject ReqHeadersType = {
     .tp_basicsize = sizeof(ReqHeaders),
     .tp_dealloc = (destructor)ReqHeaders_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_as_mapping = &ReqHeaders_mapping_methods
+    .tp_as_mapping = &ReqHeaders_mapping_methods,
+    .tp_repr = (reprfunc)ReqHeaders_repr,
+    .tp_str = (reprfunc)ReqHeaders_repr
 };
