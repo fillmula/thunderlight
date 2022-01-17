@@ -12,13 +12,13 @@ def gimme():
     pass
 
 def help():
-    print('\nLaunch the thunderlight server.\n\nUsage: thunderlight [app] [port]\n\nArguments:\n    app (optional) the module and object to load.\n    port (the port to listen.)\n\nExamples:\n    (1) thunderlight app 5000\n    (2) thunderlight app:app\n    (3) thunderlight')
+    print('\nLaunch the thunderlight server.\n\nUsage: thunderlight [app] [port] [flags]\n\nArguments:\n    app (optional) the module and object to load.\n    port (the port to listen.)\n\nFlags:\n    --reload Reload the app automatically.\n\nExamples:\n    (1) thunderlight app 5000\n    (2) thunderlight app:app\n    (3) thunderlight\n    (4) thunderlight app 5000 --reload\n')
 
 
 def version():
     print("0.2.0")
 
-def launch(args: list[str]):
+def launch(args: list[str], reload: bool):
     if len(args) == 0:
         args.append('app')
     if len(args) == 1:
@@ -49,4 +49,11 @@ if __name__ == '__main__':
     elif '--version' in args or '-v' in args:
         version()
     else:
-        launch(args)
+        reload = False
+        if '--reload' in args:
+            args.remove('--reload')
+            reload = True
+        if '-r' in args:
+            args.remove('-r')
+            reload = True
+        launch(args, reload)
