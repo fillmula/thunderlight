@@ -15,10 +15,14 @@ void State_dealloc(State *self) {
 }
 
 PyObject *State_repr(State *self) {
+    printf("HERE COME IN, %ld\n", self->duostate->len);
+    fflush(stdout);
     char *headers = malloc(255);
     headers[0] = '\0';
     strcat(headers, "State {\n");
     for (size_t i = 0; i < self->duostate->len; i++) {
+        printf("HERE %ld\n", i);
+        fflush(stdout);
         if (i != 0) {
             strcat(headers, ",\n");
         }

@@ -1,12 +1,16 @@
 #include "duostate.h"
 
 
+void Duostate_init(Duostate *self) {
+    self->capacity = DUOSTATE_INITIAL_CAPACITY;
+    self->len = 0;
+    self->buffer = self->inline_buffer;
+}
+
 Duostate *Duostate_new(void) {
-    Duostate *duostate = (Duostate *)malloc(sizeof(Duostate));
-    duostate->capacity = DUOSTATE_INITIAL_CAPACITY;
-    duostate->len = 0;
-    duostate->buffer = duostate->inline_buffer;
-    return duostate;
+    Duostate *self = (Duostate *)malloc(sizeof(Duostate));
+    Duostate_init(self);
+    return self;
 }
 
 void Duostate_deinit(Duostate *self) {
@@ -28,12 +32,6 @@ void Duostate_deinit(Duostate *self) {
 void Duostate_dealloc(Duostate *self) {
     Duostate_deinit(self);
     free(self);
-}
-
-void Duostate_init(Duostate *self) {
-    self->capacity = DUOSTATE_INITIAL_CAPACITY;
-    self->len = 0;
-    self->buffer = self->inline_buffer;
 }
 
 DuostateItem *_Duostate_get_pos(Duostate *self, uint32_t hash) {
@@ -166,9 +164,17 @@ PyObject *Duostate_get_py(Duostate *self, PyObject *key) {
 }
 
 char *DuostateItem_get_c_key(DuostateItem *self) {
+    printf("INTO C KEY\n");
+    fflush(stdout);
     if (self->c_key == NULL) {
+        printf("py key try str is\n");
+        fflush(stdout);
         self->c_key = (char *)PyUnicode_AsUTF8(self->py_key);
+        printf("AFTER C KEY\n");
+        fflush(stdout);
     }
+    printf("OUT FROM C KEY\n");
+    fflush(stdout);
     return self->c_key;
 }
 

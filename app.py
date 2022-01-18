@@ -10,6 +10,7 @@ async def middleware1(ctx: Ctx, next: Any):
     print("before out")
     print(ctx.state)
     ctx.state['user'] = 5
+    print(ctx.state)
     await next(ctx)
     print("after out")
 
