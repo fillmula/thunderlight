@@ -55,6 +55,8 @@ char *DuostateItem_get_c_key(DuostateItem *self);
 
 char *DuostateItem_get_py_value_repr(DuostateItem *self);
 
+char *Duostate_repr(Duostate *self, char *head, uint8_t indent);
+
 #ifdef __cplusplus
 }
 #endif

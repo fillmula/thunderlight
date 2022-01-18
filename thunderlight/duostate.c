@@ -1,4 +1,5 @@
 #include "duostate.h"
+#include "space.h"
 
 
 void Duostate_init(Duostate *self) {
@@ -177,4 +178,33 @@ char *DuostateItem_get_py_value_repr(DuostateItem *self) {
     }
     PyObject *repr = PyObject_Repr(self->py_value);
     return (char *)PyUnicode_AsUTF8(repr);
+}
+
+char *Duostate_repr(Duostate *self, char *head, uint8_t indent) {
+    char *buffer = malloc(1024);
+    buffer[0] = '\0';
+    if (head != NULL) {
+        strcat(buffer, head);
+        strcat(buffer, " ");
+    }
+    if (self->len == 0) {
+        strcat(buffer, "{}");
+        return buffer;
+    }
+    strcat(buffer, "{\n");
+    for (size_t i = 0; i < self->len; i++) {
+        if (i != 0) {
+            strcat(buffer, ",\n");
+        }
+        add_space(buffer, (indent + 1) * 4);
+        strcat(buffer, "'");
+        strcat(buffer, DuostateItem_get_c_key(&self->buffer[i]));
+        strcat(buffer, "'");
+        strcat(buffer, ": ");
+        strcat(buffer, DuostateItem_get_py_value_repr(&self->buffer[i]));
+    }
+    strcat(buffer, "\n");
+    add_space(buffer, indent * 4);
+    strcat(buffer, "}");
+    return buffer;
 }

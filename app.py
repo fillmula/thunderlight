@@ -8,6 +8,9 @@ app = App()
 @app.use
 async def middleware1(ctx: Ctx, next: Any):
     print("before out")
+    print(ctx.state)
+    ctx.state['abc'] = 5
+    print(ctx.state)
     await next(ctx)
     print("after out")
 

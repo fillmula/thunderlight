@@ -15,25 +15,10 @@ void State_dealloc(State *self) {
 }
 
 PyObject *State_repr(State *self) {
-    char *headers = malloc(255);
-    headers[0] = '\0';
-    if (self->duostate->len == 0) {
-        strcat(headers, "State {}");
-        return PyUnicode_FromString(headers);
-    }
-    strcat(headers, "State {\n");
-    for (size_t i = 0; i < self->duostate->len; i++) {
-        if (i != 0) {
-            strcat(headers, ",\n");
-        }
-        strcat(headers, "    '");
-        strcat(headers, DuostateItem_get_c_key(&self->duostate->buffer[i]));
-        strcat(headers, "'");
-        strcat(headers, ": ");
-        strcat(headers, DuostateItem_get_py_value_repr(&self->duostate->buffer[i]));
-    }
-    strcat(headers, "\n}");
-    return PyUnicode_FromString(headers);
+    char *repr = Duostate_repr(self->duostate, "State", 0);
+    char *py_repr = PyUnicode_FromString(repr);
+    free(repr);
+    return py_repr;
 }
 
 PyObject *State_length(State *self, void *closure) {
