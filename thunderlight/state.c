@@ -21,10 +21,8 @@ PyObject *State_repr(State *self) {
     return py_repr;
 }
 
-PyObject *State_length(State *self, void *closure) {
-    PyObject *value = PyLong_FromSize_t(self->duostate->len);
-    Py_INCREF(value);
-    return value;
+Py_ssize_t State_length(State *self, void *closure) {
+    return (Py_ssize_t)self->duostate->len;
 }
 
 int State_ass_subscript(State *self, PyObject *key, PyObject *value) {
@@ -37,10 +35,20 @@ PyObject *State_subscript(State *self, PyObject *key) {
 }
 
 PyMappingMethods State_mapping_methods = {
-    .mp_length = State_length,
+    .mp_length = (lenfunc)State_length,
     .mp_subscript = (binaryfunc)State_subscript,
     .mp_ass_subscript = (objobjargproc)State_ass_subscript
 };
+
+int State_setattro(State *self, PyObject *name, PyObject *value) {
+    Duostate_set_py(self->duostate, name, value, NULL);
+    return 0;
+}
+
+PyObject *State_getattro(State *self, PyObject *name) {
+    return Duostate_get_py(self->duostate, name);
+}
+
 
 PyTypeObject StateType = {
     PyObject_HEAD_INIT(NULL)
@@ -50,5 +58,7 @@ PyTypeObject StateType = {
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_as_mapping = &State_mapping_methods,
     .tp_repr = (reprfunc)State_repr,
-    .tp_str = (reprfunc)State_repr
+    .tp_str = (reprfunc)State_repr,
+    .tp_setattro = (setattrofunc)State_setattro,
+    .tp_getattro = (getattrfunc)State_getattro
 };

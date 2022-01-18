@@ -148,12 +148,15 @@ void *Duostate_get_c(Duostate *self, char *key) {
 }
 
 PyObject *Duostate_get_py(Duostate *self, PyObject *key) {
-    uint32_t hash = fast_hash(key, (int)strlen(key));
+    Py_ssize_t size;
+    char *c_key = PyUnicode_AsUTF8AndSize(key, &size);
+    uint32_t hash = fast_hash(c_key, (int)size);
     DuostateItem *pos = _Duostate_get_pos(self, hash);
     if (pos == NULL) {
         Py_RETURN_NONE;
     }
     if (pos->py_value != NULL) {
+        Py_INCREF(pos->py_value);
         return pos->py_value;
     }
     if (pos->to_py_value != NULL) {
