@@ -45,7 +45,7 @@ char *Response_get_header_bytes(Response *self, size_t *len) {
     Buffer_append(&(self->buffer), messages[self->code].code, 3);
     Buffer_append(&(self->buffer), " ", 1);
     Buffer_append(&(self->buffer), messages[self->code].message, messages[self->code].length);
-    Buffer_append(&(self->buffer), "\r\n\r\n", 4);
+    Buffer_append(&(self->buffer), "\r\n", 2);
     char date[64];
     time_t now = time(0);
     struct tm tm = *gmtime(&now);
@@ -54,7 +54,7 @@ char *Response_get_header_bytes(Response *self, size_t *len) {
     Buffer_append(&(self->buffer), "Date: ", 6);
     Buffer_append(&(self->buffer), date, date_len);
     Buffer_append(&(self->buffer), "\r\n", 2);
-    Buffer_append(&(self->buffer), "Server: Thunderlight 0.2.0\r\n", 28);
+    Buffer_append(&(self->buffer), "Server: Thunderlight/0.2.0\r\n", 28);
     // examine each header here
     for (size_t i = 0; i < self->headers.len; i++) {
         Buffer_append(&(self->buffer), self->headers.buffer[i].key, self->headers.buffer[i].key_len);
