@@ -34,23 +34,10 @@ PyObject *ReqHeaders_subscript(PyObject *self, PyObject *key) {
 }
 
 PyObject *ReqHeaders_repr(ReqHeaders *self) {
-    char *headers = malloc(255);
-    headers[0] = '\0';
-    strcat(headers, "ReqHeaders {\n");
-    for (uint8_t i = 0; i < self->request->header_num; i++) {
-        if (i != 0) {
-            strcat(headers, ",\n");
-        }
-        strcat(headers, "    '");
-        strcat(headers, self->request->headers[i].name);
-        strcat(headers, "'");
-        strcat(headers, ": ");
-        strcat(headers, "'");
-        strcat(headers, self->request->headers[i].value);
-        strcat(headers, "'");
-    }
-    strcat(headers, "\n}");
-    return PyUnicode_FromString(headers);
+    char *repr = Request_headers_repr(self, "ReqHeaders", 0);
+    PyObject *py_repr = PyUnicode_FromString(repr);
+    free(repr);
+    return py_repr;
 }
 
 PyMappingMethods ReqHeaders_mapping_methods = {

@@ -86,9 +86,11 @@ RequestHeader *Request_headers(Request *self);
 
 size_t Request_content_len(Request *self);
 
-void Request_print(Request *self);
+char *Request_repr(Request *self, char *head, uint8_t indent);
 
-void Request_debug_print(Request *self);
+char *Request_headers_repr(Request *self, char *head, uint8_t indent);
+
+void Request_print(Request *self);
 
 #ifdef __cplusplus
 }

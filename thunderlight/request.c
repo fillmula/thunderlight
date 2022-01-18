@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <sys/param.h>
 #include "request.h"
+#include "space.h"
 
 
 #define TOLOWER(x) (x) + 32
@@ -261,35 +262,93 @@ RequestParsingState _parse_from_body(Request *self) {
     }
 }
 
-char *_Request_debug_headers(Request *self) {
-    char *headers = malloc(255);
-    headers[0] = '(';
-    headers[1] = '\0';
+char *Request_repr(Request *self, char *head, uint8_t indent) {
+    char *buffer = malloc(1024);
+    buffer[0] = '\0';
+    if (head != NULL) {
+        strcpy(buffer, head);
+        strcpy(buffer, " ");
+    }
+    strcpy(buffer, "{\n");
+    // method
+    add_space(buffer, (indent + 1) * 4);
+    strcpy(buffer, "'method': '");
+    strcpy(buffer, self->method);
+    strcpy(buffer, "',\n");
+    // path
+    add_space(buffer, (indent + 1) * 4);
+    strcpy(buffer, "'path': '");
+    strcpy(buffer, self->path);
+    strcpy(buffer, "',\n");
+    // query
+    add_space(buffer, (indent + 1) * 4);
+    strcpy(buffer, "'query': ");
+    if (self->query == NULL) {
+        strcpy(buffer, "None");
+    } else {
+        strcpy(buffer, "'");
+        strcpy(buffer, self->query);
+        strcpy(buffer, "',\n");
+    }
+    // version
+    add_space(buffer, (indent + 1) * 4);
+    strcpy(buffer, "'version': '");
+    strcpy(buffer, self->version);
+    strcpy(buffer, "',\n");
+    // headers
+    add_space(buffer, (indent + 1) * 4);
+    strcpy(buffer, "'headers': ");
+    char *headers_repr = Request_headers_repr(self, NULL, indent + 1);
+    strcpy(buffer, headers_repr);
+    free(headers_repr);
+    strcpy(buffer, ",\n");
+    // body
+    add_space(buffer, (indent + 1) * 4);
+    strcpy(buffer, "'body': ");
+    if (self->body_len == NULL) {
+        strcpy(buffer, "(empty)\n");
+    } else {
+        char bytes[32];
+        sprintf(bytes, "(%ld bytes)\n", self->body_len);
+        strcpy(buffer, bytes);
+    }
+    add_space(buffer, indent * 4);
+    strcpy(buffer, "}");
+    return buffer;
+}
+
+char *Request_headers_repr(Request *self, char *head, uint8_t indent) {
+    char *buffer = malloc(1024);
+    buffer[0] = '\0';
+    if (head != NULL) {
+        strcpy(buffer, head);
+        strcpy(buffer, " ");
+    }
+    if (self->header_num == 0) {
+        strcpy(buffer, "{}");
+        return buffer;
+    }
+    strcpy(buffer, "{\n");
     for (uint8_t i = 0; i < self->header_num; i++) {
         if (i != 0) {
-            strcat(headers, ", ");
+            strcat(buffer, ",\n");
         }
-        strcat(headers, "'");
-        strcat(headers, self->headers[i].name);
-        strcat(headers, "''");
-        strcat(headers, ": ");
-        strcat(headers, "'");
-        strcat(headers, self->headers[i].value);
-        strcat(headers, "'");
+        add_space(buffer, (indent + 1) * 4);
+        strcat(buffer, "'");
+        strcat(buffer, self->headers[i].name);
+        strcat(buffer, "'");
+        strcat(buffer, ": ");
+        strcat(buffer, "'");
+        strcat(buffer, self->headers[i].value);
+        strcat(buffer, "'");
+
     }
-    strcat(headers, ")");
-    return headers;
+    add_space(buffer, indent * 4);
+    strcpy(buffer, "}");
 }
 
 void Request_print(Request *self) {
-    char *headers = _Request_debug_headers(self);
-    printf("Request(method: \"%s\", path: \"%s\", query: \"%s\", version: \"%s\", headers: %s, body: (%ld bytes))\n", self->method, self->path, self->query, self->version, _Request_debug_headers(self), self->buffer_end - self->body);
-    free(headers);
-}
-
-void Request_debug_print(Request *self) {
-    char *headers = _Request_debug_headers(self);
-    printf("Request(method: \"%s\", path: \"%s\", query: \"%s\", version: \"%s\", headers: %s, body: (%ld bytes))\n", self->method, self->path, self->query, self->version, _Request_debug_headers(self), self->buffer_end - self->body);
-    printf("exp %ld", self->exp_body_len);
-    free(headers);
+    char *repr = Request_repr(self, "Request", 0);
+    printf(repr);
+    free(repr);
 }
