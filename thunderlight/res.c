@@ -54,8 +54,21 @@ PyObject *Res_get_body(Res *self, void *closure) {
 }
 
 int Res_set_body(Res *self, PyObject *value, void *closure) {
-    self->body = value;
-    PyBytes_AsStringAndSize(value, &self->response->body, &self->response->body_len);
+    if (PyObject_IsInstance(value, &PyUnicode_Type)) {
+        if (self->body != NULL) {
+            Py_DECREF(self->body);
+        }
+        self->body = value;
+        Py_INCREF(self->body);
+        self->response->body = PyUnicode_AsUTF8AndSize(value, &self->response->body_len);
+    } else if (PyObject_IsInstance(value, &PyBytes_Type)) {
+        if (self->body != NULL) {
+            Py_DECREF(self->body);
+        }
+        self->body = value;
+        Py_INCREF(self->body);
+        PyBytes_AsStringAndSize(value, &self->response->body, &self->response->body_len);
+    }
     return 0;
 }
 

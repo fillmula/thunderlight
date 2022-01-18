@@ -43,6 +43,26 @@ PyObject *ResHeaders_subscript(PyObject *self, PyObject *key) {
     }
 }
 
+PyObject *ResHeaders_repr(ResHeaders *self) {
+    char *headers = malloc(255);
+    headers[0] = '\0';
+    strcat(headers, "ResHeaders {\n");
+    for (size_t i = 0; i < self->header_map->len; i++) {
+        if (i != 0) {
+            strcat(headers, ",\n");
+        }
+        strcat(headers, "    \"");
+        strcat(headers, self->header_map->buffer[i].key);
+        strcat(headers, "\"");
+        strcat(headers, ": ");
+        strcat(headers, "\"");
+        strcat(headers, self->header_map->buffer[i].value);
+        strcat(headers, "\"");
+    }
+    strcat(headers, "\n}");
+    return PyUnicode_FromString(headers);
+}
+
 PyMappingMethods ResHeaders_mapping_methods = {
     .mp_length = ResHeaders_length,
     .mp_subscript = ResHeaders_subscript,
@@ -55,5 +75,7 @@ PyTypeObject ResHeadersType = {
     .tp_basicsize = sizeof(ResHeaders),
     .tp_dealloc = (destructor)ResHeaders_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_as_mapping = &ResHeaders_mapping_methods
+    .tp_as_mapping = &ResHeaders_mapping_methods,
+    .tp_repr = (reprfunc)ResHeaders_repr,
+    .tp_str = (reprfunc)ResHeaders_repr
 };
