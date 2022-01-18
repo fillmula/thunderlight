@@ -40,3 +40,5 @@ async def hello(ctx: Ctx):
     ctx.res.code = 200
     ctx.res.headers['Content-Type'] = "text/plain"
     ctx.res.body = "Hello, World!"
+    print(ctx.res)
+    print(ctx.res.headers)

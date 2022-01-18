@@ -3,6 +3,7 @@
 #include <time.h>
 #include <string.h>
 #include "response.h"
+#include "space.h"
 
 
 typedef struct {
@@ -74,4 +75,40 @@ char *Response_get_header_bytes(Response *self, size_t *len) {
 char *Response_get_body_bytes(Response *self, size_t *len) {
     *len = self->body_len;
     return self->body;
+}
+
+char *Response_repr(Response *self, char *head, uint8_t indent) {
+    char *buffer = malloc(1024);
+    buffer[0] = '\0';
+    if (head != NULL) {
+        strcat(buffer, head);
+        strcat(buffer, " ");
+    }
+    strcat(buffer, "{\n");
+    // code
+    add_space(buffer, (indent + 1) * 4);
+    strcat(buffer, "'code': ");
+    char *code;
+    asprintf(&code, "%hu", self->code);
+    strcat(buffer, ",\n");
+    // headers
+    add_space(buffer, (indent + 1) * 4);
+    strcat(buffer, "'headers': ");
+    char *headers_repr = HeaderMap_repr(&self->headers, NULL, indent + 1);
+    strcat(buffer, headers_repr);
+    free(headers_repr);
+    strcat(buffer, ",\n");
+    // body
+    add_space(buffer, (indent + 1) * 4);
+    strcat(buffer, "'body': ");
+    if (self->body_len == NULL) {
+        strcat(buffer, "(empty)\n");
+    } else {
+        char bytes[32];
+        sprintf(bytes, "(%ld bytes)\n", self->body_len);
+        strcat(buffer, bytes);
+    }
+    add_space(buffer, indent * 4);
+    strcat(buffer, "}");
+    return buffer;
 }

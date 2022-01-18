@@ -44,23 +44,10 @@ PyObject *ResHeaders_subscript(PyObject *self, PyObject *key) {
 }
 
 PyObject *ResHeaders_repr(ResHeaders *self) {
-    char *headers = malloc(255);
-    headers[0] = '\0';
-    strcat(headers, "ResHeaders {\n");
-    for (size_t i = 0; i < self->header_map->len; i++) {
-        if (i != 0) {
-            strcat(headers, ",\n");
-        }
-        strcat(headers, "    '");
-        strcat(headers, self->header_map->buffer[i].key);
-        strcat(headers, "'");
-        strcat(headers, ": ");
-        strcat(headers, "'");
-        strcat(headers, self->header_map->buffer[i].value);
-        strcat(headers, "'");
-    }
-    strcat(headers, "\n}");
-    return PyUnicode_FromString(headers);
+    char *repr = HeaderMap_repr(self->header_map, "ResHeaders", 0);
+    PyObject *py_repr = PyUnicode_FromString(repr);
+    free(repr);
+    return py_repr;
 }
 
 PyMappingMethods ResHeaders_mapping_methods = {

@@ -2,6 +2,7 @@
 #include <string.h>
 #include "response_headers.h"
 #include "hash.h"
+#include "space.h"
 
 
 HeaderMap *HeaderMap_new(void) {
@@ -78,4 +79,35 @@ char *HeaderMap_get(HeaderMap *self, char *key) {
         }
     }
     return NULL;
+}
+
+char *HeaderMap_repr(HeaderMap *self, char *head, uint8_t indent) {
+    char *buffer = malloc(1024);
+    buffer[0] = '\0';
+    if (head != NULL) {
+        strcat(buffer, head);
+        strcat(buffer, " ");
+    }
+    if (self->len == 0) {
+        strcat(buffer, "{}");
+        return buffer;
+    }
+    strcat(buffer, "{\n");
+    for (size_t i = 0; i < self->len; i++) {
+        if (i != 0) {
+            strcat(buffer, ",\n");
+        }
+        add_space(buffer, (indent + 1) * 4);
+        strcat(buffer, "'");
+        strcat(buffer, self->buffer[i].key);
+        strcat(buffer, "'");
+        strcat(buffer, ": ");
+        strcat(buffer, "'");
+        strcat(buffer, self->buffer[i].value);
+        strcat(buffer, "'");
+    }
+    strcat(buffer, "\n");
+    add_space(buffer, indent * 4);
+    strcat(buffer, "}");
+    return buffer;
 }

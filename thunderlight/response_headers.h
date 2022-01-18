@@ -36,6 +36,8 @@ void HeaderMap_set(HeaderMap *self, char *key, size_t key_len, void *value, size
 
 char *HeaderMap_get(HeaderMap *self, char *key);
 
+char *HeaderMap_repr(HeaderMap *self, char *head, uint8_t indent);
+
 #ifdef __cplusplus
 }
 #endif

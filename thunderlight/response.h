@@ -31,6 +31,8 @@ char *Response_get_header_bytes(Response *self, size_t *len);
 
 char *Response_get_body_bytes(Response *self, size_t *len);
 
+char *Response_repr(Response *self, char *head, uint8_t indent);
+
 #ifdef __cplusplus
 }
 #endif
