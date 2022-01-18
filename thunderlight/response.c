@@ -64,7 +64,7 @@ char *Response_get_header_bytes(Response *self, size_t *len) {
     Buffer_append(&(self->buffer), "Connection: close\r\n", 19);
     Buffer_append(&(self->buffer), "Content-Length: ", 16);
     char content_len[16];
-    snprintf(content_len, 16, "%d", self->body_len);
+    snprintf(content_len, 16, "%zu", self->body_len);
     Buffer_append(&(self->buffer), content_len, strlen(content_len));
     Buffer_append(&(self->buffer), "\r\n\r\n", 4);
     *len = self->buffer.length;

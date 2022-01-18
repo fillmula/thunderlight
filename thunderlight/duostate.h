@@ -5,18 +5,26 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <Python.h>
+#include "hash.h"
 
 
 #define DUOSTATE_INITIAL_CAPACITY 8
 
 typedef PyObject *(*to_py_value)(void *);
+typedef void *(*to_c_value)(PyObject *);
 
 typedef struct {
-    uint32_t key_hash;
-    void *value;
+    char *c_key;
+    PyObject *py_key;
+    void *c_value;
     PyObject *py_value;
+    to_c_value to_c_value;
     to_py_value to_py_value;
+    uint32_t key_hash;
+    bool free_c_key;
+    bool free_c_value;
 } DuostateItem;
 
 typedef struct {
@@ -26,19 +34,25 @@ typedef struct {
     DuostateItem inline_buffer[DUOSTATE_INITIAL_CAPACITY];
 } Duostate;
 
-Duostate *Duostate_alloc(void);
-
-void Duostate_init(Duostate *self);
+Duostate *Duostate_new(void);
 
 void Duostate_dealloc(Duostate *self);
 
-void Duostate_set_native(Duostate *self, char *key, void *value, to_py_value converter);
+void Duostate_init(Duostate *self);
 
-void Duostate_set_pyobject(Duostate *self, char *key, PyObject *value);
+void Duostate_deinit(Duostate *self);
 
-void *Duostate_get_native(Duostate *self, char *key);
+void Duostate_set_c(Duostate *self, char *key, void *value, to_py_value converter, bool free_key, bool free_value);
 
-PyObject *Duostate_get_pyobject(Duostate *self, char *key);
+void Duostate_set_py(Duostate *self, PyObject *key, PyObject *value, to_c_value converter);
+
+void *Duostate_get_c(Duostate *self, char *key);
+
+PyObject *Duostate_get_py(Duostate *self, PyObject *key);
+
+char *DuostateItem_get_c_key(DuostateItem *self);
+
+char *DuostateItem_get_py_value_repr(DuostateItem *self);
 
 #ifdef __cplusplus
 }

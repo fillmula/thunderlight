@@ -8,6 +8,8 @@ app = App()
 @app.use
 async def middleware1(ctx: Ctx, next: Any):
     print("before out")
+    print(ctx.state)
+    ctx.state['user'] = 5
     await next(ctx)
     print("after out")
 
@@ -35,6 +37,7 @@ async def home(ctx: Ctx):
 
 @app.get("/hello")
 async def hello(ctx: Ctx):
+    print(ctx.state['user'])
     print(ctx.req)
     print(ctx.req.method)
     print(ctx.req.path)
