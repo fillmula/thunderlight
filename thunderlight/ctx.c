@@ -44,6 +44,13 @@ PyObject *Ctx_get_state(Ctx *self, void *closure) {
     return (PyObject *)self->state;
 }
 
+PyObject *Ctx_repr(Ctx *self) {
+    char *repr = Context_repr(self->context, "Ctx", 0);
+    PyObject *py_repr = PyUnicode_FromString(repr);
+    free(repr);
+    return py_repr;
+}
+
 PyGetSetDef Ctx_getset[] = {
     {"req", (getter)Ctx_get_req, NULL, NULL, NULL},
     {"res", (getter)Ctx_get_res, NULL, NULL, NULL},
@@ -58,5 +65,7 @@ PyTypeObject CtxType = {
     .tp_dealloc = (destructor)Ctx_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = Ctx_getset,
-    .tp_alloc = PyType_GenericAlloc
+    .tp_alloc = PyType_GenericAlloc,
+    .tp_repr = (reprfunc)Ctx_repr,
+    .tp_str = (reprfunc)Ctx_repr
 };
