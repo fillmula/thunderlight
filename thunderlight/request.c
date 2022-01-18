@@ -269,13 +269,13 @@ char *_Request_debug_headers(Request *self) {
         if (i != 0) {
             strcat(headers, ", ");
         }
-        strcat(headers, "\"");
+        strcat(headers, "'");
         strcat(headers, self->headers[i].name);
-        strcat(headers, "\"");
+        strcat(headers, "''");
         strcat(headers, ": ");
-        strcat(headers, "\"");
+        strcat(headers, "'");
         strcat(headers, self->headers[i].value);
-        strcat(headers, "\"");
+        strcat(headers, "'");
     }
     strcat(headers, ")");
     return headers;

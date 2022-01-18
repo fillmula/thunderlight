@@ -8,6 +8,7 @@ extern "C" {
 
 
 typedef struct {
+    PyObject_HEAD
     Duostate *duostate;
 } State;
 

@@ -29,10 +29,10 @@ typedef struct {
 } DuostateItem;
 
 typedef struct {
-    size_t len;
-    size_t capacity;
     DuostateItem *buffer;
     DuostateItem inline_buffer[DUOSTATE_INITIAL_CAPACITY];
+    size_t len;
+    size_t capacity;
 } Duostate;
 
 Duostate *Duostate_new(void);

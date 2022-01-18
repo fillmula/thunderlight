@@ -51,13 +51,13 @@ PyObject *ResHeaders_repr(ResHeaders *self) {
         if (i != 0) {
             strcat(headers, ",\n");
         }
-        strcat(headers, "    \"");
+        strcat(headers, "    '");
         strcat(headers, self->header_map->buffer[i].key);
-        strcat(headers, "\"");
+        strcat(headers, "'");
         strcat(headers, ": ");
-        strcat(headers, "\"");
+        strcat(headers, "'");
         strcat(headers, self->header_map->buffer[i].value);
-        strcat(headers, "\"");
+        strcat(headers, "'");
     }
     strcat(headers, "\n}");
     return PyUnicode_FromString(headers);

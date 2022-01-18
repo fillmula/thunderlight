@@ -8,7 +8,7 @@ extern "C" {
 #include "app.h"
 #include "request.h"
 #include "response.h"
-#include "res.h"
+#include "duostate.h"
 #include "ctx.h"
 
 

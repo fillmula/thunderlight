@@ -9,7 +9,7 @@ app = App()
 async def middleware1(ctx: Ctx, next: Any):
     print("before out")
     print(ctx.state)
-    ctx.state['user'] = 5
+    ctx.state['user'] = "abvc"
     print(ctx.state)
     await next(ctx)
     print("after out")

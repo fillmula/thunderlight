@@ -15,10 +15,12 @@ void State_dealloc(State *self) {
 }
 
 PyObject *State_repr(State *self) {
-    printf("HERE COME IN, %ld\n", self->duostate->len);
-    fflush(stdout);
     char *headers = malloc(255);
     headers[0] = '\0';
+    if (self->duostate->len == 0) {
+        strcat(headers, "State {}");
+        return PyUnicode_FromString(headers);
+    }
     strcat(headers, "State {\n");
     for (size_t i = 0; i < self->duostate->len; i++) {
         printf("HERE %ld\n", i);
@@ -26,16 +28,14 @@ PyObject *State_repr(State *self) {
         if (i != 0) {
             strcat(headers, ",\n");
         }
-        strcat(headers, "    \"");
+        strcat(headers, "    '");
         strcat(headers, DuostateItem_get_c_key(&self->duostate->buffer[i]));
-        strcat(headers, "\"");
+        strcat(headers, "'");
         strcat(headers, ": ");
-        strcat(headers, "\"");
         strcat(headers, DuostateItem_get_py_value_repr(&self->duostate->buffer[i]));
-        strcat(headers, "\"");
     }
     strcat(headers, "\n}");
-    return headers;
+    return PyUnicode_FromString(headers);
 }
 
 PyObject *State_length(State *self, void *closure) {

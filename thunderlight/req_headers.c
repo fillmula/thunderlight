@@ -41,13 +41,13 @@ PyObject *ReqHeaders_repr(ReqHeaders *self) {
         if (i != 0) {
             strcat(headers, ",\n");
         }
-        strcat(headers, "    \"");
+        strcat(headers, "    '");
         strcat(headers, self->request->headers[i].name);
-        strcat(headers, "\"");
+        strcat(headers, "'");
         strcat(headers, ": ");
-        strcat(headers, "\"");
+        strcat(headers, "'");
         strcat(headers, self->request->headers[i].value);
-        strcat(headers, "\"");
+        strcat(headers, "'");
     }
     strcat(headers, "\n}");
     return PyUnicode_FromString(headers);

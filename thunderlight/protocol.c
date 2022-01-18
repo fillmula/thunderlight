@@ -5,14 +5,12 @@ PyTypeObject ProtocolType;
 
 Protocol *Protocol_native_new(App *app) {
     Protocol *self = (Protocol *)ProtocolType.tp_alloc(&ProtocolType, 0);
-    self->ob_base.ob_type = &ProtocolType;
-    self->ob_base.ob_refcnt = 1;
     self->transport = NULL;
-    Request_init(&(self->request));
-    Response_init(&(self->response));
-    Duostate_init(&(self->duostate));
-    Context_init(&(self->context), &(self->request), &(self->response), &(self->duostate));
-    self->ctx = Ctx_new(&(self->context));
+    Request_init(&self->request);
+    Response_init(&self->response);
+    Duostate_init(&self->duostate);
+    Context_init(&self->context, &self->request, &self->response, &self->duostate);
+    self->ctx = Ctx_new(&self->context);
     self->app = app;
     Py_INCREF(app);
     return self;
@@ -43,6 +41,7 @@ void Protocol_dealloc(Protocol *self) {
     Py_XDECREF(self->transport);
     Py_XDECREF(self->ctx);
     Request_dealloc(&(self->request));
+    Duostate_deinit(&self->duostate);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 

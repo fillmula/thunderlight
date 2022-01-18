@@ -87,13 +87,13 @@ char *_Res_repr_headers(Res *self) {
         if (i != 0) {
             strcat(headers, ",\n");
         }
-        strcat(headers, "        \"");
+        strcat(headers, "        '");
         strcat(headers, self->response->headers.buffer[i].key);
-        strcat(headers, "\"");
+        strcat(headers, "'");
         strcat(headers, ": ");
-        strcat(headers, "\"");
+        strcat(headers, "'");
         strcat(headers, self->response->headers.buffer[i].value);
-        strcat(headers, "\"");
+        strcat(headers, "'");
     }
     strcat(headers, "\n    }");
     return headers;
@@ -108,7 +108,7 @@ char *_Res_repr_body(Res *self) {
 
 PyObject *Res_repr(Res *self) {
     char *format;
-    asprintf(&format, "Res {\n    \"code\": %d,\n    \"headers\": %s,\n    \"body\": %s\n}", self->response->code, _Res_repr_headers(self), _Res_repr_body(self));
+    asprintf(&format, "Res {\n    'code': %d,\n    'headers': %s,\n    'body': %s\n}", self->response->code, _Res_repr_headers(self), _Res_repr_body(self));
     return PyUnicode_FromFormat(format);
 }
 

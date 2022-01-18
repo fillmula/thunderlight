@@ -2,9 +2,13 @@
 
 
 void Duostate_init(Duostate *self) {
+    printf("cannot understand init\n");
+    fflush(stdout);
     self->capacity = DUOSTATE_INITIAL_CAPACITY;
     self->len = 0;
     self->buffer = self->inline_buffer;
+    printf("cannot understand init %zu\n", self->len);
+    fflush(stdout);
 }
 
 Duostate *Duostate_new(void) {
