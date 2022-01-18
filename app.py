@@ -8,9 +8,6 @@ app = App()
 @app.use
 async def middleware1(ctx: Ctx, next: Any):
     print("before out")
-    print(ctx.state)
-    ctx.state['user'] = "abvc"
-    print(ctx.state)
     await next(ctx)
     print("after out")
 
@@ -38,18 +35,6 @@ async def home(ctx: Ctx):
 
 @app.get("/hello")
 async def hello(ctx: Ctx):
-    print(ctx.state['user'])
-    print(ctx.req)
-    print(ctx.req.method)
-    print(ctx.req.path)
-    print(ctx.req.query)
-    print(ctx.req.version)
-    print(ctx.req.headers)
-    print(ctx.req.body)
     ctx.res.code = 200
     ctx.res.headers['Content-Type'] = "text/plain"
     ctx.res.body = "Hello, World!"
-    print(ctx.res)
-    print(ctx.res.code)
-    print(ctx.res.headers)
-    print(ctx.res.body)
