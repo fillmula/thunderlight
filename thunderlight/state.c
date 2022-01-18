@@ -23,8 +23,6 @@ PyObject *State_repr(State *self) {
     }
     strcat(headers, "State {\n");
     for (size_t i = 0; i < self->duostate->len; i++) {
-        printf("HERE %ld\n", i);
-        fflush(stdout);
         if (i != 0) {
             strcat(headers, ",\n");
         }

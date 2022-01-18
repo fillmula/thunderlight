@@ -34,7 +34,7 @@ PyObject *ReqHeaders_subscript(PyObject *self, PyObject *key) {
 }
 
 PyObject *ReqHeaders_repr(ReqHeaders *self) {
-    char *repr = Request_headers_repr(self, "ReqHeaders", 0);
+    char *repr = Request_headers_repr(self->request, "ReqHeaders", 0);
     PyObject *py_repr = PyUnicode_FromString(repr);
     free(repr);
     return py_repr;

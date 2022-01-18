@@ -35,6 +35,8 @@ async def home(ctx: Ctx):
 
 @app.get("/hello")
 async def hello(ctx: Ctx):
+    print(ctx.req)
+    print(ctx.req.headers)
     ctx.res.code = 200
     ctx.res.headers['Content-Type'] = "text/plain"
     ctx.res.body = "Hello, World!"

@@ -2,13 +2,9 @@
 
 
 void Duostate_init(Duostate *self) {
-    printf("cannot understand init\n");
-    fflush(stdout);
     self->capacity = DUOSTATE_INITIAL_CAPACITY;
     self->len = 0;
     self->buffer = self->inline_buffer;
-    printf("cannot understand init %zu\n", self->len);
-    fflush(stdout);
 }
 
 Duostate *Duostate_new(void) {
@@ -168,17 +164,9 @@ PyObject *Duostate_get_py(Duostate *self, PyObject *key) {
 }
 
 char *DuostateItem_get_c_key(DuostateItem *self) {
-    printf("INTO C KEY\n");
-    fflush(stdout);
     if (self->c_key == NULL) {
-        printf("py key try str is\n");
-        fflush(stdout);
         self->c_key = (char *)PyUnicode_AsUTF8(self->py_key);
-        printf("AFTER C KEY\n");
-        fflush(stdout);
     }
-    printf("OUT FROM C KEY\n");
-    fflush(stdout);
     return self->c_key;
 }
 

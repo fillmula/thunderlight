@@ -266,54 +266,54 @@ char *Request_repr(Request *self, char *head, uint8_t indent) {
     char *buffer = malloc(1024);
     buffer[0] = '\0';
     if (head != NULL) {
-        strcpy(buffer, head);
-        strcpy(buffer, " ");
+        strcat(buffer, head);
+        strcat(buffer, " ");
     }
-    strcpy(buffer, "{\n");
+    strcat(buffer, "{\n");
     // method
     add_space(buffer, (indent + 1) * 4);
-    strcpy(buffer, "'method': '");
-    strcpy(buffer, self->method);
-    strcpy(buffer, "',\n");
+    strcat(buffer, "'method': '");
+    strcat(buffer, self->method);
+    strcat(buffer, "',\n");
     // path
     add_space(buffer, (indent + 1) * 4);
-    strcpy(buffer, "'path': '");
-    strcpy(buffer, self->path);
-    strcpy(buffer, "',\n");
+    strcat(buffer, "'path': '");
+    strcat(buffer, self->path);
+    strcat(buffer, "',\n");
     // query
     add_space(buffer, (indent + 1) * 4);
-    strcpy(buffer, "'query': ");
+    strcat(buffer, "'query': ");
     if (self->query == NULL) {
-        strcpy(buffer, "None");
+        strcat(buffer, "None,\n");
     } else {
-        strcpy(buffer, "'");
-        strcpy(buffer, self->query);
-        strcpy(buffer, "',\n");
+        strcat(buffer, "'");
+        strcat(buffer, self->query);
+        strcat(buffer, "',\n");
     }
     // version
     add_space(buffer, (indent + 1) * 4);
-    strcpy(buffer, "'version': '");
-    strcpy(buffer, self->version);
-    strcpy(buffer, "',\n");
+    strcat(buffer, "'version': '");
+    strcat(buffer, self->version);
+    strcat(buffer, "',\n");
     // headers
     add_space(buffer, (indent + 1) * 4);
-    strcpy(buffer, "'headers': ");
+    strcat(buffer, "'headers': ");
     char *headers_repr = Request_headers_repr(self, NULL, indent + 1);
-    strcpy(buffer, headers_repr);
+    strcat(buffer, headers_repr);
     free(headers_repr);
-    strcpy(buffer, ",\n");
+    strcat(buffer, ",\n");
     // body
     add_space(buffer, (indent + 1) * 4);
-    strcpy(buffer, "'body': ");
+    strcat(buffer, "'body': ");
     if (self->body_len == NULL) {
-        strcpy(buffer, "(empty)\n");
+        strcat(buffer, "(empty)\n");
     } else {
         char bytes[32];
         sprintf(bytes, "(%ld bytes)\n", self->body_len);
-        strcpy(buffer, bytes);
+        strcat(buffer, bytes);
     }
     add_space(buffer, indent * 4);
-    strcpy(buffer, "}");
+    strcat(buffer, "}");
     return buffer;
 }
 
@@ -321,14 +321,14 @@ char *Request_headers_repr(Request *self, char *head, uint8_t indent) {
     char *buffer = malloc(1024);
     buffer[0] = '\0';
     if (head != NULL) {
-        strcpy(buffer, head);
-        strcpy(buffer, " ");
+        strcat(buffer, head);
+        strcat(buffer, " ");
     }
     if (self->header_num == 0) {
-        strcpy(buffer, "{}");
+        strcat(buffer, "{}");
         return buffer;
     }
-    strcpy(buffer, "{\n");
+    strcat(buffer, "{\n");
     for (uint8_t i = 0; i < self->header_num; i++) {
         if (i != 0) {
             strcat(buffer, ",\n");
@@ -341,10 +341,11 @@ char *Request_headers_repr(Request *self, char *head, uint8_t indent) {
         strcat(buffer, "'");
         strcat(buffer, self->headers[i].value);
         strcat(buffer, "'");
-
     }
+    strcat(buffer, "\n");
     add_space(buffer, indent * 4);
-    strcpy(buffer, "}");
+    strcat(buffer, "}");
+    return buffer;
 }
 
 void Request_print(Request *self) {
