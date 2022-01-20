@@ -57,5 +57,6 @@ PyMODINIT_FUNC PyInit_thunderlight(void) {
     not_found = PyType_GenericNew(&NotFoundType, NULL, NULL);
     Py_INCREF(not_found);
     PyModule_AddObject(module, "not_found", not_found);
+    PyModule_AddObject(module, "Next", Py_None);
     return module;
 }

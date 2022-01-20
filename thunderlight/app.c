@@ -84,7 +84,7 @@ void App_use(App *self, PyObject *middleware) {
 
 void App_prepare(App *self) {
     self->entrance_middleware = ChainedMiddleware_build(self->middlewares);
-    Py_INCREF(self->entrance_middleware);
+    Py_XINCREF(self->entrance_middleware);
 }
 
 void App_process(App *self, PyObject *p) {

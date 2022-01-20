@@ -1,29 +1,28 @@
-from typing import Any
-from thunderlight import App, Ctx
+from thunderlight import App, Ctx, Next
 
 
 app = App()
 
 
 @app.use
-async def middleware1(ctx: Ctx, next: Any):
-    print("before")
+async def middleware1(ctx: Ctx, next: Next):
+    print("before 1")
     await next(ctx)
-    print("after out")
+    print("after 1")
 
 
-# @app.use
-# async def middleware2(ctx: Ctx, next: Any):
-#     print("before mid")
-#     await next(ctx)
-#     print("after mid")
+@app.use
+async def middleware2(ctx: Ctx, next: Next):
+    print("before 2")
+    await next(ctx)
+    print("after 2")
 
 
-# @app.use
-# async def middleware3(ctx: Ctx, next: Any):
-#     print("before in")
-#     await next(ctx)
-#     print("after in")
+@app.use
+async def middleware3(ctx: Ctx, next: Next):
+    print("before 3")
+    await next(ctx)
+    print("after 3")
 
 
 @app.get("/")
@@ -35,6 +34,8 @@ async def home(ctx: Ctx):
 
 @app.get("/hello")
 async def hello(ctx: Ctx):
+    print("inside before")
     ctx.res.code = 200
     ctx.res.headers['Content-Type'] = "text/plain"
     ctx.res.body = "Hello, World!"
+    print("inside after")

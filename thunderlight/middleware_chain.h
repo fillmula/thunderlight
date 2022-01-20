@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Python.h>
+#include <stdbool.h>
 
 
 typedef struct {
@@ -19,6 +20,7 @@ typedef struct {
     PyObject_HEAD
     OuterNext *outer_next;
     PyObject *ctx;
+    uint8_t state;
 } OuterNextIterator;
 
 typedef struct {
@@ -26,6 +28,7 @@ typedef struct {
     ChainedMiddleware *chained_middleware;
     PyObject *ctx;
     PyObject *next;
+    uint8_t state;
 } ChainedMiddlewareIterator;
 
 extern PyTypeObject ChainedMiddlewareIteratorType;

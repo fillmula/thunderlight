@@ -12,6 +12,8 @@ OuterNext *OuterNext_new(PyObject *inner, PyObject *next) {
     self->next = next;
     Py_INCREF(self->inner);
     Py_INCREF(self->next);
+    Py_INCREF(self->inner);
+    Py_INCREF(self->next);
     return self;
 }
 
@@ -27,6 +29,9 @@ OuterNextIterator *OuterNextIterator_new(OuterNext *outer_next, PyObject *ctx) {
     self->ctx = ctx;
     Py_INCREF(self->outer_next);
     Py_INCREF(self->ctx);
+    Py_INCREF(self->outer_next);
+    Py_INCREF(self->ctx);
+    self->state = 0;
     return self;
 }
 
@@ -52,25 +57,61 @@ PyTypeObject OuterNextType = {
 
 
 PyObject *OuterNextIterator_await(OuterNextIterator *self) {
-    PyObject *args = PyTuple_New(2);
-    PyTuple_SetItem(args, 0, self->ctx);
-    PyTuple_SetItem(args, 1, self->outer_next->next);
-    PyObject *result = PyObject_Call(self->outer_next->inner, args, NULL);
-    Py_DECREF(args);
-    Py_INCREF(result);
-    // //
-    // PyObject *asyncio = PyImport_ImportModule("asyncio");
-    // PyObject *ensure_future = PyObject_GetAttrString(asyncio, "ensure_future");
-    // PyObject *future = PyObject_CallOneArg(ensure_future, result);
-    // //
-    return result;
+    Py_INCREF(self);
+    return self;
 }
 
+PyObject *OuterNextIterator_iter(OuterNextIterator *self) {
+    Py_INCREF(self);
+    return self;
+}
+
+PyObject *OuterNextIterator_iternext(OuterNextIterator *self) {
+    if (self->state > 0) {
+        self->state += 1;
+        PyErr_SetNone(PyExc_StopIteration);
+        return NULL;
+    } else {
+        PyObject *args = PyTuple_New(2);
+        PyTuple_SetItem(args, 0, self->ctx);
+        PyTuple_SetItem(args, 1, self->outer_next->next);
+        PyObject *result = PyObject_Call(self->outer_next->inner, args, NULL);
+        Py_DECREF(args);
+        Py_INCREF(result);
+        Py_INCREF(self);
+        PyObject *asyncio = PyImport_ImportModule("asyncio");
+        PyObject *ensure_future = PyObject_GetAttrString(asyncio, "ensure_future");
+        PyObject *future = PyObject_CallOneArg(ensure_future, result);
+        self->state += 1;
+        return result;
+    }
+}
+
+PySendResult OuterNextIterator_send(OuterNextIterator *self, PyObject *value, PyObject **result) {
+    switch (self->state) {
+        case 0: {
+            PyObject *next_value = PyIter_Next(self);
+            *result = next_value;
+            return PYGEN_NEXT;
+        }
+        case 1: {
+            PyObject *next_value = PyIter_Next(self);
+            *result = next_value;
+            return PYGEN_NEXT;
+        }
+        default: {
+            PyObject *next_value = PyIter_Next(self);
+            *result = next_value;
+            return PYGEN_RETURN;
+        }
+    }
+}
 
 PyAsyncMethods OuterNextIterator_async_methods = {
     .am_anext = NULL,
     .am_await = OuterNextIterator_await,
-    .am_aiter = NULL
+    .am_aiter = NULL,
+    .am_send = (sendfunc)OuterNextIterator_send
 };
 
 PyTypeObject OuterNextIteratorType = {
@@ -78,13 +119,17 @@ PyTypeObject OuterNextIteratorType = {
     .tp_doc = "OuterNextIterator",
     .tp_basicsize = sizeof(OuterNextIterator),
     .tp_dealloc = (destructor)OuterNextIterator_dealloc,
-    .tp_as_async = &OuterNextIterator_async_methods
+    .tp_as_async = &OuterNextIterator_async_methods,
+    .tp_iter = (getiterfunc)OuterNextIterator_iter,
+    .tp_iternext = (iternextfunc)OuterNextIterator_iternext
 };
 
 ChainedMiddleware *ChainedMiddleware_new(PyObject *outer, PyObject *inner) {
     ChainedMiddleware *self = (ChainedMiddleware *)ChainedMiddlewareType.tp_alloc(&ChainedMiddlewareType, 0);
     self->outer = outer;
     self->inner = inner;
+    Py_INCREF(outer);
+    Py_INCREF(inner);
     Py_INCREF(outer);
     Py_INCREF(inner);
     return self;
@@ -101,6 +146,10 @@ ChainedMiddlewareIterator *ChainedMiddlewareIterator_new(ChainedMiddleware *chai
     self->chained_middleware = chained_middleware;
     self->ctx = ctx;
     self->next = next;
+    self->state = 0;
+    Py_INCREF(chained_middleware);
+    Py_INCREF(ctx);
+    Py_INCREF(next);
     Py_INCREF(chained_middleware);
     Py_INCREF(ctx);
     Py_INCREF(next);
@@ -131,25 +180,55 @@ PyTypeObject ChainedMiddlewareType = {
 
 
 PyObject *ChainedMiddlewareIterator_await(ChainedMiddlewareIterator *self) {
+    Py_INCREF(self);
+    return self;
+}
+
+PyObject *ChainedMiddlewareIterator_iter(ChainedMiddlewareIterator *self) {
+    Py_INCREF(self);
+    return self;
+}
+
+PyObject *ChainedMiddlewareIterator_iternext(ChainedMiddlewareIterator *self) {
+    if (self->state > 0) {
+        self->state += 1;
+        PyErr_SetNone(PyExc_StopIteration);
+        return NULL;
+    }
     PyObject *outer_next = (PyObject *)OuterNext_new(self->chained_middleware->inner, self->next);
     PyObject *args = PyTuple_New(2);
     PyTuple_SetItem(args, 0, self->ctx);
     PyTuple_SetItem(args, 1, outer_next);
     PyObject *result = PyObject_Call(self->chained_middleware->outer, args, NULL);
     Py_DECREF(args);
-    // //
-    // PyObject *asyncio = PyImport_ImportModule("asyncio");
-    // PyObject *ensure_future = PyObject_GetAttrString(asyncio, "ensure_future");
-    // PyObject *future = PyObject_CallOneArg(ensure_future, result);
-    // //
+    self->state += 1;
+    Py_INCREF(result);
+    Py_INCREF(outer_next);
+    PyObject *asyncio = PyImport_ImportModule("asyncio");
+    PyObject *ensure_future = PyObject_GetAttrString(asyncio, "ensure_future");
+    PyObject *future = PyObject_CallOneArg(ensure_future, result);
     return result;
 }
 
+PySendResult ChainedMiddlewareIterator_send(ChainedMiddlewareIterator *self, PyObject *value, PyObject **result) {
+    PyObject *next_value = PyIter_Next(self);
+    printf("after this call");
+    fflush(stdout);
+    if (next_value != NULL) {
+        *result = next_value;
+        Py_INCREF(next_value);
+        return PYGEN_NEXT;
+    } else {
+        *result = Py_None;
+        return PYGEN_RETURN;
+    }
+}
 
 PyAsyncMethods ChainedMiddlewareIterator_async_methods = {
     .am_aiter = NULL,
     .am_anext = NULL,
-    .am_await = ChainedMiddlewareIterator_await
+    .am_await = ChainedMiddlewareIterator_await,
+    .am_send = (sendfunc)ChainedMiddlewareIterator_send
 };
 
 PyTypeObject ChainedMiddlewareIteratorType = {
@@ -157,7 +236,9 @@ PyTypeObject ChainedMiddlewareIteratorType = {
     .tp_doc = "ChainedMiddlewareIterator",
     .tp_basicsize = sizeof(ChainedMiddlewareIterator),
     .tp_as_async = &ChainedMiddlewareIterator_async_methods,
-    .tp_dealloc = (destructor)ChainedMiddlewareIterator_dealloc
+    .tp_dealloc = (destructor)ChainedMiddlewareIterator_dealloc,
+    .tp_iter = (getiterfunc)ChainedMiddlewareIterator_iter,
+    .tp_iternext = (iternextfunc)ChainedMiddlewareIterator_iternext
 };
 
 PyObject *ChainedMiddleware_build(PyObject *list) {
