@@ -15,28 +15,29 @@ void NotFoundIterator_dealloc(NotFoundIterator *self) {
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
-PyObject *NotFoundIterator_aiter(PyObject *self) {
-    Py_INCREF(self);
-    return self;
-}
-
 PyObject *NotFoundIterator_await(PyObject *self) {
     Py_INCREF(self);
     return self;
 }
 
-PyObject *NotFoundIterator_anext(NotFoundIterator *self) {
+PyObject *NotFoundIterator_iter(NotFoundIterator *self) {
+    Py_INCREF(self);
+    return self;
+}
+
+PyObject *NotFoundIterator_iternext(NotFoundIterator *self) {
     self->ctx->context->response->code = 404;
+    HeaderMap_set(&self->ctx->context->response->headers, "Content-Type", 12, "application/json", 16);
     self->ctx->context->response->body = "{\"error\": {\"type\": \"NotFound\", \"message\": \"This location is not found.\"}}";
     self->ctx->context->response->body_len = 73;
-    PyErr_SetString(PyExc_StopAsyncIteration, "");
+    PyErr_SetString(PyExc_StopIteration, "");
     return NULL;
 }
 
 PyAsyncMethods NotFoundIterator_async_methods = {
-    .am_aiter = NotFoundIterator_aiter,
+    .am_aiter = NULL,
     .am_await = NotFoundIterator_await,
-    .am_anext = (unaryfunc)NotFoundIterator_anext
+    .am_anext = NULL
 };
 
 PyTypeObject NotFoundIteratorType = {
@@ -44,7 +45,9 @@ PyTypeObject NotFoundIteratorType = {
     .tp_doc = "NotFoundIterator",
     .tp_alloc = PyType_GenericAlloc,
     .tp_dealloc = (destructor)NotFoundIterator_dealloc,
-    .tp_as_async = &NotFoundIterator_async_methods
+    .tp_as_async = &NotFoundIterator_async_methods,
+    .tp_iter = (getiterfunc)NotFoundIterator_iter,
+    .tp_iternext = (iternextfunc)NotFoundIterator_iternext
 };
 
 int NotFound_init(NotFound *self, PyObject *args, PyObject *kwds) {
