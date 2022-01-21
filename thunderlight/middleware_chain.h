@@ -21,6 +21,7 @@ typedef struct {
     OuterNext *outer_next;
     PyObject *ctx;
     uint8_t state;
+    PyObject *future;
 } OuterNextIterator;
 
 typedef struct {
@@ -29,6 +30,7 @@ typedef struct {
     PyObject *ctx;
     PyObject *next;
     uint8_t state;
+    PyObject *future;
 } ChainedMiddlewareIterator;
 
 extern PyTypeObject ChainedMiddlewareIteratorType;
