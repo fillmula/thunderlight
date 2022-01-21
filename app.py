@@ -1,25 +1,13 @@
 from thunderlight import Ctx, Next, use, get
+from time import time
 
 
 @use
 async def middleware1(ctx: Ctx, next: Next):
-    print("before 1")
+    start = time()
     await next(ctx)
-    print("after 1")
-
-
-@use
-async def middleware2(ctx: Ctx, next: Next):
-    print("before 2")
-    await next(ctx)
-    print("after 2")
-
-
-@use
-async def middleware3(ctx: Ctx, next: Next):
-    print("before 3")
-    await next(ctx)
-    print("after 3")
+    end = time()
+    print(f"{ctx.res.code} - {ctx.req.path} - {(end - start) * 1000}ms")
 
 
 @get("/")
