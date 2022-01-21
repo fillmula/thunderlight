@@ -10,6 +10,7 @@
 #include "not_found.h"
 #include "middleware_chain.h"
 #include "server.h"
+#include "json.h"
 
 
 PyModuleDef thunderlight = {
@@ -20,6 +21,7 @@ PyModuleDef thunderlight = {
 };
 
 PyMODINIT_FUNC PyInit_thunderlight(void) {
+    JSON_setup();
     StatusMessage_setup();
     PyObject *module = PyModule_Create(&thunderlight);
     PyType_Ready(&CtxType);

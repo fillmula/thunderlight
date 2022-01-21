@@ -1,5 +1,6 @@
 #include "res.h"
 #include "res_headers.h"
+#include "json.h"
 
 
 PyObject *Res_new(Response *response) {
@@ -91,8 +92,12 @@ PyObject *Res_text(Res *self, PyObject *args, PyObject *kwargs) {
 }
 
 PyObject *Res_json(Res *self, PyObject *args, PyObject *kwargs) {
-    self->response->code = 204;
+    self->response->code = 200;
     HeaderMap_set(&self->response->headers, "Content-Type", 12, "application/json", 16);
+    PyObject *obj;
+    PyArg_ParseTuple(args, "O", &obj);
+    self->response->body = JSON_encode(obj, &self->response->body_len);
+    self->response->body_len = strlen(self->response->body);
     Py_RETURN_NONE;
 }
 

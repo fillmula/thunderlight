@@ -27,13 +27,14 @@ async def middleware3(ctx: Ctx, next: Next):
 
 @app.get("/")
 async def home(ctx: Ctx):
-    ctx.res.code = 200
-    ctx.res.headers['Content-Type'] = "text/plain"
-    ctx.res.body = "Hello, Home!".encode("utf-8")
+    ctx.res.empty()
 
 
 @app.get("/hello")
 async def hello(ctx: Ctx):
-    print("inside before")
-    ctx.res.empty("any")
-    print("inside after")
+    ctx.res.text("Hello, World!")
+
+
+@app.get("/json")
+async def json(ctx: Ctx):
+    ctx.res.json({"data": {"name": "Leon", "age": 20}})
