@@ -30,7 +30,7 @@ PyObject *NotFoundIterator_iternext(NotFoundIterator *self) {
     HeaderMap_set(&self->ctx->context->response->headers, "Content-Type", 12, "application/json", 16);
     self->ctx->context->response->body = "{\"error\": {\"type\": \"NotFound\", \"message\": \"This location is not found.\"}}";
     self->ctx->context->response->body_len = 73;
-    PyErr_SetString(PyExc_StopIteration, "");
+    PyErr_SetNone(PyExc_StopIteration);
     return NULL;
 }
 
