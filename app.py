@@ -35,7 +35,5 @@ async def home(ctx: Ctx):
 @app.get("/hello")
 async def hello(ctx: Ctx):
     print("inside before")
-    ctx.res.code = 200
-    ctx.res.headers['Content-Type'] = "text/plain"
-    ctx.res.body = "Hello, World!"
+    ctx.res.empty("any")
     print("inside after")

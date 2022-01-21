@@ -72,10 +72,41 @@ int Res_set_body(Res *self, PyObject *value, void *closure) {
     return 0;
 }
 
+PyObject *Res_empty(Res *self, PyObject *args, PyObject *kwargs) {
+    self->response->code = 204;
+    HeaderMap_set(&self->response->headers, "Content-Type", 12, "application/json", 16);
+    self->response->body = NULL;
+    self->response->body_len = 0;
+    Py_RETURN_NONE;
+}
+
+PyObject *Res_text(Res *self, PyObject *args, PyObject *kwargs) {
+    self->response->code = 200;
+    HeaderMap_set(&self->response->headers, "Content-Type", 12, "text/plain", 10);
+    char *text;
+    PyArg_ParseTuple(args, "s", &text);
+    self->response->body = text;
+    self->response->body_len = strlen(text);
+    Py_RETURN_NONE;
+}
+
+PyObject *Res_json(Res *self, PyObject *args, PyObject *kwargs) {
+    self->response->code = 204;
+    HeaderMap_set(&self->response->headers, "Content-Type", 12, "application/json", 16);
+    Py_RETURN_NONE;
+}
+
 PyGetSetDef Res_getset[] = {
     {"code", (getter)Res_get_code, (setter)Res_set_code, NULL, NULL},
     {"headers", (getter)Res_get_headers, NULL, NULL, NULL},
     {"body", (getter)Res_get_body, (setter)Res_set_body, NULL, NULL},
+    {NULL}
+};
+
+PyMethodDef Res_methods[] = {
+    {"empty", (PyCFunction)Res_empty, METH_VARARGS | METH_KEYWORDS, ""},
+    {"text", (PyCFunction)Res_text, METH_VARARGS | METH_KEYWORDS, ""},
+    {"json", (PyCFunction)Res_json, METH_VARARGS | METH_KEYWORDS, ""},
     {NULL}
 };
 
@@ -93,6 +124,7 @@ PyTypeObject ResType = {
     .tp_dealloc = (destructor)Res_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_getset = Res_getset,
+    .tp_methods = Res_methods,
     .tp_repr = (reprfunc)Res_repr,
     .tp_str = (reprfunc)Res_repr
 };

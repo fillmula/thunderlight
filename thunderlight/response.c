@@ -21,6 +21,9 @@ void StatusMessage_setup(void) {
     messages[200].message = "OK";
     messages[200].code = "200";
     messages[200].length = 2;
+    messages[204].message = "No Content";
+    messages[204].code = "204";
+    messages[204].length = 10;
     messages[404].message = "Not Found";
     messages[404].code = "404";
     messages[404].length = 9;
@@ -101,7 +104,7 @@ char *Response_repr(Response *self, char *head, uint8_t indent) {
     // body
     add_space(buffer, (indent + 1) * 4);
     strcat(buffer, "'body': ");
-    if (self->body_len == NULL) {
+    if (self->body_len == 0) {
         strcat(buffer, "(empty)\n");
     } else {
         char bytes[32];

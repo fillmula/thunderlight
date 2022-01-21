@@ -305,7 +305,7 @@ char *Request_repr(Request *self, char *head, uint8_t indent) {
     // body
     add_space(buffer, (indent + 1) * 4);
     strcat(buffer, "'body': ");
-    if (self->body_len == NULL) {
+    if (self->body_len == 0) {
         strcat(buffer, "(empty)\n");
     } else {
         char bytes[32];
