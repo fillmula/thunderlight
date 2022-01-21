@@ -5,11 +5,8 @@ from pathlib import Path
 from os import getcwd
 from os.path import splitext
 from importlib import import_module
-from thunderlight import Server
+from thunderlight import Server, gimme
 
-
-def gimme():
-    pass
 
 def help():
     print('\nLaunch the thunderlight server.\n\nUsage: thunderlight [app] [port] [flags]\n\nArguments:\n    app         (optional) the module and object to load.\n    port        (optional) the port to listen.\n\nFlags:\n    --dev/-d    Run in dev mode.\n\nExamples:\n    (1) thunderlight app 5000\n    (2) thunderlight app:app\n    (3) thunderlight\n    (4) thunderlight app 5000 --dev\n')
@@ -19,6 +16,7 @@ def version():
     print("0.2.0")
 
 def launch(args: list[str], dev: bool):
+    print("print is called")
     if len(args) == 0:
         args.append('app')
     if len(args) == 1:
@@ -34,9 +32,13 @@ def launch(args: list[str], dev: bool):
     path.append(str(dest))
     result = import_module(splitext(app_file.name)[0], str(dest)).__dict__
     if result:
+        print("before result")
         app = result[obj or 'app']
+        print("after result")
     else:
+        print("here")
         app = gimme()
+        print("after")
     port = int(args[1])
     server = Server(app, port)
     server.listen()

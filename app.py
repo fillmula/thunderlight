@@ -1,40 +1,39 @@
-from thunderlight import App, Ctx, Next
+from thunderlight import Ctx, Next, use, get
 
 
-app = App()
-
-
-@app.use
+@use
 async def middleware1(ctx: Ctx, next: Next):
     print("before 1")
     await next(ctx)
     print("after 1")
 
 
-@app.use
+@use
 async def middleware2(ctx: Ctx, next: Next):
     print("before 2")
     await next(ctx)
     print("after 2")
 
 
-@app.use
+@use
 async def middleware3(ctx: Ctx, next: Next):
     print("before 3")
     await next(ctx)
     print("after 3")
 
 
-@app.get("/")
+print("can get")
+@get("/")
 async def home(ctx: Ctx):
     ctx.res.empty()
 
-
-@app.get("/hello")
+print("can get")
+@get("/hello")
 async def hello(ctx: Ctx):
     ctx.res.text("Hello, World!")
 
-
-@app.get("/json")
+print("can get")
+@get("/json")
 async def json(ctx: Ctx):
     ctx.res.json({"data": {"name": "Leon", "age": 20}})
+print("can exit")

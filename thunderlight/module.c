@@ -13,11 +13,70 @@
 #include "json.h"
 
 
+PyObject *global_app = NULL;
+
+PyObject *Thunderlight_main(PyObject *app) {
+    if (global_app != NULL) {
+        Py_DECREF(global_app);
+    }
+    global_app = app;
+    Py_INCREF(global_app);
+}
+
+PyObject *Thunderlight_gimme(void) {
+    Py_INCREF(global_app);
+    return global_app;
+}
+
+PyObject *Thunderlight_make(void) {
+    Thunderlight_main(App_native_new());
+}
+
+PyObject *Thunderlight_use(PyObject *arg) {
+    Py_INCREF(global_app);
+    App_use(global_app, arg);
+    Py_RETURN_NONE;
+}
+
+PyObject *Thunderlight_get(PyObject *arg) {
+    return App_get_wrapper(global_app, arg);
+}
+
+PyObject *Thunderlight_post(PyObject *arg) {
+    return App_post_wrapper(global_app, arg);
+}
+
+PyObject *Thunderlight_patch(PyObject *arg) {
+    return App_patch_wrapper(global_app, arg);
+}
+
+PyObject *Thunderlight_delete(PyObject *arg) {
+    return App_delete_wrapper(global_app, arg);
+}
+
+void Thunderlight_final_setup(void) {
+    global_app = App_native_new();
+    Py_INCREF(global_app);
+}
+
+PyMethodDef module_methods[] = {
+    {"main", (PyCFunction)Thunderlight_main, METH_O, NULL},
+    {"gimme", (PyCFunction)Thunderlight_gimme, METH_NOARGS, NULL},
+    {"make", (PyCFunction)Thunderlight_make, METH_NOARGS, NULL},
+    {"use", (PyCFunction)Thunderlight_use, METH_O, NULL},
+    {"get", (PyCFunction)Thunderlight_get, METH_O, NULL},
+    {"post", (PyCFunction)Thunderlight_post, METH_O, NULL},
+    {"patch", (PyCFunction)Thunderlight_patch, METH_O, NULL},
+    {"delete", (PyCFunction)Thunderlight_delete, METH_O, NULL},
+    {NULL}
+};
+
 PyModuleDef thunderlight = {
     PyModuleDef_HEAD_INIT,
     .m_name = "thunderlight",
     .m_doc = "Thunderlight is the fastest Python HTTP server.",
-    .m_size = -1
+    .m_size = -1,
+    .m_methods = module_methods
 };
 
 PyMODINIT_FUNC PyInit_thunderlight(void) {
@@ -60,5 +119,6 @@ PyMODINIT_FUNC PyInit_thunderlight(void) {
     Py_INCREF(not_found);
     PyModule_AddObject(module, "not_found", not_found);
     PyModule_AddObject(module, "Next", Py_None);
+    Thunderlight_final_setup();
     return module;
 }

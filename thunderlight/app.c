@@ -48,6 +48,12 @@ int App_init(App *self, PyObject *args, PyObject *kwds) {
     return 0;
 }
 
+PyObject *App_native_new() {
+    App *app = AppType.tp_alloc(&AppType, 0);
+    App_init(app, NULL, NULL);
+    return app;
+}
+
 void App_dealloc(App *self) {
     MatcherList_dealloc(self->gets);
     MatcherList_dealloc(self->posts);
@@ -146,6 +152,21 @@ PyObject *App_python_use(App *self, PyObject *middleware) {
     Py_RETURN_NONE;
 }
 
+PyObject *App_get_wrapper(App *self, PyObject *route) {
+    return App_python_get(self, route);
+}
+
+PyObject *App_post_wrapper(App *self, PyObject *route) {
+    return App_python_post(self, route);
+}
+
+PyObject *App_patch_wrapper(App *self, PyObject *route) {
+    return App_python_patch(self, route);
+}
+
+PyObject *App_delete_wrapper(App *self, PyObject *route) {
+    return App_python_delete(self, route);
+}
 
 PyMethodDef App_methods[] = {
     {"get", (PyCFunction)App_python_get, METH_O, NULL},
