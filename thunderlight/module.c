@@ -15,7 +15,7 @@
 
 PyObject *global_app = NULL;
 
-PyObject *Thunderlight_main(PyObject *app) {
+PyObject *Thunderlight_main(PyObject *module, PyObject *app) {
     if (global_app != NULL) {
         Py_DECREF(global_app);
     }
@@ -23,34 +23,34 @@ PyObject *Thunderlight_main(PyObject *app) {
     Py_INCREF(global_app);
 }
 
-PyObject *Thunderlight_gimme(void) {
+PyObject *Thunderlight_gimme(PyObject *module) {
     Py_INCREF(global_app);
     return global_app;
 }
 
-PyObject *Thunderlight_make(void) {
-    Thunderlight_main(App_native_new());
+PyObject *Thunderlight_make(PyObject *module) {
+    Thunderlight_main(module, App_native_new());
 }
 
-PyObject *Thunderlight_use(PyObject *arg) {
+PyObject *Thunderlight_use(PyObject *module, PyObject *arg) {
     Py_INCREF(global_app);
     App_use(global_app, arg);
     Py_RETURN_NONE;
 }
 
-PyObject *Thunderlight_get(PyObject *arg) {
+PyObject *Thunderlight_get(PyObject *module, PyObject *arg) {
     return App_get_wrapper(global_app, arg);
 }
 
-PyObject *Thunderlight_post(PyObject *arg) {
+PyObject *Thunderlight_post(PyObject *module, PyObject *arg) {
     return App_post_wrapper(global_app, arg);
 }
 
-PyObject *Thunderlight_patch(PyObject *arg) {
+PyObject *Thunderlight_patch(PyObject *module, PyObject *arg) {
     return App_patch_wrapper(global_app, arg);
 }
 
-PyObject *Thunderlight_delete(PyObject *arg) {
+PyObject *Thunderlight_delete(PyObject *module, PyObject *arg) {
     return App_delete_wrapper(global_app, arg);
 }
 

@@ -22,18 +22,16 @@ async def middleware3(ctx: Ctx, next: Next):
     print("after 3")
 
 
-print("can get")
 @get("/")
 async def home(ctx: Ctx):
     ctx.res.empty()
 
-print("can get")
+
 @get("/hello")
 async def hello(ctx: Ctx):
     ctx.res.text("Hello, World!")
 
-print("can get")
+
 @get("/json")
 async def json(ctx: Ctx):
     ctx.res.json({"data": {"name": "Leon", "age": 20}})
-print("can exit")

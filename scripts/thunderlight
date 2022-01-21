@@ -16,7 +16,6 @@ def version():
     print("0.2.0")
 
 def launch(args: list[str], dev: bool):
-    print("print is called")
     if len(args) == 0:
         args.append('app')
     if len(args) == 1:
@@ -31,14 +30,10 @@ def launch(args: list[str], dev: bool):
     app_file = dest / file
     path.append(str(dest))
     result = import_module(splitext(app_file.name)[0], str(dest)).__dict__
-    if result:
-        print("before result")
+    if result and result.get(obj or 'app'):
         app = result[obj or 'app']
-        print("after result")
     else:
-        print("here")
         app = gimme()
-        print("after")
     port = int(args[1])
     server = Server(app, port)
     server.listen()
