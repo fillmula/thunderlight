@@ -91,6 +91,16 @@ PyObject *Res_text(Res *self, PyObject *args, PyObject *kwargs) {
     Py_RETURN_NONE;
 }
 
+PyObject *Res_html(Res *self, PyObject *args, PyObject *kwargs) {
+    self->response->code = 200;
+    HeaderMap_set(&self->response->headers, "Content-Type", 12, "text/html", 9);
+    char *html;
+    PyArg_ParseTuple(args, "s", &html);
+    self->response->body = html;
+    self->response->body_len = strlen(html);
+    Py_RETURN_NONE;
+}
+
 PyObject *Res_json(Res *self, PyObject *args, PyObject *kwargs) {
     self->response->code = 200;
     HeaderMap_set(&self->response->headers, "Content-Type", 12, "application/json", 16);
@@ -111,6 +121,7 @@ PyGetSetDef Res_getset[] = {
 PyMethodDef Res_methods[] = {
     {"empty", (PyCFunction)Res_empty, METH_VARARGS | METH_KEYWORDS, ""},
     {"text", (PyCFunction)Res_text, METH_VARARGS | METH_KEYWORDS, ""},
+    {"html", (PyCFunction)Res_html, METH_VARARGS | METH_KEYWORDS, ""},
     {"json", (PyCFunction)Res_json, METH_VARARGS | METH_KEYWORDS, ""},
     {NULL}
 };
