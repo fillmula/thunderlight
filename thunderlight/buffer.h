@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 
 
@@ -17,3 +21,7 @@ void Buffer_init(Buffer *buffer);
 void Buffer_append(Buffer *buffer, char *content, size_t len);
 
 void Buffer_dealloc(Buffer *buffer);
+
+#ifdef __cplusplus
+}
+#endif

@@ -54,6 +54,10 @@ PyObject *Thunderlight_delete(PyObject *module, PyObject *arg) {
     return App_delete_wrapper(global_app, arg);
 }
 
+PyObject *Thunderlight_apply(PyObject *module, PyObject *middleware) {
+    return Applier_new(middleware);
+}
+
 void Thunderlight_final_setup(void) {
     global_app = App_native_new();
     Py_INCREF(global_app);
@@ -68,6 +72,7 @@ PyMethodDef module_methods[] = {
     {"post", (PyCFunction)Thunderlight_post, METH_O, NULL},
     {"patch", (PyCFunction)Thunderlight_patch, METH_O, NULL},
     {"delete", (PyCFunction)Thunderlight_delete, METH_O, NULL},
+    {"apply", (PyCFunction)Thunderlight_apply, METH_O, NULL}
     {NULL}
 };
 
