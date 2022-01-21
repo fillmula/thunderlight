@@ -31,7 +31,7 @@ setup(
         Extension('thunderlight', [
             'thunderlight/server.c',
             'thunderlight/protocol.c',
-            'thunderlight/app.c', 'thunderlight/matcher.c', 'thunderlight/middleware_chain.c',
+            'thunderlight/app.c', 'thunderlight/matcher.c', 'thunderlight/middleware_chain.c', 'thunderlight/applier.c',
             'thunderlight/ctx.c', 'thunderlight/context.c',
             'thunderlight/req.c', 'thunderlight/req_headers.c', 'thunderlight/request.c',
             'thunderlight/res.c', 'thunderlight/response.c', 'thunderlight/buffer.c', 'thunderlight/res_headers.c', 'thunderlight/response_headers.c', 'thunderlight/hash.c',

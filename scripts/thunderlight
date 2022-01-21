@@ -15,6 +15,7 @@ def help():
 def version():
     print("0.2.0")
 
+
 def launch(args: list[str], dev: bool):
     if len(args) == 0:
         args.append('app')
