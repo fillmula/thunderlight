@@ -32,4 +32,19 @@ async def users(ctx: Ctx):
 
 @get("/users/:id")
 async def user(ctx: Ctx):
+    print(ctx.req.args)
+    print(ctx.req.args['id'])
     ctx.res.json({"data": {"user": "id"}})
+
+
+@get("/users/:id/posts")
+async def user_posts(ctx: Ctx):
+    ctx.res.json({"data": {"posts": []}})
+
+
+@get("/users/:id/posts/:post_id")
+async def user_post(ctx: Ctx):
+    print(ctx.req.args)
+    print(ctx.req.args['id'])
+    print(ctx.req.args['post_id'])
+    ctx.res.json({"data": {"post": 5}})

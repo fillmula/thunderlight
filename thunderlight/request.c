@@ -42,11 +42,16 @@ void Request_init(Request *self) {
     self->header_num = 1;
     self->body = NULL;
     self->body_len = 0;
+    // url match result
+    self->mresult = NULL;
 }
 
 void Request_dealloc(Request *self) {
     if (self->buffer_start != self->inline_buffer) {
         free(self->buffer_start);
+    }
+    if (self->mresult != NULL) {
+        free(self->mresult);
     }
 }
 

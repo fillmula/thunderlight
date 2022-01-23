@@ -6,6 +6,8 @@ extern "C" {
 
 #include <stddef.h>
 #include <stdint.h>
+#include "mresult.h"
+
 
 #define HEADERS_MAX 32
 #define INLINE_BUFFER_SIZE 4096
@@ -66,6 +68,8 @@ typedef struct {
     uint8_t header_num;
     char *body;
     size_t body_len;
+    // args
+    MatchResult *mresult;
 } Request;
 
 void Request_init(Request *self);

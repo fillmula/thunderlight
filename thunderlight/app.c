@@ -110,7 +110,7 @@ void App_process(App *self, PyObject *p) {
             mlist = self->deletes;
             break;
     }
-    PyObject *handler = MatcherList_match(mlist, protocol->request.path);
+    PyObject *handler = MatcherList_match(mlist, protocol->request.path, &protocol->request);
     PyObject *awaitable;
     if (self->entrance_middleware == NULL) {
         PyObject *call_args = PyTuple_New(1);

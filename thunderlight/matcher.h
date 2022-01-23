@@ -6,6 +6,7 @@ extern "C" {
 
 #include <Python.h>
 #include <stdbool.h>
+#include "request.h"
 
 
 #define MATCHER_LIST_INITIAL_SIZE 32
@@ -37,7 +38,7 @@ void MatcherList_dealloc(MatcherList *self);
 
 void MatcherList_append(MatcherList *self, const char *route, PyObject *handler);
 
-PyObject *MatcherList_match(MatcherList *self, char *path);
+PyObject *MatcherList_match(MatcherList *self, char *path, Request *request);
 
 #ifdef __cplusplus
 }
