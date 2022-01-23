@@ -171,7 +171,7 @@ bool Matcher_match(Matcher *self, char *path, Request *request) {
         for (uint8_t i = 0; i < self->ele_num; i++) {
             if (!self->statics[i]) {
                 char *value = malloc(segments[i].len);
-                strncmp(value, segments[i].pos, segments[i].len);
+                strncpy(value, segments[i].pos, segments[i].len);
                 MatchResult_set(mresult, mresult_idx, self->keys[i], value);
                 mresult_idx++;
             }

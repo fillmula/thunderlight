@@ -45,6 +45,4 @@ async def user_posts(ctx: Ctx):
 @get("/users/:id/posts/:post_id")
 async def user_post(ctx: Ctx):
     print(ctx.req.args)
-    print(ctx.req.args['id'])
-    print(ctx.req.args['post_id'])
-    ctx.res.json({"data": {"post": 5}})
+    ctx.res.json({"data": {"post": ctx.req.args["post_id"]}})
