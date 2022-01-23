@@ -18,6 +18,8 @@ typedef struct {
     uint8_t len;
     uint8_t ele_lens[MATCHER_MAX_ITEMS];
     uint8_t ele_num;
+    bool statics[MATCHER_MAX_ITEMS];
+    char *keys[MATCHER_MAX_ITEMS];
 } Matcher;
 
 typedef struct {

@@ -1,6 +1,13 @@
+#include <sys/param.h>
+#include <stdlib.h>
 #include "matcher.h"
 #include "not_found.h"
 
+
+typedef struct {
+    char *pos;
+    size_t len;
+} Segment;
 
 MatcherList *MatcherList_alloc(void) {
     MatcherList *self = malloc(sizeof(MatcherList));
@@ -27,18 +34,36 @@ void Matcher_record(Matcher *self) {
     char *pos = (char *)self->route;
     self->is_static = true;
     self->ele_num = 0;
+    size_t this_ele_len = 0;
+    size_t this_ele_idx = -1;
     bool next_ele = false;
+    self->statics[0] = true;
+    self->ele_lens[0] = 0;
     while (*pos != '\0') {
-        if (*pos == ':') {
-            self->is_static = false;
-        }
         if (*pos == '/') {
             next_ele = true;
+            this_ele_len = 0;
+            if (pos != self->route) {
+                self->ele_lens[this_ele_len] = this_ele_len;
+                this_ele_idx += 1;
+                self->statics[this_ele_idx] = true;
+            }
+        } else {
+            if (*pos == ':') {
+                self->is_static = false;
+                self->statics[this_ele_idx] = false;
+            }
+            if (next_ele) {
+                self->ele_num++;
+                next_ele = false;
+                if (self->statics[this_ele_idx] == false) {
+                    char *key = malloc(this_ele_len);
+                    memcpy(key, pos - this_ele_len, this_ele_len);
+                    self->keys[this_ele_idx] = key;
+                }
+            }
         }
-        if (next_ele) {
-            self->ele_num++;
-            next_ele = false;
-        }
+        this_ele_len++;
         pos++;
     }
     self->len = pos - self->route;
@@ -74,7 +99,38 @@ bool Matcher_match(Matcher *self, char *path) {
             return false;
         }
     } else {
-        return false;
+        Segment segments[MATCHER_MAX_ITEMS];
+        size_t segments_len = 0;
+        size_t seg_len = 0;
+        for (size_t i = 0; i < len; i++) {
+            char *pos = path + i;
+            if (*pos == '/') {
+                if (segments_len > 0) {
+                    segments[segments_len - 1].len = seg_len;
+                    segments[segments_len - 1].pos = pos - seg_len;
+                }
+                segments_len++;
+                seg_len = 0;
+            } else {
+                seg_len++;
+            }
+        }
+        if (segments_len != (size_t)self->ele_lens) {
+            return false;
+        }
+        for (size_t i = 0; i < self->ele_num; i++) {
+            if (self->statics[i]) {
+                if (self->ele_lens[i] != segments[i].len) {
+                    return false;
+                }
+                if (strncmp(segments[i].pos, self->keys[i], MAX(segments[i].len, self->ele_lens[i])) != 0) {
+                    return false;
+                }
+            } else {
+                // record
+            }
+        }
+        return true;
     }
 }
 
