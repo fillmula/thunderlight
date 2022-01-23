@@ -9,8 +9,9 @@ typedef struct {
 
 typedef struct {
     PyObject_HEAD
-    PyObject *applied_handler;
+    AppliedHandler *applied_handler;
     PyObject *ctx;
+    PyObject *future;
 } AppliedHandlerIterator;
 
 PyTypeObject ApplierType;
@@ -25,12 +26,14 @@ PyObject *AppliedHandlerIterator_new(PyObject *applied_handler, PyObject *ctx) {
     Py_INCREF(ctx);
     self->applied_handler = applied_handler;
     self->ctx = ctx;
+    Py_INCREF(self);
     return (PyObject *)self;
 }
 
 void AppliedHandlerIterator_dealloc(AppliedHandlerIterator *self) {
     Py_DECREF(self->applied_handler);
     Py_DECREF(self->ctx);
+    Py_DECREF(self->future);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
@@ -45,8 +48,26 @@ PyObject *AppliedHandlerIterator_await(PyObject *self) {
 }
 
 PyObject *AppliedHandlerIterator_iternext(AppliedHandlerIterator *self) {
-    Py_INCREF(self);
-    return self;
+    if (!self->future) {
+        PyObject *args = PyTuple_New(2);
+        PyTuple_SetItem(args, 0, self->ctx);
+        PyTuple_SetItem(args, 1, self->applied_handler->handler);
+        PyObject *result = PyObject_Call(self->applied_handler->middleware, args, NULL);
+        Py_DECREF(args);
+        PyObject *asyncio = PyImport_ImportModule("asyncio");
+        PyObject *ensure_future = PyObject_GetAttrString(asyncio, "ensure_future");
+        PyObject *future = PyObject_CallOneArg(ensure_future, result);
+        Py_INCREF(future);
+        self->future = future;
+    }
+    PyObject *done = PyObject_GetAttrString(self->future, "done");
+    PyObject *is_done = PyObject_CallNoArgs(done);
+    if (PyObject_IsTrue(is_done)) {
+        PyErr_SetNone(PyExc_StopIteration);
+        return NULL;
+    } else {
+        Py_RETURN_NONE;
+    }
 }
 
 PyAsyncMethods AppliedHandlerIterator_async_methods = {
@@ -66,8 +87,11 @@ PyObject *AppliedHandler_new(PyObject *middleware, PyObject *handler) {
 }
 
 PyObject *AppliedHandler_call(AppliedHandler *self, PyObject *args, PyObject *kwargs) {
+    Py_INCREF(self->handler);
+    Py_INCREF(self->middleware);
     PyObject *ctx;
     PyArg_ParseTuple(args, "O", &ctx);
+    Py_INCREF(ctx);
     return AppliedHandlerIterator_new(self, ctx);
 }
 

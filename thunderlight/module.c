@@ -11,6 +11,7 @@
 #include "middleware_chain.h"
 #include "server.h"
 #include "json.h"
+#include "applier.h"
 
 
 PyObject *global_app = NULL;
@@ -72,7 +73,7 @@ PyMethodDef module_methods[] = {
     {"post", (PyCFunction)Thunderlight_post, METH_O, NULL},
     {"patch", (PyCFunction)Thunderlight_patch, METH_O, NULL},
     {"delete", (PyCFunction)Thunderlight_delete, METH_O, NULL},
-    {"apply", (PyCFunction)Thunderlight_apply, METH_O, NULL}
+    {"apply", (PyCFunction)Thunderlight_apply, METH_O, NULL},
     {NULL}
 };
 
@@ -120,6 +121,12 @@ PyMODINIT_FUNC PyInit_thunderlight(void) {
     PyModule_AddType(module, &OuterNextType);
     PyType_Ready(&OuterNextIteratorType);
     PyModule_AddType(module, &OuterNextIteratorType);
+    PyType_Ready(&ApplierType);
+    PyModule_AddType(module, &ApplierType);
+    PyType_Ready(&AppliedHandlerType);
+    PyModule_AddType(module, &AppliedHandlerType);
+    PyType_Ready(&AppliedHandlerIteratorType);
+    PyModule_AddType(module, &AppliedHandlerIteratorType);
     not_found = PyType_GenericNew(&NotFoundType, NULL, NULL);
     Py_INCREF(not_found);
     PyModule_AddObject(module, "not_found", not_found);

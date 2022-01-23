@@ -1,9 +1,8 @@
-from thunderlight import Ctx, Next, use, get
+from thunderlight import Ctx, Next, use, get, apply
 from time import time
 
 
-@use
-async def middleware1(ctx: Ctx, next: Next):
+async def mylog(ctx: Ctx, next: Next):
     start = time()
     await next(ctx)
     end = time()
@@ -16,6 +15,7 @@ async def home(ctx: Ctx):
 
 
 @get("/hello")
+@apply(mylog)
 async def hello(ctx: Ctx):
     ctx.res.text("Hello, World!")
 
