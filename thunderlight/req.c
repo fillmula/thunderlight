@@ -1,5 +1,6 @@
 #include "req.h"
 #include "req_headers.h"
+#include "req_match.h"
 
 
 PyTypeObject ReqType;
@@ -25,7 +26,11 @@ void Req_dealloc(Req *self) {
 
 PyObject *Req_get_args(Req *self, void *closure) {
     if (!self->args) {
-
+        if (self->request->mresult == NULL) {
+            self->args = Py_None;
+        } else {
+            self->args = ReqMatch_new(self->request->mresult);
+        }
     }
     Py_INCREF(self->args);
     return self->args;

@@ -3,6 +3,7 @@
 #include "protocol.h"
 #include "ctx.h"
 #include "req_headers.h"
+#include "req_match.h"
 #include "req.h"
 #include "res_headers.h"
 #include "res.h"
@@ -93,6 +94,8 @@ PyMODINIT_FUNC PyInit_thunderlight(void) {
     PyModule_AddType(module, &CtxType);
     PyType_Ready(&ReqHeadersType);
     PyModule_AddType(module, &ReqHeadersType);
+    PyType_Ready(&ReqMatchType);
+    PyModule_AddType(module, &ReqMatchType);
     PyType_Ready(&ReqType);
     PyModule_AddType(module, &ReqType);
     PyType_Ready(&ResHeadersType);

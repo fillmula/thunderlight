@@ -105,7 +105,7 @@ void MatcherList_append(MatcherList *self, const char *route, PyObject *handler)
     self->length++;
 }
 
-bool Matcher_match(Matcher *self, char *path) {
+bool Matcher_match(Matcher *self, char *path, Request *request) {
     size_t len = strlen(path);
     if (*(path + len - 1) == '/') {
         if (len > 1) {
@@ -135,6 +135,11 @@ bool Matcher_match(Matcher *self, char *path) {
                 }
                 segments_len++;
                 seg_len = 0;
+            } else if (i == len - 1) {
+                if (segments_len > 0) {
+                    segments[segments_len - 1].len = seg_len;
+                    segments[segments_len - 1].pos = pos - seg_len;
+                }
             } else {
                 seg_len++;
             }
@@ -142,6 +147,7 @@ bool Matcher_match(Matcher *self, char *path) {
         if (segments_len != (size_t)self->ele_num) {
             return false;
         }
+        size_t mresult_len = 0;
         for (size_t i = 0; i < self->ele_num; i++) {
             if (self->statics[i]) {
                 if (self->ele_lens[i] != segments[i].len) {
@@ -151,16 +157,29 @@ bool Matcher_match(Matcher *self, char *path) {
                     return false;
                 }
             } else {
+                mresult_len++;
                 // record
             }
         }
+        size_t mresult_idx = 0;
+        MatchResult *mresult = MatchResult_new(mresult_len);
+        for (uint8_t i = 0; i < self->ele_num; i++) {
+            if (!self->statics[i]) {
+                *(segments[i].pos + segments[i].len) = '\0';
+                printf("see value is %s\n", segments[i].pos);
+                fflush(stdout);
+                MatchResult_set(mresult, mresult_idx, self->keys[i], segments[i].pos);
+                mresult_idx++;
+            }
+        }
+        request->mresult = mresult;
         return true;
     }
 }
 
-PyObject *MatcherList_match(MatcherList *self, char *path) {
+PyObject *MatcherList_match(MatcherList *self, char *path, Request *request) {
     for (size_t i = 0; i < self->length; i++) {
-        if (Matcher_match(&self->buffer[i], path)) {
+        if (Matcher_match(&self->buffer[i], path, request)) {
             Py_INCREF(self->buffer[i].handler);
             return self->buffer[i].handler;
         }
