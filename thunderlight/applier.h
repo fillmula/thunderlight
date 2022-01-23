@@ -6,6 +6,11 @@ extern "C" {
 
 #include <Python.h>
 
+extern PyTypeObject ApplierType;
+
+extern PyTypeObject AppliedHandlerType;
+
+extern PyTypeObject AppliedHandlerIteratorType;
 
 typedef struct {
     PyObject_HEAD
