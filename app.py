@@ -25,6 +25,11 @@ async def hello_2(ctx: Ctx):
     ctx.res.json({"data": {"index": 2}})
 
 
+@get("/users")
+async def users(ctx: Ctx):
+    ctx.res.json({"data": {"users": []}})
+
+
 @get("/users/:id")
 async def user(ctx: Ctx):
     ctx.res.json({"data": {"user": "id"}})

@@ -35,38 +35,56 @@ void Matcher_record(Matcher *self) {
     self->is_static = true;
     self->ele_num = 0;
     size_t this_ele_len = 0;
-    size_t this_ele_idx = -1;
+    size_t this_ele_idx = 0;
     bool next_ele = false;
     self->statics[0] = true;
     self->ele_lens[0] = 0;
     while (*pos != '\0') {
         if (*pos == '/') {
-            next_ele = true;
-            this_ele_len = 0;
             if (pos != self->route) {
-                self->ele_lens[this_ele_len] = this_ele_len;
+                // save current
+                char *key = malloc(this_ele_len);
+                memcpy(key, pos - this_ele_len, this_ele_len);
+                self->keys[this_ele_idx] = key;
+                // next
+                self->ele_lens[this_ele_idx] = this_ele_len;
                 this_ele_idx += 1;
                 self->statics[this_ele_idx] = true;
             }
+            next_ele = true;
+            this_ele_len = -1;
         } else {
             if (*pos == ':') {
                 self->is_static = false;
                 self->statics[this_ele_idx] = false;
+                this_ele_len--;
             }
             if (next_ele) {
                 self->ele_num++;
                 next_ele = false;
-                if (self->statics[this_ele_idx] == false) {
-                    char *key = malloc(this_ele_len);
-                    memcpy(key, pos - this_ele_len, this_ele_len);
-                    self->keys[this_ele_idx] = key;
-                }
             }
         }
         this_ele_len++;
         pos++;
     }
+    if (pos != self->route) {
+        // save current
+        char *key = malloc(this_ele_len);
+        memcpy(key, pos - this_ele_len, this_ele_len);
+        self->keys[this_ele_idx] = key;
+        // next
+        self->ele_lens[this_ele_idx] = this_ele_len;
+        this_ele_idx += 1;
+        self->statics[this_ele_idx] = true;
+    }
     self->len = pos - self->route;
+    // // debug print
+    // printf("recorded '%s', elements %u, static %d\n", self->route, self->ele_num, self->is_static);
+    // if (!self->is_static) {
+    //     for (size_t i = 0; i < self->ele_num; i++) {
+    //         printf("segment '%s', len %u, static %d\n", self->keys[i], self->ele_lens[i], self->statics[i]);
+    //     }
+    // }
 }
 
 void MatcherList_append(MatcherList *self, const char *route, PyObject *handler) {
@@ -89,6 +107,12 @@ void MatcherList_append(MatcherList *self, const char *route, PyObject *handler)
 
 bool Matcher_match(Matcher *self, char *path) {
     size_t len = strlen(path);
+    if (*(path + len - 1) == '/') {
+        if (len > 1) {
+            len--;
+            path[len] = '\0';
+        }
+    }
     if (self->is_static) {
         if (len != self->len) {
             return false;
@@ -115,7 +139,7 @@ bool Matcher_match(Matcher *self, char *path) {
                 seg_len++;
             }
         }
-        if (segments_len != (size_t)self->ele_lens) {
+        if (segments_len != (size_t)self->ele_num) {
             return false;
         }
         for (size_t i = 0; i < self->ele_num; i++) {
