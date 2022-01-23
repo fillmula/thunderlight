@@ -79,10 +79,10 @@ void Matcher_record(Matcher *self) {
     }
     self->len = pos - self->route;
     // // debug print
-    // printf("recorded '%s', elements %u, static %d\n", self->route, self->ele_num, self->is_static);
+    // printf("recorded '%s', elements %u, static %s\n", self->route, self->ele_num, self->is_static ? "true" : "false");
     // if (!self->is_static) {
     //     for (size_t i = 0; i < self->ele_num; i++) {
-    //         printf("segment '%s', len %u, static %d\n", self->keys[i], self->ele_lens[i], self->statics[i]);
+    //         printf("segment '%s', len %u, static %s\n", self->keys[i], self->ele_lens[i], self->statics[i] ? "true" : "false");
     //     }
     // }
 }
@@ -137,13 +137,18 @@ bool Matcher_match(Matcher *self, char *path, Request *request) {
                 seg_len = 0;
             } else if (i == len - 1) {
                 if (segments_len > 0) {
-                    segments[segments_len - 1].len = seg_len;
                     segments[segments_len - 1].pos = pos - seg_len;
+                    seg_len++;
+                    segments[segments_len - 1].len = seg_len;
                 }
             } else {
                 seg_len++;
             }
         }
+        // printf("segments length is %zu\n", segments_len);
+        // for (size_t i = 0; i < segments_len; i++) {
+        //     printf("segment at index %zu, length %zu, content %s\n", i, segments[i].len, segments[i].pos);
+        // }
         if (segments_len != (size_t)self->ele_num) {
             return false;
         }
@@ -165,10 +170,9 @@ bool Matcher_match(Matcher *self, char *path, Request *request) {
         MatchResult *mresult = MatchResult_new(mresult_len);
         for (uint8_t i = 0; i < self->ele_num; i++) {
             if (!self->statics[i]) {
-                *(segments[i].pos + segments[i].len) = '\0';
-                printf("see value is %s\n", segments[i].pos);
-                fflush(stdout);
-                MatchResult_set(mresult, mresult_idx, self->keys[i], segments[i].pos);
+                char *value = malloc(segments[i].len);
+                strncmp(value, segments[i].pos, segments[i].len);
+                MatchResult_set(mresult, mresult_idx, self->keys[i], value);
                 mresult_idx++;
             }
         }
