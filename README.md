@@ -101,7 +101,7 @@ async def articles(ctx: Ctx) -> None:
 
 ## Changelog
 
-### 0.2.1 (Jan 24th, 2022)
+### 0.2.4 (Jan 24th, 2022)
 * Remove uvicorn and related dependencies
 * Rewrite with C
 

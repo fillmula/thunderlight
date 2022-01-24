@@ -117,7 +117,7 @@ PyGetSetDef Req_getset[] = {
     {"version", (getter)Req_get_version, NULL, NULL, NULL},
     {"headers", (getter)Req_get_headers, NULL, NULL, NULL},
     {"body", (getter)Req_get_body, NULL, NULL, NULL},
-    {"json", (getter)Req_get_json, NULL, NULL, NULL}
+    {"json", (getter)Req_get_json, NULL, NULL, NULL},
     {NULL}
 };
 
