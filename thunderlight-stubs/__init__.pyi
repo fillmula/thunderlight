@@ -58,6 +58,12 @@ class Req:
         """
         ...
 
+    @property
+    def json(self) -> Any:
+        """The request's body JSON object.
+        """
+        ...
+
 
 class ResHeaders:
     """The response headers. This is a dict like object.
@@ -74,7 +80,7 @@ class Res:
         ...
 
     @code.setter
-    def set_code(self, code) -> None:
+    def code(self, code) -> None:
         """Set the response's status code.
         """
         ...
@@ -92,8 +98,31 @@ class Res:
         ...
 
     @body.setter
-    def set_body(self, body) -> None:
+    def body(self, body) -> None:
         """Set the response's body. This can be a str or a bytes.
+        """
+        ...
+
+    def json(self, data: Any) -> None:
+        """Set the response's body to the json object and set the content type
+        header.
+        """
+        ...
+
+    def text(self, data: str) -> None:
+        """Set the response's body to the data string and set the content type
+        header.
+        """
+        ...
+
+    def html(self, data: str) -> None:
+        """Set the response's body to the data string and set the content type
+        header.
+        """
+        ...
+
+    def empty(self, *args: Any, **kwargs: Any) -> None:
+        """Set the response's body to empty and set the status code to 204.
         """
         ...
 

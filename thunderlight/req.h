@@ -22,6 +22,7 @@ typedef struct {
     PyObject *version;
     PyObject *headers;
     PyObject *body;
+    PyObject *json;
 } Req;
 
 extern PyTypeObject ReqType;

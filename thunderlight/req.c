@@ -1,6 +1,7 @@
 #include "req.h"
 #include "req_headers.h"
 #include "req_match.h"
+#include "json.h"
 
 
 PyTypeObject ReqType;
@@ -9,10 +10,14 @@ PyObject *Req_new(Request *request) {
     Req *self = NULL;
     self = (Req *)ReqType.tp_alloc(&ReqType, 0);
     self->request = request;
+    self->args = NULL;
     self->method = NULL;
     self->path = NULL;
     self->query = NULL;
     self->version = NULL;
+    self->json = NULL;
+    self->body = NULL;
+    self->headers = NULL;
     return (PyObject *)self;
 }
 
@@ -21,6 +26,7 @@ void Req_dealloc(Req *self) {
     Py_XDECREF(self->path);
     Py_XDECREF(self->query);
     Py_XDECREF(self->version);
+    Py_XDECREF(self->json);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
@@ -95,6 +101,14 @@ PyObject *Req_get_body(Req *self, void *closure) {
     return self->body;
 }
 
+PyObject *Req_get_json(Req *self, void *closure) {
+    if (!self->json) {
+        self->json = JSON_decode(Req_get_body(self, closure));
+    }
+    Py_INCREF(self->json);
+    return self->json;
+}
+
 PyGetSetDef Req_getset[] = {
     {"args", (getter)Req_get_args, NULL, NULL, NULL},
     {"method", (getter)Req_get_method, NULL, NULL, NULL},
@@ -103,6 +117,7 @@ PyGetSetDef Req_getset[] = {
     {"version", (getter)Req_get_version, NULL, NULL, NULL},
     {"headers", (getter)Req_get_headers, NULL, NULL, NULL},
     {"body", (getter)Req_get_body, NULL, NULL, NULL},
+    {"json", (getter)Req_get_json, NULL, NULL, NULL}
     {NULL}
 };
 

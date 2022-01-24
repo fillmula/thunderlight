@@ -7,7 +7,7 @@ README = (Path(__file__).parent / "README.md").read_text()
 
 setup(
     name='thunderlight',
-    version='0.2.0',
+    version='0.2.1',
     description=('A Python HTTP Server in C.'),
     long_description=README,
     long_description_content_type='text/markdown',

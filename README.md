@@ -101,6 +101,10 @@ async def articles(ctx: Ctx) -> None:
 
 ## Changelog
 
+### 0.2.1 (Jan 24th, 2022)
+* Remove uvicorn and related dependencies
+* Rewrite with C
+
 ### 0.1.0 (Dec 10th, 2021)
 * Global methods added: `get`, `post`, `patch`, `delete`, `use` and `apply`.
 * Classes added: `App`, `Ctx`, `Req`, `Res`, `State`.
