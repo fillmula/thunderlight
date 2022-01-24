@@ -15,6 +15,11 @@ async def home(ctx: Ctx):
     ctx.res.empty()
 
 
+@post('/')
+async def home_post(ctx: Ctx):
+    ctx.res.json(ctx.req.json)
+
+
 @get("/hello")
 async def hello(ctx: Ctx):
     ctx.res.text("Hello, World!")

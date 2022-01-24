@@ -95,7 +95,7 @@ PyObject *Req_get_headers(Req *self, void *closure) {
 
 PyObject *Req_get_body(Req *self, void *closure) {
     if (!self->body) {
-        self->body = PyBytes_FromStringAndSize(self->request->body, self->request->body_len);
+        self->body = PyBytes_FromStringAndSize(self->request->body, strlen(self->request->body));
     }
     Py_INCREF(self->body);
     return self->body;
@@ -103,7 +103,8 @@ PyObject *Req_get_body(Req *self, void *closure) {
 
 PyObject *Req_get_json(Req *self, void *closure) {
     if (!self->json) {
-        self->json = JSON_decode(Req_get_body(self, closure));
+        PyObject *body = Req_get_body(self, NULL);
+        self->json = JSON_decode(body);
     }
     Py_INCREF(self->json);
     return self->json;
