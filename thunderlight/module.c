@@ -23,6 +23,8 @@ PyObject *Thunderlight_main(PyObject *module, PyObject *app) {
     }
     global_app = app;
     Py_INCREF(global_app);
+    Py_INCREF(global_app);
+    return global_app;
 }
 
 PyObject *Thunderlight_gimme(PyObject *module) {
@@ -31,7 +33,7 @@ PyObject *Thunderlight_gimme(PyObject *module) {
 }
 
 PyObject *Thunderlight_make(PyObject *module) {
-    Thunderlight_main(module, App_native_new());
+    return Thunderlight_main(module, App_native_new());
 }
 
 PyObject *Thunderlight_use(PyObject *module, PyObject *arg) {
@@ -133,7 +135,12 @@ PyMODINIT_FUNC PyInit_thunderlight(void) {
     not_found = PyType_GenericNew(&NotFoundType, NULL, NULL);
     Py_INCREF(not_found);
     PyModule_AddObject(module, "not_found", not_found);
+    Py_INCREF(Py_None);
     PyModule_AddObject(module, "Next", Py_None);
+    Py_INCREF(Py_None);
+    PyModule_AddObject(module, "Handler", Py_None);
+    Py_INCREF(Py_None);
+    PyModule_AddObject(module, "Middleware", Py_None);
     Thunderlight_final_setup();
     return module;
 }

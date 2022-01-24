@@ -14,8 +14,6 @@ setup(
     author='Victor Teo',
     author_email='victor.teo@fillmula.com',
     license='MIT',
-    # packages=['thunderlight'],
-    # package_data={'thunderlight': []},
     zip_safe=False,
     url='https://github.com/fillmula/thunderlight',
     include_package_data=True,
@@ -27,6 +25,8 @@ setup(
         'uvloop>=0.16.0',
     ],
     scripts=['scripts/thunderlight'],
+    package_data={"thunderlight-stubs": ["__init__.pyi"]},
+    packages=["thunderlight-stubs"],
     ext_modules=[
         Extension('thunderlight', [
             'thunderlight/server.c',
