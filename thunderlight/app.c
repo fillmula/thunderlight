@@ -117,11 +117,13 @@ void App_process(App *self, PyObject *p) {
         PyObject *call_args = PyTuple_New(1);
         PyTuple_SetItem(call_args, 0, (PyObject *)protocol->ctx);
         awaitable = PyObject_Call(handler, call_args, NULL);
+        Py_DECREF(call_args);
     } else {
         PyObject *call_args = PyTuple_New(2);
         PyTuple_SetItem(call_args, 0, (PyObject *)protocol->ctx);
         PyTuple_SetItem(call_args, 1, handler);
         awaitable = PyObject_Call(self->entrance_middleware, call_args, NULL);
+        Py_DECREF(call_args);
     }
     PyObject *asyncio = PyImport_ImportModule("asyncio");
     PyObject *ensure_future = PyObject_GetAttrString(asyncio, "ensure_future");
@@ -130,6 +132,7 @@ void App_process(App *self, PyObject *p) {
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, (PyObject *)protocol);
     PyObject_Call(add_done_callback, args, NULL);
+    Py_DECREF(args);
 }
 
 PyObject *App_python_get(App *self, PyObject *route) {
