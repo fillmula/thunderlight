@@ -43,6 +43,7 @@ int App_init(App *self, PyObject *args, PyObject *kwds) {
     self->patches = MatcherList_alloc();
     MatcherList_init(self->patches);
     self->deletes = MatcherList_alloc();
+    MatcherList_init(self->deletes);
     self->middlewares = PyList_New(0);
     self->entrance_middleware = NULL;
     return 0;
