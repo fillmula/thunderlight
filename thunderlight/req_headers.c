@@ -40,10 +40,24 @@ PyObject *ReqHeaders_repr(ReqHeaders *self) {
     return py_repr;
 }
 
+int ReqHeaders_contains(ReqHeaders *self, PyObject *item) {
+    const char *string_key = PyUnicode_AsUTF8(item);
+    for (uint8_t i = 0; i < ((ReqHeaders *)self)->request->header_num; i++) {
+        if (strcmp(((ReqHeaders *)self)->request->headers[i].name, string_key) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 PyMappingMethods ReqHeaders_mapping_methods = {
     .mp_length = ReqHeaders_length,
     .mp_subscript = ReqHeaders_subscript,
     .mp_ass_subscript = NULL
+};
+
+PySequenceMethods ReqHeaders_sequence_methods = {
+    .sq_contains = (objobjproc)ReqHeaders_contains
 };
 
 PyTypeObject ReqHeadersType = {
@@ -54,5 +68,6 @@ PyTypeObject ReqHeadersType = {
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_as_mapping = &ReqHeaders_mapping_methods,
     .tp_repr = (reprfunc)ReqHeaders_repr,
-    .tp_str = (reprfunc)ReqHeaders_repr
+    .tp_str = (reprfunc)ReqHeaders_repr,
+    .tp_as_sequence = &ReqHeaders_sequence_methods
 };

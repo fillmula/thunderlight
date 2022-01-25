@@ -103,6 +103,7 @@ async def articles(ctx: Ctx) -> None:
 
 ### 0.2.7 (Jan 25th, 2022)
 * Fixed a bug that causes errors in handlers not propagated
+* Add `__contains__` method to `ReqHeaders`
 
 ### 0.2.6 (Jan 25th, 2022)
 * Fixed a bug that would cause delete routes crashing

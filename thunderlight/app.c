@@ -111,23 +111,32 @@ void App_process(App *self, PyObject *p) {
             mlist = self->deletes;
             break;
     }
+
     PyObject *handler = MatcherList_match(mlist, protocol->request.path, &protocol->request);
     PyObject *awaitable;
     if (self->entrance_middleware == NULL) {
         PyObject *call_args = PyTuple_New(1);
         PyTuple_SetItem(call_args, 0, (PyObject *)protocol->ctx);
+        Py_INCREF(protocol->ctx);
         awaitable = PyObject_Call(handler, call_args, NULL);
+        Py_INCREF(awaitable);
+        Py_INCREF(handler);
         Py_DECREF(call_args);
     } else {
         PyObject *call_args = PyTuple_New(2);
         PyTuple_SetItem(call_args, 0, (PyObject *)protocol->ctx);
+        Py_INCREF(protocol->ctx);
         PyTuple_SetItem(call_args, 1, handler);
         awaitable = PyObject_Call(self->entrance_middleware, call_args, NULL);
+        Py_INCREF(awaitable);
+        Py_INCREF(handler);
         Py_DECREF(call_args);
     }
+    // Py_INCREF(awaitable);
     PyObject *asyncio = PyImport_ImportModule("asyncio");
     PyObject *ensure_future = PyObject_GetAttrString(asyncio, "ensure_future");
     PyObject *future = PyObject_CallOneArg(ensure_future, awaitable);
+    // Py_INCREF(future);
     PyObject *add_done_callback = PyObject_GetAttrString(future, "add_done_callback");
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, (PyObject *)protocol);

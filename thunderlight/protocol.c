@@ -64,6 +64,7 @@ PyObject *Protocol_data_received(Protocol *self, PyObject *data) {
     RequestParsingState state = Request_receive(&(self->request), content, len);
     Py_XDECREF(data);
     if (state == RequestParsingStateDone) {
+        // Py_INCREF(self->app);
         App_process(self->app, (PyObject *)self);
     }
     Py_RETURN_NONE;

@@ -99,6 +99,7 @@ void MatcherList_append(MatcherList *self, const char *route, PyObject *handler)
         }
     }
     Py_INCREF(handler);
+    Py_INCREF(handler);
     self->buffer[index].handler = handler;
     self->buffer[index].route = route;
     Matcher_record(&self->buffer[index]);
