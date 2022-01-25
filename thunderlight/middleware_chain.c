@@ -87,8 +87,15 @@ PyObject *OuterNextIterator_iternext(OuterNextIterator *self) {
     PyObject *done = PyObject_GetAttrString(self->future, "done");
     PyObject *is_done = PyObject_CallNoArgs(done);
     if (PyObject_IsTrue(is_done)) {
-        PyErr_SetNone(PyExc_StopIteration);
-        return NULL;
+        PyObject *exception = PyObject_GetAttrString(self->future, "exception");
+        PyObject *exc = PyObject_CallNoArgs(exception);
+        if (Py_IsNone(exc)) {
+            PyErr_SetNone(PyExc_StopIteration);
+            return NULL;
+        } else {
+            PyErr_SetNone(exc);
+            return NULL;
+        }
     } else {
         Py_RETURN_NONE;
     }
@@ -197,8 +204,15 @@ PyObject *ChainedMiddlewareIterator_iternext(ChainedMiddlewareIterator *self) {
     PyObject *done = PyObject_GetAttrString(self->future, "done");
     PyObject *is_done = PyObject_CallNoArgs(done);
     if (PyObject_IsTrue(is_done)) {
-        PyErr_SetNone(PyExc_StopIteration);
-        return NULL;
+        PyObject *exception = PyObject_GetAttrString(self->future, "exception");
+        PyObject *exc = PyObject_CallNoArgs(exception);
+        if (Py_IsNone(exc)) {
+            PyErr_SetNone(PyExc_StopIteration);
+            return NULL;
+        } else {
+            PyErr_SetNone(exc);
+            return NULL;
+        }
     } else {
         Py_RETURN_NONE;
     }
