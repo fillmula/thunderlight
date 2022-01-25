@@ -5,6 +5,7 @@
 int Server_init(Server *self, PyObject *args, PyObject *kwds) {
     PyArg_ParseTuple(args, "OO", &self->app, &self->port);
     Py_INCREF(self->app);
+    Py_INCREF(self->app);
     Py_INCREF(self->port);
     App_prepare(self->app);
     return 0;
