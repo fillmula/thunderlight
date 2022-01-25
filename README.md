@@ -101,6 +101,9 @@ async def articles(ctx: Ctx) -> None:
 
 ## Changelog
 
+### 0.2.6 (Jan 25th, 2022)
+* Fixed a bug that would cause delete routes crashing
+
 ### 0.2.5 (Jan 24th, 2022)
 * Remove uvicorn and related dependencies
 * Rewrite with C
