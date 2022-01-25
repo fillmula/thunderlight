@@ -101,6 +101,9 @@ async def articles(ctx: Ctx) -> None:
 
 ## Changelog
 
+### 0.2.7 (Jan 25th, 2022)
+* Fixed a bug that causes errors in handlers not propagated
+
 ### 0.2.6 (Jan 25th, 2022)
 * Fixed a bug that would cause delete routes crashing
 
