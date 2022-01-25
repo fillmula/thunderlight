@@ -69,6 +69,9 @@ PyObject *OuterNextIterator_iter(OuterNextIterator *self) {
 }
 
 PyObject *OuterNextIterator_iternext(OuterNextIterator *self) {
+    if (PyErr_Occurred() != NULL) {
+        return NULL;
+    }
     if (self->future == NULL) {
         PyObject *args = PyTuple_New(2);
         PyTuple_SetItem(args, 0, self->ctx);
@@ -175,6 +178,9 @@ PyObject *ChainedMiddlewareIterator_iter(ChainedMiddlewareIterator *self) {
 }
 
 PyObject *ChainedMiddlewareIterator_iternext(ChainedMiddlewareIterator *self) {
+    if (PyErr_Occurred() != NULL) {
+        return NULL;
+    }
     if (self->future == NULL) {
         PyObject *outer_next = (PyObject *)OuterNext_new(self->chained_middleware->inner, self->next);
         PyObject *args = PyTuple_New(2);

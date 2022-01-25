@@ -48,6 +48,9 @@ PyObject *AppliedHandlerIterator_await(PyObject *self) {
 }
 
 PyObject *AppliedHandlerIterator_iternext(AppliedHandlerIterator *self) {
+    if (PyErr_Occurred() != NULL) {
+        return NULL;
+    }
     if (!self->future) {
         PyObject *args = PyTuple_New(2);
         PyTuple_SetItem(args, 0, self->ctx);
