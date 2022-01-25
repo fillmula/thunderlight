@@ -72,7 +72,7 @@ PyObject *AppliedHandlerIterator_iternext(AppliedHandlerIterator *self) {
             PyErr_SetNone(PyExc_StopIteration);
             return NULL;
         } else {
-            PyErr_SetNone(exc);
+            PyErr_SetObject(PyExc_Exception, exc);
             return NULL;
         }
     } else {

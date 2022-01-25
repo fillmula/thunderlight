@@ -93,7 +93,7 @@ PyObject *OuterNextIterator_iternext(OuterNextIterator *self) {
             PyErr_SetNone(PyExc_StopIteration);
             return NULL;
         } else {
-            PyErr_SetNone(exc);
+            PyErr_SetObject(PyExc_Exception, exc);
             return NULL;
         }
     } else {
@@ -210,7 +210,7 @@ PyObject *ChainedMiddlewareIterator_iternext(ChainedMiddlewareIterator *self) {
             PyErr_SetNone(PyExc_StopIteration);
             return NULL;
         } else {
-            PyErr_SetNone(exc);
+            PyErr_SetObject(PyExc_Exception, exc);
             return NULL;
         }
     } else {
