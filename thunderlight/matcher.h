@@ -34,6 +34,8 @@ MatcherList *MatcherList_alloc(void);
 
 void MatcherList_init(MatcherList *self);
 
+MatcherList *MatcherList_new(void);
+
 void MatcherList_dealloc(MatcherList *self);
 
 void MatcherList_append(MatcherList *self, const char *route, PyObject *handler);

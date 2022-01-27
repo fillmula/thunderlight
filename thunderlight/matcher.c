@@ -20,6 +20,12 @@ void MatcherList_init(MatcherList *self) {
     self->buffer = self->inline_buffer;
 }
 
+MatcherList *MatcherList_new(void) {
+    MatcherList *self = MatcherList_alloc();
+    MatcherList_init(self);
+    return self;
+}
+
 void MatcherList_dealloc(MatcherList *self) {
     for (size_t i = 0; i < self->length; i++) {
         Py_DECREF(self->buffer[i].handler);

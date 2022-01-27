@@ -48,13 +48,13 @@ void App_prepare(App *self);
 
 void App_process(App *self, PyObject *p);
 
-PyObject *App_get_wrapper(App *self, PyObject *route);
+PyObject *App_python_get(App *self, PyObject *route);
 
-PyObject *App_post_wrapper(App *self, PyObject *route);
+PyObject *App_python_post(App *self, PyObject *route);
 
-PyObject *App_patch_wrapper(App *self, PyObject *route);
+PyObject *App_python_patch(App *self, PyObject *route);
 
-PyObject *App_delete_wrapper(App *self, PyObject *route);
+PyObject *App_python_delete(App *self, PyObject *route);
 
 #ifdef __cplusplus
 }

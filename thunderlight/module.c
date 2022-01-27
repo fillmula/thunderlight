@@ -43,19 +43,19 @@ PyObject *Thunderlight_use(PyObject *module, PyObject *arg) {
 }
 
 PyObject *Thunderlight_get(PyObject *module, PyObject *arg) {
-    return App_get_wrapper(global_app, arg);
+    return App_python_get(global_app, arg);
 }
 
 PyObject *Thunderlight_post(PyObject *module, PyObject *arg) {
-    return App_post_wrapper(global_app, arg);
+    return App_python_post(global_app, arg);
 }
 
 PyObject *Thunderlight_patch(PyObject *module, PyObject *arg) {
-    return App_patch_wrapper(global_app, arg);
+    return App_python_patch(global_app, arg);
 }
 
 PyObject *Thunderlight_delete(PyObject *module, PyObject *arg) {
-    return App_delete_wrapper(global_app, arg);
+    return App_python_delete(global_app, arg);
 }
 
 PyObject *Thunderlight_apply(PyObject *module, PyObject *middleware) {
