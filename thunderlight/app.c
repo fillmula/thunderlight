@@ -36,14 +36,10 @@ PyTypeObject RouteWrapperType = {
 };
 
 int App_init(App *self, PyObject *args, PyObject *kwds) {
-    self->gets = MatcherList_alloc();
-    MatcherList_init(self->gets);
-    self->posts = MatcherList_alloc();
-    MatcherList_init(self->posts);
-    self->patches = MatcherList_alloc();
-    MatcherList_init(self->patches);
-    self->deletes = MatcherList_alloc();
-    MatcherList_init(self->deletes);
+    self->gets = MatcherList_new();
+    self->posts = MatcherList_new();
+    self->patches = MatcherList_new();
+    self->posts = MatcherList_new();
     self->middlewares = PyList_New(0);
     self->entrance_middleware = NULL;
     return 0;
@@ -163,22 +159,6 @@ PyObject *App_python_delete(App *self, PyObject *route) {
 PyObject *App_python_use(App *self, PyObject *middleware) {
     App_use(self, middleware);
     Py_RETURN_NONE;
-}
-
-PyObject *App_get_wrapper(App *self, PyObject *route) {
-    return App_python_get(self, route);
-}
-
-PyObject *App_post_wrapper(App *self, PyObject *route) {
-    return App_python_post(self, route);
-}
-
-PyObject *App_patch_wrapper(App *self, PyObject *route) {
-    return App_python_patch(self, route);
-}
-
-PyObject *App_delete_wrapper(App *self, PyObject *route) {
-    return App_python_delete(self, route);
 }
 
 PyMethodDef App_methods[] = {
