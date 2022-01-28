@@ -7,10 +7,6 @@
 PyTypeObject RouteWrapperType;
 
 RouteWrapper *RouteWrapper_new(MatcherList *mlist, PyObject *route) {
-    // printf("generating route wrapper: %s ", mlist->name);
-    // PyObject_Print(route, stdout, Py_PRINT_RAW);
-    // printf("\n");
-    // fflush(stdout);
     RouteWrapper *self = (RouteWrapper *)RouteWrapperType.tp_alloc(&RouteWrapperType, 0);
     self->mlist = mlist;
     self->route = route;
@@ -28,10 +24,6 @@ PyObject *RouteWrapper_call(RouteWrapper *self, PyObject *args, PyObject *kwds) 
     PyArg_ParseTuple(args, "O", &handle);
     const char *route = PyUnicode_AsUTF8(self->route);
     Py_INCREF(self->route);
-    // printf("route wrapper is called\n");
-    // PyObject_Print(self->route, stdout, Py_PRINT_RAW);
-    // printf("\n");
-    // fflush(stdout);
     MatcherList_append(self->mlist, route, handle);
     Py_RETURN_NONE;
 }
@@ -51,6 +43,7 @@ int App_init(App *self, PyObject *args, PyObject *kwds) {
     self->deletes = MatcherList_new("DELETE");
     self->middlewares = PyList_New(0);
     self->entrance_middleware = NULL;
+    self->prepares = PyList_New(0);
     return 0;
 }
 
@@ -97,11 +90,13 @@ void App_use(App *self, PyObject *middleware) {
 void App_prepare(App *self) {
     self->entrance_middleware = ChainedMiddleware_build(self->middlewares);
     Py_XINCREF(self->entrance_middleware);
+    Py_ssize_t prepares_len = PyList_Size(self->prepares);
+    for (Py_ssize_t i = 0; i < prepares_len; i++) {
+        PyObject_CallNoArgs(PyList_GetItem(self->prepares, i));
+    }
 }
 
 void App_process(App *self, PyObject *p) {
-    printf("begin process\n");
-    fflush(stdout);
     Protocol *protocol = (Protocol *)p;
     MatcherList *mlist = NULL;
     switch (protocol->request.method_len) {
@@ -139,17 +134,13 @@ void App_process(App *self, PyObject *p) {
         Py_INCREF(handler);
         Py_DECREF(call_args);
     }
-    // Py_INCREF(awaitable);
+    Py_INCREF(awaitable);
     PyObject *future = Loop_start_awaitable(awaitable);
-    // Py_INCREF(future);
-    printf("will add done callback\n");
-    fflush(stdout);
+    Py_INCREF(future);
     PyObject *add_done_callback = PyObject_GetAttrString(future, "add_done_callback");
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, (PyObject *)protocol);
     PyObject_Call(add_done_callback, args, NULL);
-    printf("done callback added\n");
-    fflush(stdout);
     Py_DECREF(args);
 }
 
@@ -174,12 +165,18 @@ PyObject *App_python_use(App *self, PyObject *middleware) {
     Py_RETURN_NONE;
 }
 
+PyObject *App_on_prepare(App *self, PyObject *callable) {
+    PyList_Append(self->prepares, callable);
+    Py_RETURN_NONE;
+}
+
 PyMethodDef App_methods[] = {
     {"get", (PyCFunction)App_python_get, METH_O, NULL},
     {"post", (PyCFunction)App_python_post, METH_O, NULL},
     {"patch", (PyCFunction)App_python_patch, METH_O, NULL},
     {"delete", (PyCFunction)App_python_delete, METH_O, NULL},
     {"use", (PyCFunction)App_python_use, METH_O, NULL},
+    {"on_prepare", (PyCFunction)App_on_prepare, METH_O, NULL},
     {NULL, NULL, 0, NULL}
 };
 

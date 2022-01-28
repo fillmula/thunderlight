@@ -18,6 +18,7 @@ typedef struct {
 
 typedef struct {
     PyObject_HEAD
+    PyObject *prepares;
     MatcherList *gets;
     MatcherList *posts;
     MatcherList *patches;

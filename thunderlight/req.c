@@ -97,8 +97,6 @@ PyObject *Req_get_headers(Req *self, void *closure) {
 }
 
 PyObject *Req_get_body(Req *self, void *closure) {
-    printf("will get body\n");
-    fflush(stdout);
     if (!self->body) {
         if (self->request->body_len == 0) {
             self->body = PyBytes_FromString("");
@@ -111,8 +109,6 @@ PyObject *Req_get_body(Req *self, void *closure) {
 }
 
 PyObject *Req_get_json(Req *self, void *closure) {
-    printf("will get json\n");
-    fflush(stdout);
     if (!self->json) {
         PyObject *body = Req_get_body(self, NULL);
         self->json = JSON_decode(body);
