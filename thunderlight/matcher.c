@@ -14,15 +14,16 @@ MatcherList *MatcherList_alloc(void) {
     return self;
 }
 
-void MatcherList_init(MatcherList *self) {
+void MatcherList_init(MatcherList *self, const char *name) {
+    self->name = name;
     self->capacity = MATCHER_LIST_INITIAL_SIZE;
     self->length = 0;
     self->buffer = self->inline_buffer;
 }
 
-MatcherList *MatcherList_new(void) {
+MatcherList *MatcherList_new(const char *name) {
     MatcherList *self = MatcherList_alloc();
-    MatcherList_init(self);
+    MatcherList_init(self, name);
     return self;
 }
 

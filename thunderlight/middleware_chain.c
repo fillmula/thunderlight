@@ -1,4 +1,5 @@
 #include "middleware_chain.h"
+#include "loop.h"
 
 
 PyTypeObject OuterNextType;
@@ -70,6 +71,7 @@ PyObject *OuterNextIterator_iter(OuterNextIterator *self) {
 
 PyObject *OuterNextIterator_iternext(OuterNextIterator *self) {
     if (PyErr_Occurred() != NULL) {
+        PyErr_SetObject(PyExc_Exception, PyErr_Occurred());
         return NULL;
     }
     if (self->future == NULL) {
@@ -78,15 +80,18 @@ PyObject *OuterNextIterator_iternext(OuterNextIterator *self) {
         PyTuple_SetItem(args, 1, self->outer_next->next);
         PyObject *result = PyObject_Call(self->outer_next->inner, args, NULL);
         Py_DECREF(args);
-        PyObject *asyncio = PyImport_ImportModule("asyncio");
-        PyObject *ensure_future = PyObject_GetAttrString(asyncio, "ensure_future");
-        PyObject *future = PyObject_CallOneArg(ensure_future, result);
+        PyObject *future = Loop_start_awaitable(result);
+        Py_INCREF(future);
         Py_INCREF(future);
         self->future = future;
+        printf("here call done set future\n");
+        fflush(stdout);
     }
     PyObject *done = PyObject_GetAttrString(self->future, "done");
     PyObject *is_done = PyObject_CallNoArgs(done);
     if (PyObject_IsTrue(is_done)) {
+        printf("here see is done\n");
+        fflush(stdout);
         PyObject *exception = PyObject_GetAttrString(self->future, "exception");
         PyObject *exc = PyObject_CallNoArgs(exception);
         if (Py_IsNone(exc)) {
@@ -186,6 +191,7 @@ PyObject *ChainedMiddlewareIterator_iter(ChainedMiddlewareIterator *self) {
 
 PyObject *ChainedMiddlewareIterator_iternext(ChainedMiddlewareIterator *self) {
     if (PyErr_Occurred() != NULL) {
+        PyErr_SetObject(PyExc_Exception, PyErr_Occurred());
         return NULL;
     }
     if (self->future == NULL) {
@@ -195,9 +201,7 @@ PyObject *ChainedMiddlewareIterator_iternext(ChainedMiddlewareIterator *self) {
         PyTuple_SetItem(args, 1, outer_next);
         PyObject *result = PyObject_Call(self->chained_middleware->outer, args, NULL);
         Py_DECREF(args);
-        PyObject *asyncio = PyImport_ImportModule("asyncio");
-        PyObject *ensure_future = PyObject_GetAttrString(asyncio, "ensure_future");
-        PyObject *future = PyObject_CallOneArg(ensure_future, result);
+        PyObject *future = Loop_start_awaitable(result);
         Py_INCREF(future);
         self->future = future;
     }

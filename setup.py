@@ -36,7 +36,7 @@ setup(
             'thunderlight/req.c', 'thunderlight/req_headers.c', 'thunderlight/req_match.c', 'thunderlight/request.c', 'thunderlight/mresult.c',
             'thunderlight/res.c', 'thunderlight/response.c', 'thunderlight/buffer.c', 'thunderlight/res_headers.c', 'thunderlight/response_headers.c', 'thunderlight/hash.c',
             'thunderlight/state.c', 'thunderlight/duostate.c',
-            'thunderlight/not_found.c', 'thunderlight/space.c', 'thunderlight/json.c',
+            'thunderlight/not_found.c', 'thunderlight/space.c', 'thunderlight/json.c', 'thunderlight/loop.c',
             'thunderlight/module.c'
         ]),
     ]

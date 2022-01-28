@@ -1,4 +1,5 @@
 #include "applier.h"
+#include "loop.h"
 
 
 typedef struct {
@@ -49,6 +50,7 @@ PyObject *AppliedHandlerIterator_await(PyObject *self) {
 
 PyObject *AppliedHandlerIterator_iternext(AppliedHandlerIterator *self) {
     if (PyErr_Occurred() != NULL) {
+        PyErr_SetObject(PyExc_Exception, PyErr_Occurred());
         return NULL;
     }
     if (!self->future) {
@@ -57,9 +59,8 @@ PyObject *AppliedHandlerIterator_iternext(AppliedHandlerIterator *self) {
         PyTuple_SetItem(args, 1, self->applied_handler->handler);
         PyObject *result = PyObject_Call(self->applied_handler->middleware, args, NULL);
         Py_DECREF(args);
-        PyObject *asyncio = PyImport_ImportModule("asyncio");
-        PyObject *ensure_future = PyObject_GetAttrString(asyncio, "ensure_future");
-        PyObject *future = PyObject_CallOneArg(ensure_future, result);
+        PyObject *future = Loop_start_awaitable(result);
+        Py_INCREF(future);
         Py_INCREF(future);
         self->future = future;
     }

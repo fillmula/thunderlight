@@ -1,5 +1,6 @@
 #include "server.h"
 #include "protocol.h"
+#include "loop.h"
 
 
 int Server_init(Server *self, PyObject *args, PyObject *kwds) {
@@ -22,9 +23,14 @@ PyObject *Server_call(Server *self, PyObject *args, PyObject *kwargs) {
 }
 
 PyObject *Server_listen(Server *self) {
+    // printf("server listen is called\n");
+    // fflush(stdout);
     PyObject *uvloop = PyImport_ImportModule("uvloop");
     PyObject *new_event_loop = PyObject_GetAttrString(uvloop, "new_event_loop");
     PyObject *loop = PyObject_CallNoArgs(new_event_loop);
+    Loop_set(loop);
+    Py_INCREF(loop);
+    Py_INCREF(loop);
     PyObject *asyncio = PyImport_ImportModule("asyncio");
     Py_INCREF(asyncio);
     PyObject *set_event_loop = PyObject_GetAttrString(asyncio, "set_event_loop");
