@@ -87,10 +87,15 @@ RequestParsingState Request_receive(Request *self, char *content, size_t len) {
     memcpy(self->buffer_end, content, len);
     self->bytes_received += len;
     self->buffer_end += len;
-    return _Request_parse(self);
+    RequestParsingState state = _Request_parse(self);
+    // printf("done parse\n");
+    // fflush(stdout);
+    return state;
 }
 
 RequestParsingState _Request_parse(Request *self) {
+    // printf("START PARSE\n");
+    // fflush(stdout);
     switch (self->parser_location) {
     case RequestParserLocationDone:
         return RequestParsingStateDone;
@@ -260,6 +265,8 @@ ret:
 }
 
 RequestParsingState _parse_from_body(Request *self) {
+    printf("parse from body %zu\n", self->exp_body_len);
+    fflush(stdout);
     if ((self->buffer_end - self->body) >= self->exp_body_len) {
         return RequestParsingStateDone;
     } else {

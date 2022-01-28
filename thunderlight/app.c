@@ -1,11 +1,16 @@
 #include <Python.h>
 #include "app.h"
 #include "protocol.h"
+#include "loop.h"
 
 
 PyTypeObject RouteWrapperType;
 
 RouteWrapper *RouteWrapper_new(MatcherList *mlist, PyObject *route) {
+    // printf("generating route wrapper: %s ", mlist->name);
+    // PyObject_Print(route, stdout, Py_PRINT_RAW);
+    // printf("\n");
+    // fflush(stdout);
     RouteWrapper *self = (RouteWrapper *)RouteWrapperType.tp_alloc(&RouteWrapperType, 0);
     self->mlist = mlist;
     self->route = route;
@@ -23,6 +28,10 @@ PyObject *RouteWrapper_call(RouteWrapper *self, PyObject *args, PyObject *kwds) 
     PyArg_ParseTuple(args, "O", &handle);
     const char *route = PyUnicode_AsUTF8(self->route);
     Py_INCREF(self->route);
+    // printf("route wrapper is called\n");
+    // PyObject_Print(self->route, stdout, Py_PRINT_RAW);
+    // printf("\n");
+    // fflush(stdout);
     MatcherList_append(self->mlist, route, handle);
     Py_RETURN_NONE;
 }
@@ -36,10 +45,10 @@ PyTypeObject RouteWrapperType = {
 };
 
 int App_init(App *self, PyObject *args, PyObject *kwds) {
-    self->gets = MatcherList_new();
-    self->posts = MatcherList_new();
-    self->patches = MatcherList_new();
-    self->posts = MatcherList_new();
+    self->gets = MatcherList_new("GET");
+    self->posts = MatcherList_new("POST");
+    self->patches = MatcherList_new("PATCH");
+    self->deletes = MatcherList_new("DELETE");
     self->middlewares = PyList_New(0);
     self->entrance_middleware = NULL;
     return 0;
@@ -91,6 +100,8 @@ void App_prepare(App *self) {
 }
 
 void App_process(App *self, PyObject *p) {
+    printf("begin process\n");
+    fflush(stdout);
     Protocol *protocol = (Protocol *)p;
     MatcherList *mlist = NULL;
     switch (protocol->request.method_len) {
@@ -129,14 +140,16 @@ void App_process(App *self, PyObject *p) {
         Py_DECREF(call_args);
     }
     // Py_INCREF(awaitable);
-    PyObject *asyncio = PyImport_ImportModule("asyncio");
-    PyObject *ensure_future = PyObject_GetAttrString(asyncio, "ensure_future");
-    PyObject *future = PyObject_CallOneArg(ensure_future, awaitable);
+    PyObject *future = Loop_start_awaitable(awaitable);
     // Py_INCREF(future);
+    printf("will add done callback\n");
+    fflush(stdout);
     PyObject *add_done_callback = PyObject_GetAttrString(future, "add_done_callback");
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, (PyObject *)protocol);
     PyObject_Call(add_done_callback, args, NULL);
+    printf("done callback added\n");
+    fflush(stdout);
     Py_DECREF(args);
 }
 

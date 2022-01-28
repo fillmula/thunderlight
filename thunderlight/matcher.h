@@ -24,6 +24,7 @@ typedef struct {
 } Matcher;
 
 typedef struct {
+    const char *name;
     Matcher *buffer;
     Matcher inline_buffer[MATCHER_LIST_INITIAL_SIZE];
     size_t length;
@@ -32,9 +33,9 @@ typedef struct {
 
 MatcherList *MatcherList_alloc(void);
 
-void MatcherList_init(MatcherList *self);
+void MatcherList_init(MatcherList *self, const char *name);
 
-MatcherList *MatcherList_new(void);
+MatcherList *MatcherList_new(const char *name);
 
 void MatcherList_dealloc(MatcherList *self);
 

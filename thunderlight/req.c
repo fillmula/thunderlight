@@ -22,11 +22,14 @@ PyObject *Req_new(Request *request) {
 }
 
 void Req_dealloc(Req *self) {
+    Py_XDECREF(self->args);
     Py_XDECREF(self->method);
     Py_XDECREF(self->path);
     Py_XDECREF(self->query);
     Py_XDECREF(self->version);
     Py_XDECREF(self->json);
+    Py_XDECREF(self->body);
+    Py_XDECREF(self->headers);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
@@ -94,14 +97,22 @@ PyObject *Req_get_headers(Req *self, void *closure) {
 }
 
 PyObject *Req_get_body(Req *self, void *closure) {
+    printf("will get body\n");
+    fflush(stdout);
     if (!self->body) {
-        self->body = PyBytes_FromStringAndSize(self->request->body, strlen(self->request->body));
+        if (self->request->body_len == 0) {
+            self->body = PyBytes_FromString("");
+        } else {
+            self->body = PyBytes_FromStringAndSize(self->request->body, self->request->body_len);
+        }
     }
     Py_INCREF(self->body);
     return self->body;
 }
 
 PyObject *Req_get_json(Req *self, void *closure) {
+    printf("will get json\n");
+    fflush(stdout);
     if (!self->json) {
         PyObject *body = Req_get_body(self, NULL);
         self->json = JSON_decode(body);

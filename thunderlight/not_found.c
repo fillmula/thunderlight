@@ -27,6 +27,7 @@ PyObject *NotFoundIterator_iter(NotFoundIterator *self) {
 
 PyObject *NotFoundIterator_iternext(NotFoundIterator *self) {
     if (PyErr_Occurred() != NULL) {
+        PyErr_SetObject(PyExc_Exception, PyErr_Occurred());
         return NULL;
     }
     self->ctx->context->response->code = 404;
