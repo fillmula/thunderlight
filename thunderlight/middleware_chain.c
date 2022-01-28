@@ -83,15 +83,12 @@ PyObject *OuterNextIterator_iternext(OuterNextIterator *self) {
         PyObject *future = Loop_start_awaitable(result);
         Py_INCREF(future);
         Py_INCREF(future);
+        Py_INCREF(future);
         self->future = future;
-        printf("here call done set future\n");
-        fflush(stdout);
     }
     PyObject *done = PyObject_GetAttrString(self->future, "done");
     PyObject *is_done = PyObject_CallNoArgs(done);
     if (PyObject_IsTrue(is_done)) {
-        printf("here see is done\n");
-        fflush(stdout);
         PyObject *exception = PyObject_GetAttrString(self->future, "exception");
         PyObject *exc = PyObject_CallNoArgs(exception);
         if (Py_IsNone(exc)) {

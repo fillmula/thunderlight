@@ -71,8 +71,6 @@ PyObject *Protocol_data_received(Protocol *self, PyObject *data) {
 }
 
 void Protocol_complete(Protocol *self) {
-    printf("protocol complete start\n");
-    fflush(stdout);
     Response_set_version_info(&self->response, self->request.version, self->request.version_len);
     size_t header_len;
     char *headers = Response_get_header_bytes(&self->response, &header_len);
@@ -87,8 +85,6 @@ void Protocol_complete(Protocol *self) {
     PyObject *transport_close = PyObject_GetAttrString(self->transport, "close");
     PyObject_CallNoArgs(transport_close);
     Py_DECREF(transport_close);
-    printf("protocol complete done\n");
-    fflush(stdout);
 }
 
 PyObject *Protocol_call(PyObject *protocol, PyObject *args, PyObject *kwds) {

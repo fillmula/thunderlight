@@ -23,8 +23,6 @@ PyObject *Server_call(Server *self, PyObject *args, PyObject *kwargs) {
 }
 
 PyObject *Server_listen(Server *self) {
-    // printf("server listen is called\n");
-    // fflush(stdout);
     PyObject *uvloop = PyImport_ImportModule("uvloop");
     PyObject *new_event_loop = PyObject_GetAttrString(uvloop, "new_event_loop");
     PyObject *loop = PyObject_CallNoArgs(new_event_loop);

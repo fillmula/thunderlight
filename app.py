@@ -1,4 +1,4 @@
-from thunderlight import Ctx, Next, use, get, post
+from thunderlight import Ctx, Next, use, get, post, patch, delete
 from time import time
 
 
@@ -51,3 +51,13 @@ async def user_posts(ctx: Ctx):
 async def user_post(ctx: Ctx):
     print(ctx.req.args)
     ctx.res.json({"data": {"post": ctx.req.args["post_id"]}})
+
+
+@patch("/users")
+async def user_patch(ctx: Ctx):
+    ctx.res.text("Hello, patch!")
+
+
+@delete("/users")
+async def user_delete(ctx: Ctx):
+    ctx.res.text("Hello, delete!")
