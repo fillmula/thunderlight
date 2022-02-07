@@ -48,10 +48,10 @@ void Request_init(Request *self) {
 
 void Request_dealloc(Request *self) {
     if (self->buffer_start != self->inline_buffer) {
-        free(self->buffer_start);
+        // free(self->buffer_start);
     }
     if (self->mresult != NULL) {
-        free(self->mresult);
+        // free(self->mresult);
     }
 }
 
@@ -306,7 +306,7 @@ char *Request_repr(Request *self, char *head, uint8_t indent) {
     strcat(buffer, "'headers': ");
     char *headers_repr = Request_headers_repr(self, NULL, indent + 1);
     strcat(buffer, headers_repr);
-    free(headers_repr);
+    // free(headers_repr);
     strcat(buffer, ",\n");
     // body
     add_space(buffer, (indent + 1) * 4);
@@ -357,5 +357,5 @@ char *Request_headers_repr(Request *self, char *head, uint8_t indent) {
 void Request_print(Request *self) {
     char *repr = Request_repr(self, "Request", 0);
     printf(repr);
-    free(repr);
+    // free(repr);
 }

@@ -276,7 +276,7 @@ char *Response_repr(Response *self, char *head, uint8_t indent) {
     strcat(buffer, "'headers': ");
     char *headers_repr = HeaderMap_repr(&self->headers, NULL, indent + 1);
     strcat(buffer, headers_repr);
-    free(headers_repr);
+    // free(headers_repr);
     strcat(buffer, ",\n");
     // body
     add_space(buffer, (indent + 1) * 4);

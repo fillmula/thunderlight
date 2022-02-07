@@ -47,7 +47,7 @@ PyObject *Ctx_get_state(Ctx *self, void *closure) {
 PyObject *Ctx_repr(Ctx *self) {
     char *repr = Context_repr(self->context, "Ctx", 0);
     PyObject *py_repr = PyUnicode_FromString(repr);
-    free(repr);
+    // free(repr);
     return py_repr;
 }
 
@@ -60,7 +60,7 @@ PyGetSetDef Ctx_getset[] = {
 
 PyTypeObject CtxType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "thunderlight.Ctx",
+    .tp_name = "_thunderlight.Ctx",
     .tp_basicsize = sizeof(Ctx),
     .tp_dealloc = (destructor)Ctx_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

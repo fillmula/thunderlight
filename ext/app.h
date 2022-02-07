@@ -19,6 +19,7 @@ typedef struct {
 typedef struct {
     PyObject_HEAD
     PyObject *prepares;
+    PyObject *prepare;
     MatcherList *gets;
     MatcherList *posts;
     MatcherList *patches;
@@ -44,8 +45,6 @@ void App_patch(App *self, const char *route, PyObject *handle);
 void App_delete(App *self, const char *route, PyObject *handle);
 
 void App_use(App *self, PyObject *middleware);
-
-void App_prepare(App *self);
 
 void App_process(App *self, PyObject *p);
 

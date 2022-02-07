@@ -22,5 +22,5 @@ void Buffer_append(Buffer *buffer, char *content, size_t len) {
 }
 
 void Buffer_dealloc(Buffer *buffer) {
-    free(buffer->loc);
+    // free(buffer->loc);
 }

@@ -8,13 +8,20 @@ int Server_init(Server *self, PyObject *args, PyObject *kwds) {
     Py_INCREF(self->app);
     Py_INCREF(self->app);
     Py_INCREF(self->port);
-    App_prepare(self->app);
+    PyObject *prepare = PyObject_GetAttrString(self->app, "_prepare");
+    PyObject_CallNoArgs(prepare);
+    if (PyErr_Occurred() != NULL) {
+        PyErr_Print();
+        // PyErr_Clear();
+        //return NULL;
+        //PyErr_Clear();
+    }
     return 0;
 }
 
 void Server_dealloc(Server *self) {
-    Py_DECREF(self->app);
-    Py_DECREF(self->port);
+    Py_XDECREF(self->app);
+    Py_XDECREF(self->port);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
@@ -23,7 +30,7 @@ PyObject *Server_call(Server *self, PyObject *args, PyObject *kwargs) {
 }
 
 PyObject *Server_listen(Server *self) {
-    PyObject *uvloop = PyImport_ImportModule("uvloop");
+    PyObject *uvloop = PyImport_ImportModule("asyncio");
     PyObject *new_event_loop = PyObject_GetAttrString(uvloop, "new_event_loop");
     PyObject *loop = PyObject_CallNoArgs(new_event_loop);
     Loop_set(loop);
@@ -39,8 +46,8 @@ PyObject *Server_listen(Server *self) {
     PyObject *kwargs = PyDict_New();
     PyDict_SetItemString(kwargs, "port", self->port);
     PyObject *server_coro = PyObject_Call(create_server, args, kwargs);
-    Py_DECREF(args);
-    Py_DECREF(kwargs);
+    Py_XDECREF(args);
+    Py_XDECREF(kwargs);
     PyObject *run_until_complete = PyObject_GetAttrString(loop, "run_until_complete");
     PyObject *server = PyObject_CallOneArg(run_until_complete, server_coro);
     // port is used
@@ -64,10 +71,10 @@ PyObject *Server_listen(Server *self) {
     PyTuple_SetItem(sigint_args, 0, sigint);
     PyTuple_SetItem(sigint_args, 1, stop);
     PyObject_Call(add_signal_handler, sigint_args, NULL);
-    Py_DECREF(sigterm_args);
-    Py_DECREF(sigint_args);
-    Py_DECREF(sigterm);
-    Py_DECREF(sigint);
+    Py_XDECREF(sigterm_args);
+    Py_XDECREF(sigint_args);
+    Py_XDECREF(sigterm);
+    Py_XDECREF(sigint);
     // run forever never return
     long port = PyLong_AsLong(self->port);
     printf("\033[1;34m[THUNDERLIGHT]\033[22;0m \033[1;33m[INFO]\033[22;0m server is started, listening on port %ld.\n", port);
@@ -86,7 +93,7 @@ PyMethodDef Server_methods[] = {
 };
 
 PyTypeObject ServerType = {
-    .tp_name = "thunderlight.Server",
+    .tp_name = "_thunderlight.Server",
     .tp_basicsize = sizeof(Server),
     .tp_alloc = PyType_GenericAlloc,
     .tp_new = PyType_GenericNew,

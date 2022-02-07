@@ -132,13 +132,13 @@ PyGetSetDef Req_getset[] = {
 PyObject *Req_repr(Req *self) {
     char *repr = Request_repr(self->request, "Req", 0);
     PyObject *py_repr = PyUnicode_FromString(repr);
-    free(repr);
+    // free(repr);
     return py_repr;
 }
 
 PyTypeObject ReqType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "thunderlight.Req",
+    .tp_name = "_thunderlight.Req",
     .tp_basicsize = sizeof(Req),
     .tp_dealloc = (destructor)Req_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

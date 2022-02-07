@@ -32,9 +32,9 @@ PyObject *AppliedHandlerIterator_new(PyObject *applied_handler, PyObject *ctx) {
 }
 
 void AppliedHandlerIterator_dealloc(AppliedHandlerIterator *self) {
-    Py_DECREF(self->applied_handler);
-    Py_DECREF(self->ctx);
-    Py_DECREF(self->future);
+    Py_XDECREF(self->applied_handler);
+    Py_XDECREF(self->ctx);
+    Py_XDECREF(self->future);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
@@ -53,12 +53,13 @@ PyObject *AppliedHandlerIterator_iternext(AppliedHandlerIterator *self) {
         PyErr_SetObject(PyExc_Exception, PyErr_Occurred());
         return NULL;
     }
+    PyGILState_STATE gil_state = PyGILState_Ensure();
     if (!self->future) {
         PyObject *args = PyTuple_New(2);
         PyTuple_SetItem(args, 0, self->ctx);
         PyTuple_SetItem(args, 1, self->applied_handler->handler);
         PyObject *result = PyObject_Call(self->applied_handler->middleware, args, NULL);
-        Py_DECREF(args);
+        Py_XDECREF(args);
         PyObject *future = Loop_start_awaitable(result);
         Py_INCREF(future);
         Py_INCREF(future);
@@ -71,12 +72,15 @@ PyObject *AppliedHandlerIterator_iternext(AppliedHandlerIterator *self) {
         PyObject *exc = PyObject_CallNoArgs(exception);
         if (Py_IsNone(exc)) {
             PyErr_SetNone(PyExc_StopIteration);
+            PyGILState_Release(gil_state);
             return NULL;
         } else {
             PyErr_SetObject(PyExc_Exception, exc);
+            PyGILState_Release(gil_state);
             return NULL;
         }
     } else {
+        PyGILState_Release(gil_state);
         Py_RETURN_NONE;
     }
 }
@@ -107,8 +111,8 @@ PyObject *AppliedHandler_call(AppliedHandler *self, PyObject *args, PyObject *kw
 }
 
 void AppliedHandler_dealloc(AppliedHandler *self) {
-    Py_DECREF(self->middleware);
-    Py_DECREF(self->handler);
+    Py_XDECREF(self->middleware);
+    Py_XDECREF(self->handler);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
@@ -126,13 +130,13 @@ PyObject *Applier_call(Applier *self, PyObject *args, PyObject *kwargs) {
 }
 
 void Applier_dealloc(Applier *self) {
-    Py_DECREF(self->middleware);
+    Py_XDECREF(self->middleware);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
 PyTypeObject AppliedHandlerType = {
     .tp_alloc = PyType_GenericAlloc,
-    .tp_name = "thunderlight._AppliedHandler",
+    .tp_name = "_thunderlight._AppliedHandler",
     .tp_call = (ternaryfunc)AppliedHandler_call,
     .tp_dealloc = (destructor)AppliedHandler_dealloc,
     .tp_doc = "",
@@ -141,7 +145,7 @@ PyTypeObject AppliedHandlerType = {
 
 PyTypeObject ApplierType = {
     .tp_alloc = PyType_GenericAlloc,
-    .tp_name = "thunderlight._HandlerApplier",
+    .tp_name = "_thunderlight._HandlerApplier",
     .tp_call = (ternaryfunc)Applier_call,
     .tp_dealloc = (destructor)Applier_dealloc,
     .tp_doc = "",
@@ -150,7 +154,7 @@ PyTypeObject ApplierType = {
 
 PyTypeObject AppliedHandlerIteratorType = {
     .tp_alloc = PyType_GenericAlloc,
-    .tp_name = "thunderlight._AppliedHandlerIterator",
+    .tp_name = "_thunderlight._AppliedHandlerIterator",
     .tp_dealloc = (destructor)AppliedHandlerIterator_dealloc,
     .tp_basicsize = sizeof(AppliedHandlerIterator),
     .tp_iter = (getiterfunc)AppliedHandlerIterator_iter,

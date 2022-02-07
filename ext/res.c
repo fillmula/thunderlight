@@ -57,14 +57,14 @@ PyObject *Res_get_body(Res *self, void *closure) {
 int Res_set_body(Res *self, PyObject *value, void *closure) {
     if (PyObject_IsInstance(value, &PyUnicode_Type)) {
         if (self->body != NULL) {
-            Py_DECREF(self->body);
+            Py_XDECREF(self->body);
         }
         self->body = value;
         Py_INCREF(self->body);
         self->response->body = PyUnicode_AsUTF8AndSize(value, &self->response->body_len);
     } else if (PyObject_IsInstance(value, &PyBytes_Type)) {
         if (self->body != NULL) {
-            Py_DECREF(self->body);
+            Py_XDECREF(self->body);
         }
         self->body = value;
         Py_INCREF(self->body);
@@ -129,13 +129,13 @@ PyMethodDef Res_methods[] = {
 PyObject *Res_repr(Res *self) {
     char *repr = Response_repr(self->response, "Res", 0);
     PyObject *py_repr = PyUnicode_FromString(repr);
-    free(repr);
+    // free(repr);
     return py_repr;
 }
 
 PyTypeObject ResType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "thunderlight.Res",
+    .tp_name = "_thunderlight.Res",
     .tp_basicsize = sizeof(Res),
     .tp_dealloc = (destructor)Res_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

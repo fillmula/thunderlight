@@ -19,7 +19,7 @@ PyObject *global_app = NULL;
 
 PyObject *Thunderlight_main(PyObject *module, PyObject *app) {
     if (global_app != NULL) {
-        Py_DECREF(global_app);
+        Py_XDECREF(global_app);
     }
     global_app = app;
     Py_INCREF(global_app);
@@ -82,13 +82,13 @@ PyMethodDef module_methods[] = {
 
 PyModuleDef thunderlight = {
     PyModuleDef_HEAD_INIT,
-    .m_name = "thunderlight",
+    .m_name = "_thunderlight",
     .m_doc = "Thunderlight is the fastest Python HTTP server.",
     .m_size = -1,
     .m_methods = module_methods
 };
 
-PyMODINIT_FUNC PyInit_thunderlight(void) {
+PyMODINIT_FUNC PyInit__thunderlight(void) {
     JSON_setup();
     StatusMessage_setup();
     PyObject *module = PyModule_Create(&thunderlight);
@@ -135,12 +135,6 @@ PyMODINIT_FUNC PyInit_thunderlight(void) {
     not_found = PyType_GenericNew(&NotFoundType, NULL, NULL);
     Py_INCREF(not_found);
     PyModule_AddObject(module, "not_found", not_found);
-    Py_INCREF(Py_None);
-    PyModule_AddObject(module, "Next", Py_None);
-    Py_INCREF(Py_None);
-    PyModule_AddObject(module, "Handler", Py_None);
-    Py_INCREF(Py_None);
-    PyModule_AddObject(module, "Middleware", Py_None);
     Thunderlight_final_setup();
     return module;
 }

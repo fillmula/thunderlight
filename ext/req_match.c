@@ -13,7 +13,7 @@ ReqMatch *ReqMatch_new(MatchResult *mresult) {
 PyObject *ReqMatch_repr(ReqMatch *self) {
     char *repr = MatchResult_repr(self->mresult, "ReqMatch", 0);
     PyObject *py_repr = PyUnicode_FromString(repr);
-    free(repr);
+    // free(repr);
     return py_repr;
 }
 
@@ -45,7 +45,7 @@ PyTypeObject ReqMatchType = {
     .tp_alloc = PyType_GenericAlloc,
     .tp_basicsize = sizeof(ReqMatch),
     .tp_doc = "",
-    .tp_name = "thunderlight.ReqMatch",
+    .tp_name = "_thunderlight.ReqMatch",
     .tp_dealloc = (destructor)ReqMatch_dealloc,
     .tp_repr = (reprfunc)ReqMatch_repr,
     .tp_str = (reprfunc)ReqMatch_repr,

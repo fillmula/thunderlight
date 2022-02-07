@@ -46,7 +46,7 @@ PyObject *ResHeaders_subscript(PyObject *self, PyObject *key) {
 PyObject *ResHeaders_repr(ResHeaders *self) {
     char *repr = HeaderMap_repr(self->header_map, "ResHeaders", 0);
     PyObject *py_repr = PyUnicode_FromString(repr);
-    free(repr);
+    // free(repr);
     return py_repr;
 }
 
@@ -58,7 +58,7 @@ PyMappingMethods ResHeaders_mapping_methods = {
 
 PyTypeObject ResHeadersType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "thunderlight.ResHeaders",
+    .tp_name = "_thunderlight.ResHeaders",
     .tp_basicsize = sizeof(ResHeaders),
     .tp_dealloc = (destructor)ResHeaders_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,
