@@ -19,8 +19,8 @@ PyObject *Loop_start_awaitable(PyObject *awaitable) {
     PyObject *kwargs = PyDict_New();
     PyDict_SetItemString(kwargs, "loop", uvloop_loop);
     PyObject *future = PyObject_Call(ensure_future, args, kwargs);
-    Py_DECREF(args);
-    Py_DECREF(kwargs);
+    Py_XDECREF(args);
+    Py_XDECREF(kwargs);
     Py_INCREF(future);
     return future;
 }

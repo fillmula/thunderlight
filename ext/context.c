@@ -37,8 +37,8 @@ char *Context_repr(Context *self, char *head, uint8_t indent) {
     // end
     add_space(buffer, indent * 4);
     strcat(buffer, "}");
-    free(request_repr);
-    free(response_repr);
-    free(state_repr);
+    // free(request_repr);
+    // free(response_repr);
+    // free(state_repr);
     return buffer;
 }

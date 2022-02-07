@@ -51,7 +51,9 @@ PyObject *Protocol_connection_made(Protocol *self, PyObject *transport) {
     Py_RETURN_NONE;
 }
 
-PyObject *Protocol_connection_lost(Protocol *self, PyObject *exc) {
+PyObject *Protocol_connection_lost(Protocol *self) {
+    printf("connection is lost\n");
+    fflush(stdout);
     Py_XDECREF(self->transport);
     self->transport = NULL;
     Py_RETURN_NONE;
@@ -81,10 +83,10 @@ void Protocol_complete(Protocol *self) {
     PyObject *transport_write = PyObject_GetAttrString(self->transport, "write");
     PyObject_CallOneArg(transport_write, header_bytes);
     PyObject_CallOneArg(transport_write, body_bytes);
-    Py_DECREF(transport_write);
+    Py_XDECREF(transport_write);
     PyObject *transport_close = PyObject_GetAttrString(self->transport, "close");
     PyObject_CallNoArgs(transport_close);
-    Py_DECREF(transport_close);
+    Py_XDECREF(transport_close);
 }
 
 PyObject *Protocol_call(PyObject *protocol, PyObject *args, PyObject *kwds) {
@@ -94,13 +96,13 @@ PyObject *Protocol_call(PyObject *protocol, PyObject *args, PyObject *kwds) {
 
 PyMethodDef Protocol_methods[] = {
     {"connection_made", (PyCFunction)Protocol_connection_made, METH_O, ""},
-    {"connection_lost", (PyCFunction)Protocol_connection_lost, METH_VARARGS, ""},
+    {"connection_lost", (PyCFunction)Protocol_connection_lost, METH_O, ""},
     {"data_received", (PyCFunction)Protocol_data_received, METH_O, ""},
     {NULL, NULL, 0, NULL}
 };
 
 PyTypeObject ProtocolType = {
-    .tp_name = "thunderlight.Protocol",
+    .tp_name = "_thunderlight.Protocol",
     .tp_basicsize = sizeof(Protocol),
     .tp_dealloc = (destructor)Protocol_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

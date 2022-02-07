@@ -36,7 +36,7 @@ PyObject *ReqHeaders_subscript(PyObject *self, PyObject *key) {
 PyObject *ReqHeaders_repr(ReqHeaders *self) {
     char *repr = Request_headers_repr(self->request, "ReqHeaders", 0);
     PyObject *py_repr = PyUnicode_FromString(repr);
-    free(repr);
+    // free(repr);
     return py_repr;
 }
 
@@ -62,7 +62,7 @@ PySequenceMethods ReqHeaders_sequence_methods = {
 
 PyTypeObject ReqHeadersType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "thunderlight.ReqHeaders",
+    .tp_name = "_thunderlight.ReqHeaders",
     .tp_basicsize = sizeof(ReqHeaders),
     .tp_dealloc = (destructor)ReqHeaders_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

@@ -15,7 +15,7 @@ RouteWrapper *RouteWrapper_new(MatcherList *mlist, PyObject *route) {
 }
 
 void RouteWrapper_dealloc(RouteWrapper *self) {
-    Py_DECREF(self->route);
+    Py_XDECREF(self->route);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
@@ -29,7 +29,7 @@ PyObject *RouteWrapper_call(RouteWrapper *self, PyObject *args, PyObject *kwds) 
 }
 
 PyTypeObject RouteWrapperType = {
-    .tp_name = "thunderlight._RouteWrapper",
+    .tp_name = "_thunderlight._RouteWrapper",
     .tp_doc = "RouteWrapper",
     .tp_basicsize = sizeof(RouteWrapper),
     .tp_call = (ternaryfunc)RouteWrapper_call,
@@ -42,8 +42,11 @@ int App_init(App *self, PyObject *args, PyObject *kwds) {
     self->patches = MatcherList_new("PATCH");
     self->deletes = MatcherList_new("DELETE");
     self->middlewares = PyList_New(0);
-    self->entrance_middleware = NULL;
+    self->entrance_middleware = Py_None;
+    Py_INCREF(Py_None);
     self->prepares = PyList_New(0);
+    self->prepare = Py_None;
+    Py_INCREF(Py_None);
     return 0;
 }
 
@@ -58,7 +61,7 @@ void App_dealloc(App *self) {
     MatcherList_dealloc(self->posts);
     MatcherList_dealloc(self->patches);
     MatcherList_dealloc(self->deletes);
-    Py_DECREF(self->middlewares);
+    Py_XDECREF(self->middlewares);
     Py_XDECREF(self->entrance_middleware);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
@@ -87,14 +90,14 @@ void App_use(App *self, PyObject *middleware) {
     PyList_Append(self->middlewares, middleware);
 }
 
-void App_prepare(App *self) {
-    self->entrance_middleware = ChainedMiddleware_build(self->middlewares);
-    Py_XINCREF(self->entrance_middleware);
-    Py_ssize_t prepares_len = PyList_Size(self->prepares);
-    for (Py_ssize_t i = 0; i < prepares_len; i++) {
-        PyObject_CallNoArgs(PyList_GetItem(self->prepares, i));
-    }
-}
+// void App_prepare(App *self) {
+//     self->entrance_middleware = ChainedMiddleware_build(self->middlewares);
+//     Py_XINCREF(self->entrance_middleware);
+//     Py_ssize_t prepares_len = PyList_Size(self->prepares);
+//     for (Py_ssize_t i = 0; i < prepares_len; i++) {
+//         PyObject_CallNoArgs(PyList_GetItem(self->prepares, i));
+//     }
+// }
 
 void App_process(App *self, PyObject *p) {
     Protocol *protocol = (Protocol *)p;
@@ -116,14 +119,14 @@ void App_process(App *self, PyObject *p) {
 
     PyObject *handler = MatcherList_match(mlist, protocol->request.path, &protocol->request);
     PyObject *awaitable;
-    if (self->entrance_middleware == NULL) {
+    if (Py_None == self->entrance_middleware) {
         PyObject *call_args = PyTuple_New(1);
         PyTuple_SetItem(call_args, 0, (PyObject *)protocol->ctx);
         Py_INCREF(protocol->ctx);
         awaitable = PyObject_Call(handler, call_args, NULL);
         Py_INCREF(awaitable);
         Py_INCREF(handler);
-        Py_DECREF(call_args);
+        Py_XDECREF(call_args);
     } else {
         PyObject *call_args = PyTuple_New(2);
         PyTuple_SetItem(call_args, 0, (PyObject *)protocol->ctx);
@@ -132,7 +135,7 @@ void App_process(App *self, PyObject *p) {
         awaitable = PyObject_Call(self->entrance_middleware, call_args, NULL);
         Py_INCREF(awaitable);
         Py_INCREF(handler);
-        Py_DECREF(call_args);
+        Py_XDECREF(call_args);
     }
     Py_INCREF(awaitable);
     PyObject *future = Loop_start_awaitable(awaitable);
@@ -141,7 +144,7 @@ void App_process(App *self, PyObject *p) {
     PyObject *args = PyTuple_New(1);
     PyTuple_SetItem(args, 0, (PyObject *)protocol);
     PyObject_Call(add_done_callback, args, NULL);
-    Py_DECREF(args);
+    Py_XDECREF(args);
 }
 
 PyObject *App_python_get(App *self, PyObject *route) {
@@ -170,6 +173,50 @@ PyObject *App_on_prepare(App *self, PyObject *callable) {
     Py_RETURN_NONE;
 }
 
+PyObject *App_sett_prepare(App *self, PyObject *callable) {
+    Py_INCREF(callable);
+    self->prepare = callable;
+}
+
+PyObject *App_get_entrance_middleware(App *self, void *closure) {
+    Py_INCREF(self->entrance_middleware);
+    return self->entrance_middleware;
+}
+
+PyObject *App_set_entrance_middleware(App *self, PyObject *obj, void *closure) {
+    self->entrance_middleware = obj;
+    Py_XINCREF(obj);
+    Py_XINCREF(obj);
+        Py_XINCREF(obj);
+            Py_XINCREF(obj);
+                Py_XINCREF(obj);
+                    Py_XINCREF(obj);
+    Py_RETURN_NONE;
+}
+
+PyObject *App_get_prepares(App *self, void *closure) {
+    Py_INCREF(self->entrance_middleware);
+    return self->prepares;
+}
+
+PyObject *App_get_middlewares(App *self, void *closure) {
+    Py_INCREF(self->middlewares);
+    Py_INCREF(self->middlewares);
+    Py_INCREF(self->middlewares);
+    return self->middlewares;
+}
+
+PyObject *App_get_prepare(App *self, void *closure) {
+    Py_INCREF(self->prepare);
+    return self->prepare;
+}
+
+PyObject *App_set_prepare(App *self, PyObject *obj, void *closure) {
+    self->prepare = obj;
+    Py_XINCREF(obj);
+    Py_RETURN_NONE;
+}
+
 PyMethodDef App_methods[] = {
     {"get", (PyCFunction)App_python_get, METH_O, NULL},
     {"post", (PyCFunction)App_python_post, METH_O, NULL},
@@ -177,7 +224,16 @@ PyMethodDef App_methods[] = {
     {"delete", (PyCFunction)App_python_delete, METH_O, NULL},
     {"use", (PyCFunction)App_python_use, METH_O, NULL},
     {"on_prepare", (PyCFunction)App_on_prepare, METH_O, NULL},
+    {"set_prepare", (PyCFunction)App_sett_prepare, METH_O, NULL},
     {NULL, NULL, 0, NULL}
+};
+
+PyGetSetDef App_getset[] = {
+    {"entrance_middleware", (getter)App_get_entrance_middleware, (setter)App_set_entrance_middleware, NULL, NULL},
+    {"middlewares", (getter)App_get_middlewares, NULL, NULL, NULL},
+    {"prepares", (getter)App_get_prepares, NULL, NULL, NULL},
+    {"_prepare", (getter)App_get_prepare, (setter)App_set_prepare, NULL, NULL},
+    {NULL}
 };
 
 PyTypeObject AppType = {
@@ -186,8 +242,9 @@ PyTypeObject AppType = {
     .tp_init = (initproc)App_init,
     .tp_dealloc = (destructor)App_dealloc,
     .tp_doc = "App",
-    .tp_name = "thunderlight.App",
+    .tp_name = "_thunderlight.App",
     .tp_basicsize = sizeof(App),
-    .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_methods = App_methods
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
+    .tp_methods = App_methods,
+    .tp_getset = App_getset
 };

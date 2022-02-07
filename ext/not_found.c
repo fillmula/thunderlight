@@ -11,7 +11,7 @@ NotFoundIterator *NotFoundIterator_new(Ctx *ctx) {
 }
 
 void NotFoundIterator_dealloc(NotFoundIterator *self) {
-    Py_DECREF(self->ctx);
+    Py_XDECREF(self->ctx);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
@@ -30,11 +30,13 @@ PyObject *NotFoundIterator_iternext(NotFoundIterator *self) {
         PyErr_SetObject(PyExc_Exception, PyErr_Occurred());
         return NULL;
     }
+    PyGILState_STATE gil_state = PyGILState_Ensure();
     self->ctx->context->response->code = 404;
     HeaderMap_set(&self->ctx->context->response->headers, "Content-Type", 12, "application/json", 16);
     self->ctx->context->response->body = "{\"error\": {\"type\": \"NotFound\", \"message\": \"This location is not found.\"}}";
     self->ctx->context->response->body_len = 73;
     PyErr_SetNone(PyExc_StopIteration);
+    PyGILState_Release(gil_state);
     return NULL;
 }
 
@@ -45,7 +47,7 @@ PyAsyncMethods NotFoundIterator_async_methods = {
 };
 
 PyTypeObject NotFoundIteratorType = {
-    .tp_name = "thunderlight._NotFoundIterator",
+    .tp_name = "_thunderlight._NotFoundIterator",
     .tp_doc = "NotFoundIterator",
     .tp_alloc = PyType_GenericAlloc,
     .tp_dealloc = (destructor)NotFoundIterator_dealloc,
@@ -69,7 +71,7 @@ NotFoundIterator *NotFound_call(NotFound *self, PyObject *args, PyObject *kwds) 
 }
 
 PyTypeObject NotFoundType = {
-    .tp_name = "thunderlight._NotFound",
+    .tp_name = "_thunderlight._NotFound",
     .tp_doc = "NotFound",
     .tp_new = PyType_GenericNew,
     .tp_alloc = PyType_GenericAlloc,

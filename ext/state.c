@@ -17,7 +17,7 @@ void State_dealloc(State *self) {
 PyObject *State_repr(State *self) {
     char *repr = Duostate_repr(self->duostate, "State", 0);
     char *py_repr = PyUnicode_FromString(repr);
-    free(repr);
+    // free(repr);
     return py_repr;
 }
 
@@ -52,7 +52,7 @@ PyObject *State_getattro(State *self, PyObject *name) {
 
 PyTypeObject StateType = {
     PyObject_HEAD_INIT(NULL)
-    .tp_name = "thunderlight.State",
+    .tp_name = "_thunderlight.State",
     .tp_basicsize = sizeof(State),
     .tp_dealloc = (destructor)State_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,

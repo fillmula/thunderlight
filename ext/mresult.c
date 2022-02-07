@@ -27,7 +27,7 @@ char *MatchResult_get(MatchResult *self, char *key) {
 }
 
 void MatchResult_dealloc(MatchResult *self) {
-    free(self);
+    // free(self);
 }
 
 char *MatchResult_repr(MatchResult *self, char *head, uint8_t indent) {

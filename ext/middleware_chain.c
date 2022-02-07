@@ -19,8 +19,8 @@ OuterNext *OuterNext_new(PyObject *inner, PyObject *next) {
 }
 
 void OuterNext_dealloc(OuterNext *self) {
-    Py_DECREF(self->inner);
-    Py_DECREF(self->next);
+    Py_XDECREF(self->inner);
+    Py_XDECREF(self->next);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
@@ -38,8 +38,8 @@ OuterNextIterator *OuterNextIterator_new(OuterNext *outer_next, PyObject *ctx) {
 }
 
 void OuterNextIterator_dealloc(OuterNextIterator *self) {
-    Py_DECREF(self->outer_next);
-    Py_DECREF(self->ctx);
+    Py_XDECREF(self->outer_next);
+    Py_XDECREF(self->ctx);
     Py_XDECREF(self->future);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
@@ -51,7 +51,7 @@ OuterNextIterator *OuterNext_call(OuterNext *self, PyObject *args, PyObject *kwd
 }
 
 PyTypeObject OuterNextType = {
-    .tp_name = "thunderlight._OuterNext",
+    .tp_name = "_thunderlight._OuterNext",
     .tp_doc = "OuterNext",
     .tp_basicsize = sizeof(OuterNext),
     .tp_dealloc = (destructor)OuterNext_dealloc,
@@ -74,12 +74,13 @@ PyObject *OuterNextIterator_iternext(OuterNextIterator *self) {
         PyErr_SetObject(PyExc_Exception, PyErr_Occurred());
         return NULL;
     }
+    PyGILState_STATE gil_state = PyGILState_Ensure();
     if (self->future == NULL) {
         PyObject *args = PyTuple_New(2);
         PyTuple_SetItem(args, 0, self->ctx);
         PyTuple_SetItem(args, 1, self->outer_next->next);
         PyObject *result = PyObject_Call(self->outer_next->inner, args, NULL);
-        Py_DECREF(args);
+        Py_XDECREF(args);
         PyObject *future = Loop_start_awaitable(result);
         Py_INCREF(future);
         Py_INCREF(future);
@@ -93,12 +94,15 @@ PyObject *OuterNextIterator_iternext(OuterNextIterator *self) {
         PyObject *exc = PyObject_CallNoArgs(exception);
         if (Py_IsNone(exc)) {
             PyErr_SetNone(PyExc_StopIteration);
+            PyGILState_Release(gil_state);
             return NULL;
         } else {
             PyErr_SetObject(PyExc_Exception, exc);
+            PyGILState_Release(gil_state);
             return NULL;
         }
     } else {
+        PyGILState_Release(gil_state);
         Py_RETURN_NONE;
     }
 }
@@ -111,7 +115,7 @@ PyAsyncMethods OuterNextIterator_async_methods = {
 };
 
 PyTypeObject OuterNextIteratorType = {
-    .tp_name = "thunderlight._OuterNextIterator",
+    .tp_name = "_thunderlight._OuterNextIterator",
     .tp_doc = "OuterNextIterator",
     .tp_basicsize = sizeof(OuterNextIterator),
     .tp_dealloc = (destructor)OuterNextIterator_dealloc,
@@ -132,8 +136,8 @@ ChainedMiddleware *ChainedMiddleware_new(PyObject *outer, PyObject *inner) {
 }
 
 void ChainedMiddleware_dealloc(ChainedMiddleware *self) {
-    Py_DECREF(self->outer);
-    Py_DECREF(self->inner);
+    Py_XDECREF(self->outer);
+    Py_XDECREF(self->inner);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
@@ -154,9 +158,9 @@ ChainedMiddlewareIterator *ChainedMiddlewareIterator_new(ChainedMiddleware *chai
 }
 
 void ChainedMiddlewareIterator_dealloc(ChainedMiddlewareIterator *self) {
-    Py_DECREF(self->chained_middleware);
-    Py_DECREF(self->ctx);
-    Py_DECREF(self->next);
+    Py_XDECREF(self->chained_middleware);
+    Py_XDECREF(self->ctx);
+    Py_XDECREF(self->next);
     Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
@@ -168,7 +172,7 @@ ChainedMiddlewareIterator *ChainedMiddleware_call(ChainedMiddleware *self, PyObj
 }
 
 PyTypeObject ChainedMiddlewareType = {
-    .tp_name = "thunderlight._ChainedMiddleware",
+    .tp_name = "_thunderlight._ChainedMiddleware",
     .tp_doc = "ChainedMiddleware",
     .tp_basicsize = sizeof(ChainedMiddleware),
     .tp_call = (ternaryfunc)ChainedMiddleware_call,
@@ -191,13 +195,14 @@ PyObject *ChainedMiddlewareIterator_iternext(ChainedMiddlewareIterator *self) {
         PyErr_SetObject(PyExc_Exception, PyErr_Occurred());
         return NULL;
     }
+    PyGILState_STATE gil_state = PyGILState_Ensure();
     if (self->future == NULL) {
         PyObject *outer_next = (PyObject *)OuterNext_new(self->chained_middleware->inner, self->next);
         PyObject *args = PyTuple_New(2);
         PyTuple_SetItem(args, 0, self->ctx);
         PyTuple_SetItem(args, 1, outer_next);
         PyObject *result = PyObject_Call(self->chained_middleware->outer, args, NULL);
-        Py_DECREF(args);
+        Py_XDECREF(args);
         PyObject *future = Loop_start_awaitable(result);
         Py_INCREF(future);
         self->future = future;
@@ -209,12 +214,15 @@ PyObject *ChainedMiddlewareIterator_iternext(ChainedMiddlewareIterator *self) {
         PyObject *exc = PyObject_CallNoArgs(exception);
         if (Py_IsNone(exc)) {
             PyErr_SetNone(PyExc_StopIteration);
+            PyGILState_Release(gil_state);
             return NULL;
         } else {
             PyErr_SetObject(PyExc_Exception, exc);
+            PyGILState_Release(gil_state);
             return NULL;
         }
     } else {
+        PyGILState_Release(gil_state);
         Py_RETURN_NONE;
     }
 }
@@ -227,7 +235,7 @@ PyAsyncMethods ChainedMiddlewareIterator_async_methods = {
 };
 
 PyTypeObject ChainedMiddlewareIteratorType = {
-    .tp_name = "thunderlight._ChainedMiddlewareIterator",
+    .tp_name = "_thunderlight._ChainedMiddlewareIterator",
     .tp_doc = "ChainedMiddlewareIterator",
     .tp_basicsize = sizeof(ChainedMiddlewareIterator),
     .tp_as_async = &ChainedMiddlewareIterator_async_methods,

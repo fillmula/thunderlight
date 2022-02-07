@@ -18,12 +18,12 @@ void HeaderMap_init(HeaderMap *self) {
 
 void HeaderMap_dealloc(HeaderMap *self) {
     for (size_t i = 0; i < self->len; i++) {
-        free(self->buffer[i].value);
+        // free(self->buffer[i].value);
     }
     if (self->buffer != self->inline_buffer) {
-        free(self->buffer);
+        // free(self->buffer);
     }
-    free(self);
+    // free(self);
 }
 
 void HeaderMap_set(HeaderMap *self, char *key, size_t key_len, void *value, size_t value_len) {
@@ -36,8 +36,8 @@ void HeaderMap_set(HeaderMap *self, char *key, size_t key_len, void *value, size
     }
     if (pos != NULL) {
         pos->key_hash = hash;
-        free(pos->key);
-        free(pos->value);
+        // free(pos->key);
+        // free(pos->value);
         char *copied_value = malloc(value_len);
         memcpy(copied_value, value, value_len);
         pos->value = copied_value;

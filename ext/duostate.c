@@ -17,22 +17,22 @@ Duostate *Duostate_new(void) {
 void Duostate_deinit(Duostate *self) {
     for (size_t i = 0; i < self->len; i++) {
         Py_XDECREF(self->buffer[i].py_key);
-        Py_DECREF(self->buffer[i].py_value);
+        Py_XDECREF(self->buffer[i].py_value);
         if (self->buffer[i].free_c_key) {
-            free(self->buffer[i].c_key);
+            // free(self->buffer[i].c_key);
         }
         if (self->buffer[i].free_c_value) {
-            free(self->buffer[i].c_value);
+            // free(self->buffer[i].c_value);
         }
     }
     if (self->buffer != self->inline_buffer) {
-        free(self->buffer);
+        // free(self->buffer);
     }
 }
 
 void Duostate_dealloc(Duostate *self) {
     Duostate_deinit(self);
-    free(self);
+    // free(self);
 }
 
 DuostateItem *_Duostate_get_pos(Duostate *self, uint32_t hash) {
@@ -47,11 +47,11 @@ DuostateItem *_Duostate_get_pos(Duostate *self, uint32_t hash) {
 
 void _Duostate_clear_pos(DuostateItem *pos) {
     if (pos->free_c_key) {
-        free(pos->c_key);
+        // free(pos->c_key);
     }
     pos->c_key = NULL;
     if (pos->free_c_value) {
-        free(pos->c_value);
+        // free(pos->c_value);
     }
     pos->c_value = NULL;
     Py_XDECREF(pos->py_key);

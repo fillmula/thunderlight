@@ -29,12 +29,12 @@ MatcherList *MatcherList_new(const char *name) {
 
 void MatcherList_dealloc(MatcherList *self) {
     for (size_t i = 0; i < self->length; i++) {
-        Py_DECREF(self->buffer[i].handler);
+        Py_XDECREF(self->buffer[i].handler);
     }
     if (self->buffer != self->inline_buffer) {
-        free(self->buffer);
+        // free(self->buffer);
     }
-    free(self);
+    // free(self);
 }
 
 void Matcher_record(Matcher *self) {
