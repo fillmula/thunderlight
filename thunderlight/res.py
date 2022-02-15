@@ -1,4 +1,3 @@
-from re import S
 from typing import Any
 from urllib.parse import quote
 from .json import JSON
