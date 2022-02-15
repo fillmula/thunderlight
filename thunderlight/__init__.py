@@ -3,6 +3,7 @@ from .app import App
 from .middleware import Middleware
 from .handler import Handler
 from .ctx import Ctx
+from .next import Next
 
 
 app = App()
