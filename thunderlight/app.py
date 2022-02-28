@@ -1,3 +1,6 @@
+from os import getcwd
+from pathlib import Path
+from anyio import open_file
 from typing import Any, Callable
 from re import sub
 from .matcher import Matcher
@@ -64,6 +67,8 @@ class App:
             mdata = matcher.match(path)
             if mdata is not None:
                 return mdata
+        if method == "GET" and Path(getcwd() + path).is_file():
+            return ({}, _static_file)
         return ({}, _not_found)
 
     def _build_middleware(self) -> Middleware | None:
@@ -100,3 +105,9 @@ def _apply(outer: Middleware, inner: Middleware) -> Middleware:
 async def _not_found(ctx: Ctx) -> None:
     ctx.res.code = 404
     ctx.res.body = '{"error": {"type": "Not Found"}}'
+
+
+async def _static_file(ctx: Ctx) -> None:
+    ctx.res.code = 200
+    async with await open_file(getcwd() + ctx.req.path, mode="rb") as file:
+        ctx.res.body = await file.read(64 * 1024)
