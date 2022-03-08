@@ -101,6 +101,12 @@ async def articles(ctx: Ctx) -> None:
 
 ## Changelog
 
+### 0.5.1 (Mar 8th, 2022)
+* Temporarily add static file
+
+### 0.5.0 (Feb 24th, 2022)
+* Revert to Python implementation as the C implementation is not stable
+
 ### 0.2.8 (Jan 28th, 2022)
 * Fixed a bug that causes patch and delete requests to crash
 
