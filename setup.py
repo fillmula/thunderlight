@@ -7,7 +7,7 @@ README = (Path(__file__).parent / "README.md").read_text()
 
 setup(
     name='thunderlight',
-    version='0.5.1',
+    version='0.6.0',
     description=('A Python HTTP Server.'),
     long_description=README,
     long_description_content_type='text/markdown',
@@ -25,7 +25,7 @@ setup(
     ],
     install_requires=[
         'python-multipart==0.0.5',
-        'uvicorn==0.16.0',
-        'anyio>=3.4.0,<4.0.0'
+        'uvicorn>=0.17.6,<0.18.0',
+        'anyio>=3.5.0,<4.0.0'
     ],
 )

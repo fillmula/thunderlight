@@ -101,6 +101,8 @@ async def articles(ctx: Ctx) -> None:
 
 ## Changelog
 
+### 0.6.0 (Mar 25th, 2022)
+* Added wildcard URL route matching
 ### 0.5.1 (Mar 8th, 2022)
 * Temporarily add static file
 

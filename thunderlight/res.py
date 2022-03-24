@@ -1,5 +1,7 @@
 from typing import Any
 from urllib.parse import quote
+from mimetypes import guess_type
+from anyio import open_file
 from .json import JSON
 from .asgi import Scope, Receive, Send
 
@@ -11,6 +13,7 @@ class Res:
         self._body: bytes = b''
         self._headers: dict[str, str] = {}
         self._json = json
+        self._file_path: str | None = None
 
     @property
     def code(self) -> int:
@@ -58,6 +61,11 @@ class Res:
     def empty(self, *args, **kwargs) -> None:
         self.code = 204
 
+    def file(self, path: str) -> None:
+        self._headers['content-type'] = guess_type(path)[0] or 'text/plain'
+        self._file_path = path
+
+
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         await send(
             {
@@ -66,4 +74,22 @@ class Res:
                 "headers": list(self.headers.items()),
             }
         )
-        await send({"type": "http.response.body", "body": self.body})
+        if self._file_path is not None:
+            async with await open_file(self._file_path, mode="rb") as file:
+                more_body = True
+                while more_body:
+                    chunk = await file.read(1024 * 60)
+                    more_body = len(chunk) == 1024 * 60
+                    await send(
+                        {
+                            "type": "http.response.body",
+                            "body": chunk,
+                            "more_body": more_body,
+                        }
+                    )
+        else:
+            await send({
+                "type": "http.response.body",
+                "body": self.body,
+                "more_body": False
+            })
