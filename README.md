@@ -94,9 +94,130 @@ Create a new server application.
 
 ```python
 app = App()
+
 @app.get('/articles')
 async def articles(ctx: Ctx) -> None:
     ctx.res.json(await Article.find())
+```
+
+### `Ctx`
+
+The context represents a request session.
+
+#### `ctx.req`
+
+The request object. This object is readonly.
+
+#### `ctx.res`
+
+The response object. Modify this object to present data to the user.
+
+#### `ctx.state`
+
+The custom state object that is internal to your custom handling code.
+
+### `Req`
+
+This class represents the incoming request. This object is readonly.
+
+#### `req.client`
+
+The request client.
+
+#### `req.scheme`
+
+The request HTTP scheme.
+#### `req.version`
+
+The request HTTP version.
+
+#### `req.method`
+
+The request HTTP method.
+
+#### `req.path`
+
+The path of the request URL.
+
+#### `req.args`
+
+The args matched from url routing.
+
+#### `req.qs`
+
+The query string of the request URL.
+
+#### `req.headers`
+
+The request headers.
+
+#### `req.body`
+
+The raw request body.
+
+#### `req.json`
+
+The request's json body.
+
+#### `req.form`
+
+The request's form body.
+
+#### `req.dict`
+
+The request's json body or form body.
+
+
+### `Res`
+
+The class represents the response returned to the frontend.
+
+#### `res.code`
+
+The status code.
+
+#### `res.headers`
+
+The response headers.
+
+#### `res.body`
+
+The response body.
+
+#### `res.json()`
+
+Response json to the frontend.
+
+#### `res.text()`
+
+Response text to the frontend
+
+#### `res.html()`
+
+Response html text to the frontend
+
+#### `res.redirect()`
+
+Response a redirect request to the frontend
+
+#### `res.file()`
+
+Response a file to the frontend
+
+#### `res.empty()`
+
+Empty response
+
+### `State`
+
+You can attach anything to the state and fetch by key. This state shares the
+same state across middlewares and the route handler.
+
+```python
+@app.get('/articles')
+async def articles(ctx: Ctx) -> None:
+    ctx.state.user = custom_user
+    ctx.state.user # custom_user
 ```
 
 ## Changelog
