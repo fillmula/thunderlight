@@ -151,19 +151,19 @@ The query string of the request URL.
 
 The request headers.
 
-#### `req.body`
+#### `await req.body()`
 
 The raw request body.
 
-#### `req.json`
+#### `await req.json()`
 
 The request's json body.
 
-#### `req.form`
+#### `await req.form()`
 
 The request's form body.
 
-#### `req.dict`
+#### `await req.dict()`
 
 The request's json body or form body.
 
