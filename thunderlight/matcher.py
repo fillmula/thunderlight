@@ -7,8 +7,8 @@ class Matcher:
     def __init__(self, path: str, handler: Handler) -> None:
         self.rule = path
         self.handler = handler
-        self.tokens = list(map(lambda t: t[1:], findall(':[^/]+', path)))
-        self.regex = '^' + sub('(:[^/]+)', '([^/]+)', path) + '$'
+        self.tokens = list(map(lambda t: t[1:] if t != '*' else '*', findall(':[^/]+|\*', path)))
+        self.regex = '^' + sub('(\*)', '(.+)', sub('(:[^/]+)', '([^/]+)', path)) + '$'
 
     def match(self, path: str) -> tuple[dict[str, str], Handler] | None:
         mdata = match(self.regex, path)

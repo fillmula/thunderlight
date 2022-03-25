@@ -102,7 +102,10 @@ async def articles(ctx: Ctx) -> None:
 ## Changelog
 
 ### 0.6.0 (Mar 25th, 2022)
+* Added generic response headers
 * Added wildcard URL route matching
+* Added static file serving
+
 ### 0.5.1 (Mar 8th, 2022)
 * Temporarily add static file
 
